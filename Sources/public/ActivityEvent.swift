@@ -48,10 +48,25 @@ public struct ActivityEvent: Codable {
       public var statusCode: Int?
       public var jsonString: String?
       public var failureReason: String?
+
+      public init(
+         statusCode: Int?,
+         jsonString: String?,
+         failureReason: String?) {
+
+         self.statusCode = statusCode
+         self.jsonString = jsonString
+         self.failureReason = failureReason
+      }
    }
 
    public let request: Request
    public let response: Response
+
+   public init(request: Request, response: Response) {
+      self.request = request
+      self.response = response
+   }
 }
 
 // MARK: - Convenience

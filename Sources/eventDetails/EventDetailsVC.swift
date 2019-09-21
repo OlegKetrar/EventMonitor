@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-final class EventDetailsVC: TrackableViewController, HavePreloaderButton {
+final class EventDetailsVC: TrackableViewController, HavePreloaderButton, HaveShareButton {
    var presenter: EventDetailsPresenter!
 
    // MARK: - Overrides
@@ -25,7 +25,7 @@ final class EventDetailsVC: TrackableViewController, HavePreloaderButton {
 
    // MARK: - Action
 
-   @objc private func actionShare() {
+   @objc func actionShare() {
       navigationItem.rightBarButtonItem = configuredPreloaderBarButton()
 
       presenter.share { [weak self] in
@@ -205,13 +205,6 @@ private extension EventDetailsVC {
       ])
 
       return sectionView
-   }
-
-   func configuredShareButton() -> UIBarButtonItem {
-      return UIBarButtonItem(
-         barButtonSystemItem: .action,
-         target: self,
-         action: #selector(actionShare))
    }
 }
 

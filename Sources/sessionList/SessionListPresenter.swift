@@ -9,15 +9,6 @@
 import Foundation
 import UIKit
 
-class Presenter {
-   weak var navigationController: UINavigationController?
-
-   final func with(navigationController: UINavigationController?) -> Self {
-      self.navigationController = navigationController
-      return self
-   }
-}
-
 final class SessionListPresenter: Presenter {
    let sessions: [ActivitySession]
    private let observableSessions: [Observable<ActivitySession>]

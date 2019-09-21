@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Dispatch
 
-final class SessionVC: TrackableViewController, HavePreloaderButton {
+final class SessionVC: TrackableViewController, HavePreloaderButton, HaveShareButton {
    var presenter: SessionPresenter!
    private var session: ActivitySession!
 
@@ -58,7 +58,7 @@ final class SessionVC: TrackableViewController, HavePreloaderButton {
 
    // MARK: - Actions
 
-   @objc private func actionShare() {
+   @objc func actionShare() {
       navigationItem.rightBarButtonItem = configuredPreloaderBarButton()
 
       presenter.share { [weak self] in
@@ -127,12 +127,5 @@ private extension SessionVC {
 
       tableView.dataSource = self
       tableView.delegate = self
-   }
-
-   func configuredShareButton() -> UIBarButtonItem {
-      return UIBarButtonItem(
-         barButtonSystemItem: .action,
-         target: self,
-         action: #selector(actionShare))
    }
 }

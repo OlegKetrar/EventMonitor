@@ -7,6 +7,7 @@
 //
 
 public struct PlainTextFormatter {
+   public init() {}
 
    public func format(event e: ActivityEvent) -> String {
 

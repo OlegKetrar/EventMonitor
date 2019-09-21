@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-/// Provides ActivityIndicator view.
+/// Provides ActivityIndicator as UIBarButtonItem.
 @objc protocol HavePreloaderButton: AnyObject {}
 
 extension HavePreloaderButton {
