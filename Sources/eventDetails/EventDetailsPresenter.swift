@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Dispatch
 
-final class EventDetailsPresenter: Presenter, CanMakeShareAlert {
+final class EventDetailsPresenter: Presenter, FileSharingTrait {
    let event: ActivityEvent
 
    init(event: ActivityEvent) {
@@ -18,48 +18,19 @@ final class EventDetailsPresenter: Presenter, CanMakeShareAlert {
    }
 
    func share(_ completion: @escaping () -> Void) {
+      let eventToShare = event
 
-      makeLogFile(for: event) { [weak self] in
-         guard let strongSelf = self else { return }
-         completion()
+      shareFile(
+         name: eventToShare.fileName,
+         content: { PlainTextFormatter().format(event: eventToShare) },
+         completion: { [weak self] in
+            guard let strongSelf = self else { return }
+            completion()
 
-         guard let path = $0 else { return }
-
-         strongSelf.navigationController?.present(
-            strongSelf.makeShareVC(for: URL(fileURLWithPath: path)),
-            animated: true)
-      }
-   }
-}
-
-private extension EventDetailsPresenter {
-
-   func makeLogFile(
-      for event: ActivityEvent,
-      _ completion: @escaping (String?) -> Void) {
-
-      DispatchQueue.global().async {
-
-         let exportDir = NSTemporaryDirectory()
-            .ns
-            .appendingPathComponent("network-monitor.exporting-logs")
-
-         let filePath = exportDir.ns.appendingPathComponent(event.fileName)
-
-         FileManager.default.createDirectoryIfNotExist(at: exportDir)
-
-         let fileContent = PlainTextFormatter()
-            .format(event: event)
-            .data(using: .utf8)
-
-         let writedSuccessfully = FileManager.default.createFile(
-            atPath: filePath,
-            contents: fileContent)
-
-         DispatchQueue.main.async {
-            completion(writedSuccessfully ? filePath : nil)
-         }
-      }
+            if let shareAlert = $0 {
+               strongSelf.navigationController?.present(shareAlert, animated: true)
+            }
+      })
    }
 }
 

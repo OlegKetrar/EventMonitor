@@ -9,10 +9,6 @@
 import Foundation
 import UIKit
 
-protocol EventCellModel {
-    
-}
-
 final class EventCell: UITableViewCell, ReusableCell {
 
     private struct K {

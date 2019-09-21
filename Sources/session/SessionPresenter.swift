@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Dispatch
 
-final class SessionPresenter: Presenter, CanMakeShareAlert {
+final class SessionPresenter: Presenter, FileSharingTrait {
    var session: Observable<ActivitySession>
 
    init(session: Observable<ActivitySession>) {
@@ -29,65 +29,31 @@ final class SessionPresenter: Presenter, CanMakeShareAlert {
    }
 
    func share(_ completion: @escaping () -> Void) {
+      let sessionToShare = session.value
 
-      makeLogFile(for: session.value) { [weak self] in
-         guard let strongSelf = self else { return }
-         completion()
+      shareFile(
+         name: "\(sessionToShare.title).log",
+         content: {
+            let formatter = PlainTextFormatter()
 
-         guard let path = $0 else {
-            strongSelf.navigationController?.show(
-               strongSelf.makeAlert(message: "Can't share log file"),
-               sender: strongSelf)
+            return sessionToShare.events
+               .map { "--> \( formatter.format(event: $0) )" }
+               .joined(separator: "\n\n")
+         },
+         completion: { [weak self] shareAlert in
+            guard let strongSelf = self else { return }
+            completion()
 
-            return
-         }
-
-         strongSelf.navigationController?.present(
-            strongSelf.makeShareVC(for: URL(fileURLWithPath: path)),
-            animated: true)
-      }
-   }
-}
-
-private extension SessionPresenter {
-
-   func makeLogFile(
-      for session: ActivitySession,
-      _ completion: @escaping (String?) -> Void) {
-
-      DispatchQueue.global().async {
-
-         let exportDir = NSTemporaryDirectory()
-            .ns
-            .appendingPathComponent("network-monitor.exporting-logs")
-
-         let filePath = exportDir
-            .ns
-            .appendingPathComponent("\(session.title).log")
-
-         FileManager.default.createDirectoryIfNotExist(at: exportDir)
-
-         let formatter = PlainTextFormatter()
-
-         let fileContent = session.events
-            .map { "--> \( formatter.format(event: $0) )" }
-            .joined(separator: "\n\n")
-            .data(using: .utf8)
-
-         let writedSuccessfully = FileManager.default.createFile(
-            atPath: filePath,
-            contents: fileContent)
-
-         DispatchQueue.main.async {
-            completion(writedSuccessfully ? filePath : nil)
-         }
-      }
+            strongSelf.navigationController?.present(
+               shareAlert ?? strongSelf.makeErrorAlert(),
+               animated: true)
+         })
    }
 
-   func makeAlert(message: String) -> UIAlertController {
+   private func makeErrorAlert() -> UIAlertController {
 
       let alert = UIAlertController(
-         title: message,
+         title: "Can't share log file",
          message: nil,
          preferredStyle: .alert)
 
