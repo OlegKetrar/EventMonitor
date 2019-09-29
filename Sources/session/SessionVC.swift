@@ -32,9 +32,10 @@ final class SessionVC: TrackableViewController, HavePreloaderButton, HaveShareBu
 
    override func viewDidLoad() {
       super.viewDidLoad()
-      defaultConfiguring()
 
       session = presenter.session.value
+      defaultConfiguring()
+
       presenter.session.notify(
          observer: self,
          on: .main,
