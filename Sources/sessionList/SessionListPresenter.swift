@@ -11,9 +11,11 @@ import UIKit
 
 final class SessionListPresenter: Presenter {
    let sessions: [ActivitySession]
+   let isPresented: Bool
    private let observableSessions: [Observable<ActivitySession>]
 
-   init(sessions: [Observable<ActivitySession>]) {
+   init(isPresented: Bool, sessions: [Observable<ActivitySession>]) {
+      self.isPresented = isPresented
       self.sessions = sessions.map { $0.value }
       self.observableSessions = sessions
    }
@@ -27,5 +29,10 @@ final class SessionListPresenter: Presenter {
          .with(navigationController: navigationController)
 
       navigationController?.pushViewController(vc, animated: true)
+   }
+
+   func dismiss() {
+      guard isPresented else { return }
+      navigationController?.dismiss(animated: true, completion: nil)
    }
 }

@@ -35,6 +35,13 @@ final class SessionListVC: TrackableViewController {
       view.backgroundColor = .grayBackground
       view.addSubview(tableView)
 
+      if presenter.isPresented {
+         navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .done,
+            target: self,
+            action: #selector(actionDone))
+      }
+
       NSLayoutConstraint.activate([
          tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
          tableView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -59,6 +66,10 @@ final class SessionListVC: TrackableViewController {
 
    override var screen: Screen {
       return .sessionList
+   }
+
+   @objc private func actionDone() {
+      presenter.dismiss()
    }
 }
 

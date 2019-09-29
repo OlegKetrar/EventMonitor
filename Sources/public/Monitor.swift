@@ -24,7 +24,7 @@ public final class Monitor {
       let nc = UINavigationController(rootViewController: listVC)
 
       listVC.presenter = SessionListPresenter
-         .init(sessions: monitor.getObservableActivitySessions())
+         .init(isPresented: true, sessions: monitor.getObservableActivitySessions())
          .with(navigationController: nc)
 
       vc.present(nc, animated: true, completion: nil)
@@ -35,7 +35,7 @@ public final class Monitor {
 
       let listVC = SessionListVC()
       listVC.presenter = SessionListPresenter
-         .init(sessions: monitor.getObservableActivitySessions())
+         .init(isPresented: false, sessions: monitor.getObservableActivitySessions())
          .with(navigationController: nc)
 
       nc.pushViewController(listVC, animated: true)
