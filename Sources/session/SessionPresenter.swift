@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import Dispatch
 
 final class SessionPresenter: Presenter, FileSharingTrait {
    var session: Observable<ActivitySession>

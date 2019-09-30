@@ -63,9 +63,6 @@ private extension EventDetailsVC {
          stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -30),
          stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
       ])
-
-      view.setNeedsLayout()
-      view.layoutIfNeeded()
    }
 
    func makeConfiguredStackView() -> UIStackView {

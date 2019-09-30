@@ -64,8 +64,8 @@ private extension ViewController {
       Monitor.log(event: ActivityEvent(
          request: ActivityEvent.Request(
             verb: "get",
-            method: "products",
-            basepoint: "basepoint",
+            method: "/products",
+            basepoint: "www.basepoint.com",
             hasBody: false,
             parameters: [
                "intParam" : 10,
@@ -86,13 +86,13 @@ private extension ViewController {
                   "name" : "MacBook Air",
                   "year" : 2017,
                   "price" : "1500.00",
-                  "available" : true,
+                  "available" : true
                 },
                 {
                   "name" : "MacBook Pro",
                   "year" : 2015,
                   "price" : "2050.99",
-                  "available" : true,
+                  "available" : true
                 }
               ]
             }

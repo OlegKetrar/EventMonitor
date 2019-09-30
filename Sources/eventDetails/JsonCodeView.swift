@@ -8,109 +8,126 @@
 
 import Foundation
 import UIKit
+import JsonSyntax
 
 final class JsonCodeView: UIView {
+   private let theme = JsonCodeViewTheme.postman
+   private let syntax = JsonSyntax()
 
-    private let contentLabel = UITextView(frame: .zero).with {
-        $0.backgroundColor = .clear
-        $0.isScrollEnabled = false
-        $0.isEditable = false
-        $0.isSelectable = true
-        $0.translatesAutoresizingMaskIntoConstraints = false
-    }
+   private let contentLabel = UITextView(frame: .zero).with {
+      $0.backgroundColor = .clear
+      $0.isScrollEnabled = false
+      $0.isEditable = false
+      $0.isSelectable = true
+      $0.translatesAutoresizingMaskIntoConstraints = false
+   }
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        defaultConfiguring()
-    }
+   override init(frame: CGRect) {
+      super.init(frame: frame)
+      defaultConfiguring()
+   }
 
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        defaultConfiguring()
-    }
+   required init?(coder aDecoder: NSCoder) {
+      super.init(coder: aDecoder)
+      defaultConfiguring()
+   }
 
-    func setTextColor(_ color: UIColor) {
-        contentLabel.textColor = color
-    }
+   func setText(_ text: String, highlight: Bool = false) {
 
-    func setText(_ text: String, highlight: Bool = false) {
-        contentLabel.attributedText = highlightJson(text, highlight: highlight)
-    }
+      let attrStr = NSMutableAttributedString(string: text, attributes: [
+         .font : theme.font,
+         .foregroundColor : theme.textColor
+      ])
+
+      guard highlight else {
+         contentLabel.attributedText = attrStr
+         return
+      }
+
+      let mutAttrStr = NSMutableAttributedString(attributedString: attrStr)
+      let highlights = getHighlights(from: text)
+
+      for item in highlights {
+         mutAttrStr.addAttribute(.foregroundColor, value: item.color, range: item.range)
+      }
+
+      contentLabel.attributedText = mutAttrStr
+   }
 }
 
 // MARK: - Private
 
 private extension JsonCodeView {
+   typealias Highlight = (range: NSRange, color: UIColor)
 
-    func highlightJson(
-        _ json: String,
-        highlight: Bool) -> NSAttributedString {
+   func getHighlights(from str: String) -> [Highlight] {
+      guard let tree = try? syntax.parse(str) else { return [] }
 
-        let attributed = NSMutableAttributedString(string: json, attributes: [
-            .foregroundColor : #colorLiteral(red: 0.6499369144, green: 0.8942017555, blue: 0, alpha: 1),
-            .font : UIFont(name: "Menlo-Regular", size: 14) as Any,
-            .kern : NSNumber.init(value: 0.1)
-        ])
+      return tree.getHighlightTokens().map { token in
+         switch token.kind {
 
-        guard highlight else { return attributed }
+         case .syntax(.openBracket),
+              .syntax(.closeBracket),
+              .syntax(.openBrace),
+              .syntax(.closeBrace):
 
-        // square & curly brackets
-        attributed.stylize(pattern: "[{}]+", with: [
-            .font : UIFont(name: "Menlo-Bold", size: 15) as Any
-        ])
+            return token.withColor(theme.bracesColor)
 
-        return attributed
-    }
+         case .syntax(.colon), .syntax(.comma):
+            return token.withColor(theme.delimiterColor)
 
-    func defaultConfiguring() {
+         case .literalValue:
+            return token.withColor(theme.literalColor)
 
-        let scrollView = UIScrollView(frame: .zero)
-        scrollView.backgroundColor = .clear
-        scrollView.indicatorStyle = .white
-        scrollView.alwaysBounceHorizontal = true
-        scrollView.alwaysBounceVertical = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
+         case .numberValue:
+            return token.withColor(theme.numberColor)
 
-        scrollView.addSubview(contentLabel)
-        addSubview(scrollView)
-        backgroundColor = #colorLiteral(red: 0.1568444967, green: 0.1568739712, blue: 0.156840831, alpha: 1)
+         case .stringValue:
+            return token.withColor(theme.stringColor)
 
-        NSLayoutConstraint.activate([
-            scrollView.leftAnchor.constraint(equalTo: leftAnchor),
-            scrollView.topAnchor.constraint(equalTo: topAnchor),
-            scrollView.rightAnchor.constraint(equalTo: rightAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+         case .key:
+            return token.withColor(theme.keyColor)
+         }
+      }
+   }
 
-            contentLabel.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 10),
-            contentLabel.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentLabel.rightAnchor.constraint(equalTo: scrollView.rightAnchor, constant: -10),
-            contentLabel.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            contentLabel.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
-        ])
-    }
+   func defaultConfiguring() {
+
+      let scrollView = UIScrollView(frame: .zero)
+      scrollView.backgroundColor = .clear
+      scrollView.indicatorStyle = .white
+      scrollView.alwaysBounceHorizontal = true
+      scrollView.alwaysBounceVertical = false
+      scrollView.translatesAutoresizingMaskIntoConstraints = false
+
+      scrollView.addSubview(contentLabel)
+      addSubview(scrollView)
+      backgroundColor = theme.backgroundColor
+
+      NSLayoutConstraint.activate([
+         scrollView.leftAnchor.constraint(equalTo: leftAnchor),
+         scrollView.topAnchor.constraint(equalTo: topAnchor),
+         scrollView.rightAnchor.constraint(equalTo: rightAnchor),
+         scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+
+         contentLabel.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 10),
+         contentLabel.topAnchor.constraint(equalTo: scrollView.topAnchor),
+         contentLabel.rightAnchor.constraint(equalTo: scrollView.rightAnchor, constant: -10),
+         contentLabel.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+         contentLabel.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
+      ])
+   }
 }
 
 // MARK: - Convenience
 
-private extension NSMutableAttributedString {
+private extension HighlightToken {
 
-    func stylize(
-        pattern: String,
-        with attributes: [NSAttributedString.Key : Any]) {
+   func withColor(_ color: UIColor) -> JsonCodeView.Highlight {
+      return (range: nsRange, color: color)
+   }
 
-        guard let regex = try? NSRegularExpression(
-            pattern: pattern,
-            options: .caseInsensitive) else { return }
-
-        let matches = regex.matches(
-            in: self.string,
-            options: [],
-            range: NSRange(
-                location: 0,
-                length: (self.string as NSString).length))
-
-        for match in matches {
-            self.addAttributes(attributes, range: match.range)
-        }
-    }
+   var nsRange: NSRange {
+      return NSRange(location: pos.location, length: pos.length)
+   }
 }

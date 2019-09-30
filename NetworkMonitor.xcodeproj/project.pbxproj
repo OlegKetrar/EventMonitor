@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,8 +15,10 @@
 		5520875F23413FA70049EDBA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5520875D23413FA70049EDBA /* LaunchScreen.storyboard */; };
 		5520876C23415FC20049EDBA /* NetworkMonitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "NetworkMonitor::NetworkMonitor::Product" /* NetworkMonitor.framework */; };
 		5520876D23415FC20049EDBA /* NetworkMonitor.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = "NetworkMonitor::NetworkMonitor::Product" /* NetworkMonitor.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		55208781234174F20049EDBA /* JsonCodeViewTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55208780234174F20049EDBA /* JsonCodeViewTheme.swift */; };
 		55A5FA8923376BB9003840C5 /* Presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A5FA8823376BB9003840C5 /* Presenter.swift */; };
 		55A5FA8B23376E49003840C5 /* HaveShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A5FA8A23376E49003840C5 /* HaveShareButton.swift */; };
+		55A89BEC23429D8A0006DCA8 /* JsonSyntax-Static in Frameworks */ = {isa = PBXBuildFile; platformFilter = ios; productRef = 55A89BEB23429D8A0006DCA8 /* JsonSyntax-Static */; };
 		OBJ_41 /* ActivityEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_8 /* ActivityEvent.swift */; };
 		OBJ_42 /* ActivitySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* ActivitySession.swift */; };
 		OBJ_43 /* FileSharingTrait.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* FileSharingTrait.swift */; };
@@ -62,6 +64,16 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5520877C23416B7F0049EDBA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -73,9 +85,10 @@
 		5520875B23413FA70049EDBA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5520875E23413FA70049EDBA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5520876023413FA70049EDBA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		55208780234174F20049EDBA /* JsonCodeViewTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = JsonCodeViewTheme.swift; sourceTree = "<group>"; };
 		55A5FA8823376BB9003840C5 /* Presenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Presenter.swift; sourceTree = "<group>"; tabWidth = 3; };
 		55A5FA8A23376E49003840C5 /* HaveShareButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HaveShareButton.swift; sourceTree = "<group>"; tabWidth = 3; };
-		"NetworkMonitor::NetworkMonitor::Product" /* NetworkMonitor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NetworkMonitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		"NetworkMonitor::NetworkMonitor::Product" /* NetworkMonitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NetworkMonitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_10 /* FileSharingTrait.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = FileSharingTrait.swift; sourceTree = "<group>"; tabWidth = 3; };
 		OBJ_11 /* LogArchiver.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LogArchiver.swift; sourceTree = "<group>"; tabWidth = 3; };
 		OBJ_12 /* NetworkMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetworkMonitor.swift; sourceTree = "<group>"; tabWidth = 3; };
@@ -113,6 +126,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
+				55A89BEC23429D8A0006DCA8 /* JsonSyntax-Static in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,6 +171,7 @@
 				OBJ_18 /* EventDetailsVC.swift */,
 				OBJ_16 /* EventCell.swift */,
 				OBJ_19 /* JsonCodeView.swift */,
+				55208780234174F20049EDBA /* JsonCodeViewTheme.swift */,
 			);
 			path = eventDetails;
 			sourceTree = "<group>";
@@ -256,6 +271,8 @@
 				5520876F23415FC20049EDBA /* PBXTargetDependency */,
 			);
 			name = "Example-iOS";
+			packageProductDependencies = (
+			);
 			productName = "Example-iOS";
 			productReference = 5520875023413FA60049EDBA /* Example-iOS.app */;
 			productType = "com.apple.product-type.application";
@@ -266,12 +283,16 @@
 			buildPhases = (
 				OBJ_40 /* Sources */,
 				OBJ_62 /* Frameworks */,
+				5520877C23416B7F0049EDBA /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = NetworkMonitor;
+			packageProductDependencies = (
+				55A89BEB23429D8A0006DCA8 /* JsonSyntax-Static */,
+			);
 			productName = NetworkMonitor;
 			productReference = "NetworkMonitor::NetworkMonitor::Product" /* NetworkMonitor.framework */;
 			productType = "com.apple.product-type.framework";
@@ -303,6 +324,9 @@
 				Base,
 			);
 			mainGroup = OBJ_5;
+			packageReferences = (
+				55A89BEA23429D8A0006DCA8 /* XCRemoteSwiftPackageReference "JsonSyntax" */,
+			);
 			productRefGroup = OBJ_34 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -349,6 +373,7 @@
 				OBJ_46 /* Monitor.swift in Sources */,
 				OBJ_47 /* PlainTextFormatter.swift in Sources */,
 				OBJ_48 /* EventCell.swift in Sources */,
+				55208781234174F20049EDBA /* JsonCodeViewTheme.swift in Sources */,
 				OBJ_49 /* EventDetailsPresenter.swift in Sources */,
 				OBJ_50 /* EventDetailsVC.swift in Sources */,
 				OBJ_51 /* JsonCodeView.swift in Sources */,
@@ -448,7 +473,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Example-iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.oleg-ketrar.Example-iOS";
@@ -506,7 +534,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Example-iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.oleg-ketrar.Example-iOS";
@@ -533,7 +564,7 @@
 					"DEBUG=1",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = "";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -DXcode";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -550,6 +581,7 @@
 		OBJ_38 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -558,7 +590,10 @@
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NetworkMonitor.xcodeproj/NetworkMonitor_Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(TOOLCHAIN_DIR)/usr/lib/swift/macosx",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
@@ -578,6 +613,7 @@
 		OBJ_39 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -586,7 +622,10 @@
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NetworkMonitor.xcodeproj/NetworkMonitor_Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(TOOLCHAIN_DIR)/usr/lib/swift/macosx",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
@@ -617,13 +656,14 @@
 					"SWIFT_PACKAGE=1",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DXcode";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) SWIFT_PACKAGE";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 5.0;
 				USE_HEADERMAP = NO;
@@ -661,6 +701,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		55A89BEA23429D8A0006DCA8 /* XCRemoteSwiftPackageReference "JsonSyntax" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/OlegKetrar/JsonSyntax.git";
+			requirement = {
+				branch = dev;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		55A89BEB23429D8A0006DCA8 /* JsonSyntax-Static */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 55A89BEA23429D8A0006DCA8 /* XCRemoteSwiftPackageReference "JsonSyntax" */;
+			productName = "JsonSyntax-Static";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = OBJ_1 /* Project object */;
 }

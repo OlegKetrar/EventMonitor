@@ -12,11 +12,13 @@ let package = Package(
          type: .dynamic,
          targets: ["NetworkMonitor"]),
    ],
-   dependencies: [],
+   dependencies: [
+      .package(url: "https://github.com/OlegKetrar/JsonSyntax", .exact("0.2.0")),
+   ],
    targets: [
       .target(
          name: "NetworkMonitor",
-         dependencies: [],
+         dependencies: ["JsonSyntax"],
          path: "Sources"),
    ],
    swiftLanguageVersions: [.v5]

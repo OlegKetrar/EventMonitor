@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "JsonSyntax",
+        "repositoryURL": "https://github.com/OlegKetrar/JsonSyntax",
+        "state": {
+          "branch": null,
+          "revision": "42d79dd1be34fd31a67c972ac639458d5cd09e4d",
+          "version": "0.2.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

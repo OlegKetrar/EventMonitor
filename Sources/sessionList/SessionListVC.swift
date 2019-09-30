@@ -49,9 +49,6 @@ final class SessionListVC: TrackableViewController {
          tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
       ])
 
-      view.setNeedsLayout()
-      view.layoutIfNeeded()
-
       tableView.dataSource = self
       tableView.delegate = self
    }
