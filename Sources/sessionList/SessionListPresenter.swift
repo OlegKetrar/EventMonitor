@@ -14,6 +14,7 @@ final class SessionListPresenter: Presenter {
    let isPresented: Bool
    private let observableSessions: [Observable<ActivitySession>]
 
+   /// - parameter isPresented: vc will be presented or pushed into UINavigationController.
    init(isPresented: Bool, sessions: [Observable<ActivitySession>]) {
       self.isPresented = isPresented
       self.sessions = sessions.map { $0.value }

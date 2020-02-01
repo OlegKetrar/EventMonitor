@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		551383092417F2D300999655 /* TrackableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551383082417F2D300999655 /* TrackableViewController.swift */; };
 		5520875323413FA60049EDBA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5520875223413FA60049EDBA /* AppDelegate.swift */; };
 		5520875523413FA60049EDBA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5520875423413FA60049EDBA /* SceneDelegate.swift */; };
 		5520875723413FA60049EDBA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5520875623413FA60049EDBA /* ViewController.swift */; };
@@ -77,6 +78,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		551383082417F2D300999655 /* TrackableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackableViewController.swift; sourceTree = "<group>"; };
 		5520875023413FA60049EDBA /* Example-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5520875223413FA60049EDBA /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; tabWidth = 3; };
 		5520875423413FA60049EDBA /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SceneDelegate.swift; sourceTree = "<group>"; tabWidth = 3; };
@@ -204,6 +206,7 @@
 				OBJ_30 /* Observable.swift */,
 				OBJ_31 /* ReusableCell.swift */,
 				OBJ_32 /* UIView+with.swift */,
+				551383082417F2D300999655 /* TrackableViewController.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -365,6 +368,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
+				551383092417F2D300999655 /* TrackableViewController.swift in Sources */,
 				OBJ_41 /* ActivityEvent.swift in Sources */,
 				OBJ_42 /* ActivitySession.swift in Sources */,
 				OBJ_43 /* FileSharingTrait.swift in Sources */,

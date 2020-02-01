@@ -12,7 +12,7 @@ import Dispatch
 final class LogArchiver {
    private let directoryPath: String
    private let queue = DispatchQueue(label: "stored-logging-queue", qos: .background)
-   private var sessionfileHandle: FileHandle?
+   private var sessionFileHandle: FileHandle?
 
    init(directoryPath: String) {
       self.directoryPath = directoryPath
@@ -20,7 +20,6 @@ final class LogArchiver {
    }
 
    func createSessionFile(name: String) {
-
       let filePath = (directoryPath as NSString).appendingPathComponent(name)
 
       FileManager.default.createFile(
@@ -28,15 +27,17 @@ final class LogArchiver {
          contents: Data(),
          attributes: nil)
 
-      sessionfileHandle = FileHandle(forUpdatingAtPath: filePath)
+      sessionFileHandle = FileHandle(forUpdatingAtPath: filePath)
    }
 
    func write<T: Encodable>(item: T) {
-      guard let fileHandle = sessionfileHandle else { return }
+      guard let fileHandle = sessionFileHandle else { return }
 
       queue.async {
-         guard let itemData = try? JSONEncoder().encode(item),
-            let newlineData = "\n".data(using: .utf8) else { return }
+         guard
+            let itemData = try? JSONEncoder().encode(item),
+            let newlineData = "\n".data(using: .utf8)
+         else { return }
 
          fileHandle.write(itemData)
          fileHandle.write(newlineData)
@@ -54,7 +55,7 @@ final class LogArchiver {
       guard
          let data = FileManager.default.contents(atPath: path),
          let dataStr = String(data: data, encoding: .utf8)
-         else {
+      else {
             return []
       }
 

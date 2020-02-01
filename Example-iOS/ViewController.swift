@@ -14,6 +14,8 @@ final class ViewController: UIViewController {
    override func viewDidLoad() {
       super.viewDidLoad()
       configureUI()
+
+      Monitor.enableShakeToShow(rootViewController: self)
    }
 }
 

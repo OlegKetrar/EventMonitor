@@ -64,6 +64,11 @@ final class SessionListVC: TrackableViewController {
    override var screen: Screen {
       return .sessionList
    }
+}
+
+// MARK: - Actions
+
+extension SessionListVC {
 
    @objc private func actionDone() {
       presenter.dismiss()

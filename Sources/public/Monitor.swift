@@ -13,12 +13,57 @@ public final class Monitor {
    private static let monitor = NetworkMonitor()
    private static var screen: Screen = .sessionList
 
+   /// We create another UIWindow to have a callback on shakeEvent.
+   private static var motionWindow: MotionWindow?
+
+   /// Enables Monitor presenting on shake gesture.
+   /// - parameter rootVC: root view controller of your app. Monitor will be presented onto this vc.
+   public static func enableShakeToShow(rootViewController rootVC: UIViewController) {
+      guard motionWindow == nil else { return }
+
+      motionWindow = MotionWindow(frame: .zero)
+      motionWindow?.backgroundColor = .clear
+      motionWindow?.windowLevel = .normal
+
+      motionWindow?.motionCallback = { [weak rootVC] motion in
+         guard let rootVC = rootVC,
+            motion == .motionShake else { return }
+
+         let allSessions = monitor.getObservableActivitySessions()
+         let listVC = SessionListVC()
+         let nc = UINavigationController(rootViewController: listVC)
+
+         listVC.presenter = SessionListPresenter
+            .init(isPresented: true, sessions: allSessions)
+            .with(navigationController: nc)
+
+         if let activeSession = allSessions.first {
+
+            let sessionVC = SessionVC()
+            sessionVC.presenter = SessionPresenter
+               .init(session: activeSession)
+               .with(navigationController: nc)
+
+            nc.setViewControllers([listVC, sessionVC], animated: false)
+         }
+
+         rootVC.present(nc, animated: true, completion: nil)
+      }
+
+      motionWindow?.makeKeyAndVisible()
+   }
+
+   public static func disableShakeToShow() {
+      motionWindow?.motionCallback = { _ in }
+      motionWindow = nil
+   }
+
    public static func log(event: ActivityEvent) {
       monitor.log(event: event)
    }
 
    public static func show(on vc: UIViewController) {
-      TrackableViewController.tracker = { self.screen = $0 }
+      TrackableViewController.onDidAppear = { self.screen = $0 }
 
       let listVC = SessionListVC()
       let nc = UINavigationController(rootViewController: listVC)
@@ -31,7 +76,7 @@ public final class Monitor {
    }
 
    public static func push(into nc: UINavigationController) {
-      TrackableViewController.tracker = { self.screen = $0 }
+      TrackableViewController.onDidAppear = { self.screen = $0 }
 
       let listVC = SessionListVC()
       listVC.presenter = SessionListPresenter
@@ -42,19 +87,11 @@ public final class Monitor {
    }
 }
 
-enum Screen {
-   case sessionList
-   case session      // id
-   case eventDetails // id
-}
+private class MotionWindow: UIWindow {
+   var motionCallback: (UIEvent.EventSubtype) -> Void = { _ in }
 
-class TrackableViewController: UIViewController {
-   fileprivate static var tracker: (Screen) -> Void = { _ in }
-
-   override func viewDidLoad() {
-      super.viewDidLoad()
-      Self.tracker(screen)
+   override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+      super.motionBegan(motion, with: event)
+      motionCallback(motion)
    }
-
-   var screen: Screen { fatalError() }
 }

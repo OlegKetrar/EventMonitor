@@ -41,10 +41,10 @@ final class NetworkMonitor {
                title: self.titleFromDate.string(from: createdAt),
                createdAt: createdAt,
                events: self.archiver.readItemsFromFile(at: $0))
-      }
-      .sorted(by: {
-         $0.createdAt > $1.createdAt
-      })
+         }
+         .sorted(by: {
+            $0.createdAt > $1.createdAt
+         })
    }()
 
    init() {
