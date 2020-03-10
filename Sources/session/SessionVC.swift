@@ -87,8 +87,8 @@ extension SessionVC: UITableViewDataSource {
 
       return tableView
          .dequeue(cell: EventCell.self, for: indexPath)
-         .with(verb: item.request.verb)
-         .with(request: item.request.method + item.request.getParams)
+         .with(verb: item.request.verb.uppercased())
+         .with(request: item.request.method)
          .with(success: item.response.failureReason == nil)
    }
 }
