@@ -16,6 +16,11 @@ public struct ActivityEvent: Codable {
       public var postParams: [String : String]
       public var headers: [String : String]
 
+      /// - Parameters:
+      ///   - verb: GET/POST/DELETE etc.
+      ///   - method: API method, like `/users`.
+      ///   - hasBody: Pass `true` for request if it contains HTTP body.
+      ///   If request has only query parameters pass `false`.
       public init(
          verb: String,
          method: String,
@@ -49,6 +54,12 @@ public struct ActivityEvent: Codable {
       public var jsonString: String?
       public var failureReason: String?
 
+      /// - Parameters:
+      ///   - statusCode: HTTP Status code.
+      ///   - jsonString: Response as JSON string.
+      ///   - failureReason: String representation of event failure.
+      ///   It is valid to pass here error of response validation.
+      ///   Pass `nil`for succeeded events.
       public init(
          statusCode: Int?,
          jsonString: String?,

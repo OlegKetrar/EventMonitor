@@ -171,7 +171,6 @@
 			children = (
 				OBJ_17 /* EventDetailsPresenter.swift */,
 				OBJ_18 /* EventDetailsVC.swift */,
-				OBJ_16 /* EventCell.swift */,
 				OBJ_19 /* JsonCodeView.swift */,
 				55208780234174F20049EDBA /* JsonCodeViewTheme.swift */,
 			);
@@ -183,6 +182,7 @@
 			children = (
 				OBJ_21 /* SessionPresenter.swift */,
 				OBJ_22 /* SessionVC.swift */,
+				OBJ_16 /* EventCell.swift */,
 			);
 			path = session;
 			sourceTree = "<group>";
