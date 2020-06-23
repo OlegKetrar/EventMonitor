@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.2
 import PackageDescription
 
 let package = Package(
@@ -18,8 +18,13 @@ let package = Package(
    targets: [
       .target(
          name: "NetworkMonitor",
-         dependencies: ["JsonSyntax"],
-         path: "Sources"),
+         dependencies: [
+            .product(name: "JsonSyntax-Static", package: "JsonSyntax"),
+         ],
+         path: "Sources",
+         linkerSettings: [
+            .linkedFramework("UIKit"),
+         ]),
    ],
    swiftLanguageVersions: [.v5]
 )
