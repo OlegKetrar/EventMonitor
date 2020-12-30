@@ -32,15 +32,17 @@ final class SessionVC: TrackableViewController, HavePreloaderButton, HaveShareBu
 
    override func viewDidLoad() {
       super.viewDidLoad()
+      defaultConfiguring()
 
       session = presenter.session.value
-      defaultConfiguring()
+      updateTitle()
 
       presenter.session.notify(
          observer: self,
          on: .main,
          callback: { vc, newSession in
             vc.session = newSession
+            vc.updateTitle()
             vc.tableView.reloadData()
       })
    }
@@ -105,13 +107,49 @@ extension SessionVC: UITableViewDelegate {
    }
 }
 
+// MARK: - UIContextMenuInteractionDelegate
+
+@available(iOSApplicationExtension 13.0, *)
+extension SessionVC: UIContextMenuInteractionDelegate {
+
+   func contextMenuInteraction(
+      _ interaction: UIContextMenuInteraction,
+      configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+
+      return UIContextMenuConfiguration(
+         identifier: nil,
+         previewProvider: nil,
+         actionProvider: { [weak self] _ in
+            (self?.presenter.findAllSubsystemFilters()).map {
+               UIMenu(
+                  title: "Filter by subsystem:",
+                  children: $0.map { filter in
+                     UIAction(
+                        title: filter.title,
+                        attributes: filter.isAll ? [.destructive] : [],
+                        state: filter.isApplied ? .on : .off,
+                        handler: { [weak self] _ in
+                           self?.presenter.filterEvents(by: filter)
+                        })
+                  })
+            }
+         })
+   }
+}
+
 // MARK: - Private
 
 private extension SessionVC {
 
-   func defaultConfiguring() {
+   func updateTitle() {
+      if #available(iOS 13.0, *), presenter.hasFilters() {
+         navigationItem.titleView = makeTitleView(title: session.title)
+      } else {
+         navigationItem.title = session.title
+      }
+   }
 
-      navigationItem.title = session.title
+   func defaultConfiguring() {
       navigationItem.rightBarButtonItem = configuredShareButton()
       view.backgroundColor = .grayBackground
       view.addSubview(tableView)
@@ -125,5 +163,19 @@ private extension SessionVC {
 
       tableView.dataSource = self
       tableView.delegate = self
+   }
+
+   @available(iOS 13.0, *)
+   func makeTitleView(title: String) -> UIView {
+      let button = UIButton(type: .system)
+      button.setTitle(title, for: .normal)
+      button.setImage(UIImage(systemName: "arrow.down"), for: .normal)
+      button.addInteraction(UIContextMenuInteraction(delegate: self))
+      button.contentEdgeInsets.left = 10
+      button.contentEdgeInsets.right = 10
+      button.contentEdgeInsets.top = 5
+      button.contentEdgeInsets.bottom = 5
+
+      return button
    }
 }

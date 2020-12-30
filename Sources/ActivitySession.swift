@@ -11,6 +11,15 @@ import Foundation
 struct ActivitySession {
    var title: String
    var createdAt: Date = Date()
-   var events: [ActivityEvent]
+   var groupedEvents: [GroupedActivityEvent]
    var isActive: Bool = false
+
+   var events: [ActivityEvent] {
+      return groupedEvents.map { $0.event }
+   }
+}
+
+struct GroupedActivityEvent: Codable {
+   var subsystem: String
+   var event: ActivityEvent
 }
