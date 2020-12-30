@@ -64,7 +64,7 @@ final class NetworkMonitor {
       archiver.createSessionFile(name: activeSession.value.getFilename())
    }
 
-   func log(event: ActivityEvent) {
+   func log(event: ActivityEvent, domain: String) {
       activeSession.mutate {
          $0.events.append(event)
       }
