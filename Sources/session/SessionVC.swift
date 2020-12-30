@@ -175,6 +175,12 @@ private extension SessionVC {
       button.contentEdgeInsets.right = 10
       button.contentEdgeInsets.top = 5
       button.contentEdgeInsets.bottom = 5
+      button.imageEdgeInsets.top = 2.5
+      button.imageEdgeInsets.bottom = 2.5
+      button.semanticContentAttribute = .forceRightToLeft
+
+      button.backgroundColor = .grayLightSilver
+      button.layer.cornerRadius = 7
 
       return button
    }
