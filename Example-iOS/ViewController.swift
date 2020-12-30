@@ -24,34 +24,43 @@ private extension ViewController {
    func configureUI() {
       navigationItem.title = "Example"
 
-      let addEventButton = UIButton(type: .system)
-      addEventButton.setTitle("Add event", for: .normal)
-      addEventButton.translatesAutoresizingMaskIntoConstraints = false
-      addEventButton.addTarget(self, action: #selector(actionAddEvent), for: .touchUpInside)
+      let addDefaultEventButton = UIButton(type: .system)
+      addDefaultEventButton.setTitle("Add event", for: .normal)
+      addDefaultEventButton.addTarget(self, action: #selector(actionAddDefaultEvent), for: .touchUpInside)
+
+      let addSystemEvent = UIButton(type: .system)
+      addSystemEvent.setTitle("Add system event", for: .normal)
+      addSystemEvent.addTarget(self, action: #selector(actionAddSystemEvent), for: .touchUpInside)
+
+      let addCustomEvent = UIButton(type: .system)
+      addCustomEvent.setTitle("Add custom event", for: .normal)
+      addCustomEvent.addTarget(self, action: #selector(actionAddCustomEvent), for: .touchUpInside)
 
       let showMonitorButton = UIButton(type: .system)
       showMonitorButton.setTitle("Present monitor", for: .normal)
-      showMonitorButton.translatesAutoresizingMaskIntoConstraints = false
       showMonitorButton.addTarget(self, action: #selector(actionShowMonitor), for: .touchUpInside)
 
       let pushMonitorButton = UIButton(type: .system)
       pushMonitorButton.setTitle("Push monitor", for: .normal)
-      pushMonitorButton.translatesAutoresizingMaskIntoConstraints = false
       pushMonitorButton.addTarget(self, action: #selector(actionPushMonitor), for: .touchUpInside)
 
       let stackView = UIStackView()
       stackView.axis = .vertical
       stackView.translatesAutoresizingMaskIntoConstraints = false
-      stackView.spacing = 30
+      stackView.spacing = 10
 
-      stackView.addArrangedSubview(addEventButton)
+      stackView.addArrangedSubview(addDefaultEventButton)
+      stackView.addArrangedSubview(addSystemEvent)
+      stackView.addArrangedSubview(addCustomEvent)
       stackView.addArrangedSubview(showMonitorButton)
       stackView.addArrangedSubview(pushMonitorButton)
 
       view.addSubview(stackView)
 
       NSLayoutConstraint.activate([
-         addEventButton.heightAnchor.constraint(equalToConstant: 40),
+         addDefaultEventButton.heightAnchor.constraint(equalToConstant: 40),
+         addSystemEvent.heightAnchor.constraint(equalToConstant: 40),
+         addCustomEvent.heightAnchor.constraint(equalToConstant: 40),
          showMonitorButton.heightAnchor.constraint(equalToConstant: 40),
          pushMonitorButton.heightAnchor.constraint(equalToConstant: 40),
 
@@ -61,9 +70,31 @@ private extension ViewController {
       ])
    }
 
-   @objc func actionAddEvent() {
+   @objc func actionAddDefaultEvent() {
+      Monitor.log(event: .makeMock())
+   }
 
-      Monitor.log(event: ActivityEvent(
+   @objc func actionAddSystemEvent() {
+      Monitor.makeLogger(subsystem: "system").log(event: .makeMock())
+   }
+
+   @objc func actionAddCustomEvent() {
+      Monitor.makeLogger(subsystem: "custom").log(event: .makeMock())
+   }
+
+   @objc func actionShowMonitor() {
+      navigationController.map { Monitor.show(on: $0) }
+   }
+
+   @objc func actionPushMonitor() {
+      navigationController.map { Monitor.push(into: $0) }
+   }
+}
+
+private extension ActivityEvent {
+
+   static func makeMock() -> ActivityEvent {
+      return ActivityEvent(
          request: ActivityEvent.Request(
             verb: "get",
             method: "/products",
@@ -99,14 +130,6 @@ private extension ViewController {
               ]
             }
             """#,
-            failureReason: nil)))
-   }
-
-   @objc func actionShowMonitor() {
-      navigationController.map { Monitor.show(on: $0) }
-   }
-
-   @objc func actionPushMonitor() {
-      navigationController.map { Monitor.push(into: $0) }
+            failureReason: nil))
    }
 }
