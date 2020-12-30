@@ -13,7 +13,7 @@ let package = Package(
          targets: ["NetworkMonitor"]),
    ],
    dependencies: [
-      .package(url: "https://github.com/OlegKetrar/JsonSyntax", .exact("0.2.0")),
+      .package(url: "https://github.com/OlegKetrar/JsonSyntax", .exact("0.2.1")),
    ],
    targets: [
       .target(
