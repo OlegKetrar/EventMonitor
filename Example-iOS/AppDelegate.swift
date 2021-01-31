@@ -10,6 +10,7 @@ import UIKit
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
+   var window: UIWindow?
 
    func application(
       _ application: UIApplication,
@@ -19,6 +20,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
       return true
    }
 
+   @available(iOS 13.0, *)
    func application(
       _ application: UIApplication,
       configurationForConnecting connectingSceneSession: UISceneSession,
@@ -29,6 +31,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
          sessionRole: connectingSceneSession.role)
    }
 
+   @available(iOS 13.0, *)
    func application(
       _ application: UIApplication,
       didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
