@@ -109,7 +109,7 @@ extension SessionVC: UITableViewDelegate {
 
 // MARK: - UIContextMenuInteractionDelegate
 
-@available(iOSApplicationExtension 13.0, *)
+@available(iOS 13.0, *)
 extension SessionVC: UIContextMenuInteractionDelegate {
 
    func contextMenuInteraction(
