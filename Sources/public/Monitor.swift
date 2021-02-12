@@ -9,6 +9,10 @@
 import Foundation
 import UIKit
 
+public protocol Logger {
+   func log(event: ActivityEvent)
+}
+
 public final class Monitor {
    private static let monitor = NetworkMonitor()
    private static var screen: Screen = .sessionList
@@ -58,8 +62,14 @@ public final class Monitor {
       motionWindow = nil
    }
 
+   public static func makeLogger(subsystem: String) -> Logger {
+      NetworkMonitorLogger {
+         monitor.log(event: $0, domain: subsystem)
+      }
+   }
+
    public static func log(event: ActivityEvent) {
-      monitor.log(event: event)
+      monitor.log(event: event, domain: "default")
    }
 
    public static func show(on vc: UIViewController) {
@@ -84,6 +94,20 @@ public final class Monitor {
          .with(navigationController: nc)
 
       nc.pushViewController(listVC, animated: true)
+   }
+}
+
+private class NetworkMonitorLogger: Logger {
+   private let logFunction: (ActivityEvent) -> Void
+
+   init(_ logFunction: @escaping (ActivityEvent) -> Void) {
+      self.logFunction = logFunction
+   }
+
+   func log(event: ActivityEvent) {
+      DispatchQueue.main.async {
+         self.logFunction(event)
+      }
    }
 }
 

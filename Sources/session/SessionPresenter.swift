@@ -9,11 +9,86 @@
 import Foundation
 import UIKit
 
+struct SubsystemFilter {
+   var title: String
+   var isAll: Bool
+   var isApplied: Bool
+}
+
+extension SubsystemFilter {
+
+   init(subsystem: String, isApplied: Bool) {
+      self.title = subsystem
+      self.isAll = false
+      self.isApplied = isApplied
+   }
+
+   static var clear: SubsystemFilter {
+      return SubsystemFilter(
+         title: "Clear filter",
+         isAll: true,
+         isApplied: false)
+   }
+}
+
 final class SessionPresenter: Presenter, FileSharingTrait {
-   var session: Observable<ActivitySession>
+   private let originalSession: Observable<ActivitySession>
+   private let filteredSession: Observable<ActivitySession>
+
+   private var appliedSubsystemFilter: String?
 
    init(session: Observable<ActivitySession>) {
-      self.session = session
+      self.originalSession = session
+      self.filteredSession = Observable(session.value)
+      super.init()
+
+      session.notify(observer: self, callback: { presenter, value in
+         presenter.filteredSession.mutate {
+            $0.groupedEvents = presenter.filterEvents(value.groupedEvents)
+         }
+      })
+   }
+
+   var session: Observable<ActivitySession> {
+      return filteredSession
+   }
+
+   func hasFilters() -> Bool {
+      return findAllSubsystemFilters() != nil
+   }
+
+   func findAllSubsystemFilters() -> [SubsystemFilter]? {
+
+      let subsystems = originalSession.value.groupedEvents.map { $0.subsystem }
+
+      var filters = Array(Set(subsystems)).map {
+         SubsystemFilter(
+            subsystem: $0,
+            isApplied: $0 == appliedSubsystemFilter)
+      }
+
+      guard filters.count > 1 else {
+         return nil
+      }
+
+      if appliedSubsystemFilter != nil {
+         filters.append(.clear)
+      }
+
+      return filters
+   }
+
+   func filterEvents(by filter: SubsystemFilter) {
+
+      if filter.isAll {
+         self.appliedSubsystemFilter = nil
+      } else {
+         self.appliedSubsystemFilter = filter.title
+      }
+
+      filteredSession.mutate {
+         $0.groupedEvents = filterEvents(originalSession.value.groupedEvents)
+      }
    }
 
    func selectEvent(at index: Int) {
@@ -63,5 +138,15 @@ final class SessionPresenter: Presenter, FileSharingTrait {
       alert.addAction(ok)
 
       return alert
+   }
+
+   private func filterEvents(
+      _ original: [GroupedActivityEvent]) -> [GroupedActivityEvent] {
+
+      if let subsystem = appliedSubsystemFilter {
+         return original.filter { $0.subsystem == subsystem }
+      } else {
+         return original
+      }
    }
 }

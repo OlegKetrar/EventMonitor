@@ -40,7 +40,7 @@ final class NetworkMonitor {
             return ActivitySession(
                title: self.titleFromDate.string(from: createdAt),
                createdAt: createdAt,
-               events: self.archiver.readItemsFromFile(at: $0))
+               groupedEvents: self.archiver.readItemsFromFile(at: $0))
          }
          .sorted(by: {
             $0.createdAt > $1.createdAt
@@ -58,18 +58,20 @@ final class NetworkMonitor {
       activeSession = Observable(ActivitySession(
          title: self.titleFromDate.string(from: sessionCreatedAt),
          createdAt: sessionCreatedAt,
-         events: [],
+         groupedEvents: [],
          isActive: true))
 
       archiver.createSessionFile(name: activeSession.value.getFilename())
    }
 
-   func log(event: ActivityEvent) {
+   func log(event: ActivityEvent, domain: String) {
+      let groupedEvent = GroupedActivityEvent(subsystem: domain, event: event)
+
       activeSession.mutate {
-         $0.events.append(event)
+         $0.groupedEvents.append(groupedEvent)
       }
 
-      archiver.write(item: event)
+      archiver.write(item: groupedEvent)
    }
 
    func getActivitySessions() -> [ActivitySession] {

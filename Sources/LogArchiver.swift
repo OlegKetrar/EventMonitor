@@ -56,7 +56,7 @@ final class LogArchiver {
          let data = FileManager.default.contents(atPath: path),
          let dataStr = String(data: data, encoding: .utf8)
       else {
-            return []
+         return []
       }
 
       return dataStr.components(separatedBy: .newlines).compactMap {
