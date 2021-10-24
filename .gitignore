@@ -43,6 +43,8 @@ playground.xcworkspace
 
 .build/
 .swiftpm/
+.DerivedData/
+DerivedData/
 Pods/
 Carthage/Build
 
