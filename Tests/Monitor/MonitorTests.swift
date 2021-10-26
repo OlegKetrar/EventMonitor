@@ -3,6 +3,7 @@
 //  NetworkMonitorTests
 //
 //  Created by Oleg Ketrar on 24.10.2021.
+//  Copyright © 2021 Oleg Ketrar. All rights reserved.
 //
 
 import XCTest

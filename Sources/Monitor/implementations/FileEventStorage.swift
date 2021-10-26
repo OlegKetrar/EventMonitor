@@ -13,53 +13,53 @@ import MonitorCore
 /// Simple EventStorage that stores data as json files.
 final class FileEventStorage: EventStorage {
    private let archiver: LogArchiver
-   private var activeSessionName: String?
+   private var activeSessionID: SessionIdentifier?
 
    init(directoryPath path: String) {
       self.archiver = LogArchiver(directoryPath: path)
    }
 
    func readStoredSessions(
-      _ completion: @escaping ([StoredEventSession]) -> Void
+      _ completion: @escaping ([StoredSession]) -> Void
    ) {
 
-      var allPaths = archiver.readSessionPaths()
-
-      // remove active session from `allPaths`
-      if let activeSessionName = activeSessionName {
-         allPaths.removeAll(where: {
-            ($0 as NSString).lastPathComponent == activeSessionName
-         })
-      }
-
-      let sessions: [StoredEventSession] = allPaths
+      completion(archiver
+         .readSessionPaths()
          .compactMap {
-            getDateFromFilename(($0 as NSString).lastPathComponent)
+            SessionIdentifier(filename: $0.ns.lastPathComponent)
+         }
+         .filter {
+
+            // remove activeSession from list
+            if let activeSessionID = activeSessionID {
+               return $0 != activeSessionID
+            } else {
+               return true
+            }
          }
          .map {
-            StoredEventSession(createdAt: $0)
+            StoredSession(identifier: $0)
          }
          .sorted(by: {
-            $0.createdAt > $1.createdAt
-         })
-
-      completion(sessions)
+            $0.identifier > $1.identifier
+         }))
    }
 
    func readEvents(
-      session: StoredEventSession,
+      sessionIdentifier: SessionIdentifier,
       completion: @escaping ([GroupedEvent]) -> Void
    ) {
 
-      let filename = getFilenameFromDate(session.createdAt)
+      let filename = sessionIdentifier.makeFilename()
       let filePath = archiver.directoryPath.ns.appendingPathComponent(filename)
       let events: [GroupedEvent] = archiver.readItemsFromFile(at: filePath)
 
       completion(events)
    }
 
-   func startSession(createdAt: Date) {
-      archiver.createSessionFile(name: getFilenameFromDate(createdAt))
+   func startSession(identifier: SessionIdentifier) {
+      archiver.createSessionFile(name: identifier.makeFilename())
+      activeSessionID = identifier
    }
 
    func write(event: GroupedEvent) {
@@ -126,12 +126,17 @@ private final class LogArchiver {
    }
 }
 
-private func getDateFromFilename(_ filename: String) -> Date? {
-   Int(filename.removingSuffix(".log"))
-      .map(TimeInterval.init)
-      .map(Date.init(timeIntervalSince1970:))
-}
+private extension SessionIdentifier {
 
-private func getFilenameFromDate(_ date: Date) -> String {
-   "\( Int(date.timeIntervalSince1970) ).log"
+   init?(filename: String) {
+      guard let integer = Int(filename.removingSuffix(".log")) else {
+         return nil
+      }
+
+      self.init(Double(integer))
+   }
+
+   func makeFilename() -> String {
+      "\(Int(timestamp)).log"
+   }
 }

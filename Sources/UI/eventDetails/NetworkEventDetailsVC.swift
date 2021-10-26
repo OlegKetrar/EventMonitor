@@ -1,5 +1,5 @@
 //
-//  EventDetailsVC.swift
+//  NetworkEventDetailsVC.swift
 //  NetworkMonitor
 //
 //  Created by Oleg Ketrar on 14.05.2019.
@@ -9,17 +9,17 @@
 import Foundation
 import UIKit
 
-protocol EventDetailsVCPresenter {
-   var viewModel: EventDetailsViewModel { get }
+protocol NetworkEventDetailsVCPresenter {
+   var viewModel: NetworkEventDetailsViewModel { get }
 
    func shareEvent(_ completion: @escaping () -> Void)
 }
 
-final class EventDetailsVC: UIViewController, HavePreloaderButton, HaveShareButton {
-   private let presenter: EventDetailsVCPresenter
-   private var viewState: EventDetailsViewState { presenter.viewModel.state.value }
+final class NetworkEventDetailsVC: UIViewController, HavePreloaderButton, HaveShareButton {
+   private let presenter: NetworkEventDetailsVCPresenter
+   private var viewState: NetworkEventDetailsViewState { presenter.viewModel.state }
 
-   init(presenter: EventDetailsVCPresenter) {
+   init(presenter: NetworkEventDetailsVCPresenter) {
       self.presenter = presenter
       super.init(nibName: nil, bundle: nil)
    }
@@ -46,7 +46,9 @@ final class EventDetailsVC: UIViewController, HavePreloaderButton, HaveShareButt
    }
 }
 
-private extension EventDetailsVC {
+// MARK: - Private
+
+private extension NetworkEventDetailsVC {
 
    func configureUI() {
 

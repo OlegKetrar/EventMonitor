@@ -20,7 +20,7 @@ protocol SessionVCPresenter {
 
 final class SessionVC: UIViewController, HavePreloaderButton, HaveShareButton {
    private let presenter: SessionVCPresenter
-   private var viewState: ActivitySession { presenter.viewModel.session.value }
+   private var viewState: SessionViewState { presenter.viewModel.state.value }
 
    private lazy var tableView = UITableView(frame: .zero, style: .plain).with {
       $0.register(cell: EventCell.self)
@@ -52,7 +52,7 @@ final class SessionVC: UIViewController, HavePreloaderButton, HaveShareButton {
       configureUI()
       updateTitle()
 
-      presenter.viewModel.session.notify(
+      presenter.viewModel.state.notify(
          observer: self,
          on: .main,
          callback: { vc, _ in
@@ -98,14 +98,20 @@ extension SessionVC: UITableViewDataSource {
 
       switch viewState.events[indexPath.row] {
       case let .message(msgEvent):
-         fatalError()
+         // FIXME:
+
+         return tableView
+            .dequeue(cell: EventCell.self, for: indexPath)
+            .with(verb: "lol")
+            .with(request: msgEvent)
+            .with(success: false)
 
       case let .network(networkEvent):
          return tableView
             .dequeue(cell: EventCell.self, for: indexPath)
-            .with(verb: networkEvent.request.verb.uppercased())
-            .with(request: networkEvent.request.method)
-            .with(success: networkEvent.response.failureReason == nil)
+            .with(verb: networkEvent.verb)
+            .with(request: networkEvent.method)
+            .with(success: networkEvent.isSuccess)
       }
    }
 }
@@ -141,7 +147,7 @@ extension SessionVC: UIContextMenuInteractionDelegate {
          identifier: nil,
          previewProvider: nil,
          actionProvider: { [weak self] _ in
-            (self?.presenter.viewModel.findAllSubsystemFilters()).map {
+            (self?.viewState.filters).map {
                UIMenu(
                   title: "Filter by subsystem:",
                   children: $0.map { filter in
@@ -149,7 +155,7 @@ extension SessionVC: UIContextMenuInteractionDelegate {
                         title: filter.title,
                         attributes: filter.isAll ? [.destructive] : [],
                         state: filter.isApplied ? .on : .off,
-                        handler: { [weak self] _ in
+                        handler: { _ in
                            self?.presenter.viewModel.filterEvents(by: filter)
                         })
                   })
@@ -163,7 +169,7 @@ extension SessionVC: UIContextMenuInteractionDelegate {
 private extension SessionVC {
 
    func updateTitle() {
-      if #available(iOS 13.0, *), presenter.viewModel.hasFilters() {
+      if #available(iOS 13.0, *), viewState.hasFilters {
          navigationItem.titleView = makeTitleView(title: viewState.title)
       } else {
          navigationItem.title = viewState.title

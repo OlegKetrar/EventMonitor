@@ -11,15 +11,15 @@ import Foundation
 public protocol EventStorage {
 
    /// Return all ended sessions.
-   func readStoredSessions(_ completion: @escaping ([StoredEventSession]) -> Void)
+   func readStoredSessions(_ completion: @escaping ([StoredSession]) -> Void)
 
    /// Read events for stored session
    func readEvents(
-      session: StoredEventSession,
+      sessionIdentifier: SessionIdentifier,
       completion: @escaping ([GroupedEvent]) -> Void)
 
    /// Start new session with name.
-   func startSession(createdAt: Date) // TODO: ID type
+   func startSession(identifier: SessionIdentifier)
 
    /// Save event to active session.
    func write(event: GroupedEvent)

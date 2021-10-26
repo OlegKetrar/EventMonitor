@@ -45,10 +45,6 @@ private extension ViewController {
    func configureUI() {
       navigationItem.title = "Example"
 
-      let addDefaultEventButton = UIButton(type: .system)
-      addDefaultEventButton.setTitle("Add event", for: .normal)
-      addDefaultEventButton.addTarget(self, action: #selector(actionAddDefaultEvent), for: .touchUpInside)
-
       let addSystemEvent = UIButton(type: .system)
       addSystemEvent.setTitle("Add system event", for: .normal)
       addSystemEvent.addTarget(self, action: #selector(actionAddSystemEvent), for: .touchUpInside)
@@ -70,7 +66,6 @@ private extension ViewController {
       stackView.translatesAutoresizingMaskIntoConstraints = false
       stackView.spacing = 10
 
-      stackView.addArrangedSubview(addDefaultEventButton)
       stackView.addArrangedSubview(addSystemEvent)
       stackView.addArrangedSubview(addCustomEvent)
       stackView.addArrangedSubview(showMonitorButton)
@@ -79,7 +74,6 @@ private extension ViewController {
       view.addSubview(stackView)
 
       NSLayoutConstraint.activate([
-         addDefaultEventButton.heightAnchor.constraint(equalToConstant: 40),
          addSystemEvent.heightAnchor.constraint(equalToConstant: 40),
          addCustomEvent.heightAnchor.constraint(equalToConstant: 40),
          showMonitorButton.heightAnchor.constraint(equalToConstant: 40),
@@ -89,10 +83,6 @@ private extension ViewController {
          stackView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
          stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
       ])
-   }
-
-   @objc func actionAddDefaultEvent() {
-
    }
 
    @objc func actionAddSystemEvent() {

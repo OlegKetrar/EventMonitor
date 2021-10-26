@@ -1,6 +1,6 @@
 //
 //  SessionListVC.swift
-//  EventMonitor
+//  NetworkMonitor
 //
 //  Created by Oleg Ketrar on 14.05.2019.
 //  Copyright © 2019 Oleg Ketrar. All rights reserved.
@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import MonitorCore
 
 protocol SessionListVCPresenter {
    var viewModel: SessionListViewModel { get }
@@ -18,7 +17,9 @@ protocol SessionListVCPresenter {
 
 final class SessionListVC: UIViewController {
    private let presenter: SessionListVCPresenter
-   private var viewState: [ActivitySession] { presenter.viewModel.state.value }
+   private var viewState: SessionListViewState { presenter.viewModel.state.value }
+
+   // MARK: - Outlets
 
    private lazy var tableView = UITableView(frame: .zero, style: .plain).with {
       $0.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -36,6 +37,8 @@ final class SessionListVC: UIViewController {
       $0.delegate = self
    }
 
+   // MARK: - Interface
+
    init(presenter: SessionListVCPresenter) {
       self.presenter = presenter
       super.init(nibName: nil, bundle: nil)
@@ -49,17 +52,7 @@ final class SessionListVC: UIViewController {
 
    override func viewDidLoad() {
       super.viewDidLoad()
-
-      title = "Sessions"
-      view.backgroundColor = .grayBackground
-      view.addSubview(tableView)
-
-      NSLayoutConstraint.activate([
-         tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
-         tableView.topAnchor.constraint(equalTo: view.topAnchor),
-         tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
-         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-      ])
+      configureUI()
    }
 
    override func viewWillAppear(_ animated: Bool) {
@@ -78,18 +71,22 @@ extension SessionListVC: UITableViewDataSource {
    func tableView(
       _ tableView: UITableView,
       numberOfRowsInSection section: Int
-   ) -> Int { viewState.count }
+   ) -> Int {
+      viewState.titles.count
+   }
 
    func tableView(
       _ tableView: UITableView,
       cellForRowAt indexPath: IndexPath
    ) -> UITableViewCell {
 
+      // TODO: make custom cell
+
       let cell = tableView.dequeueReusableCell(
          withIdentifier: "cell",
          for: indexPath)
 
-      cell.textLabel?.text = viewState[indexPath.row].title
+      cell.textLabel?.text = viewState.titles[indexPath.row]
       cell.textLabel?.textColor = .grayPrimaryText
       cell.textLabel?.font = .systemFont(ofSize: 15, weight: .regular)
       cell.accessoryType = .disclosureIndicator
@@ -115,5 +112,23 @@ extension SessionListVC: UITableViewDelegate {
       presenter.selectSession(at: indexPath.row) {
          // TODO: hide activityIndicator
       }
+   }
+}
+
+// MARK: - Private
+
+private extension SessionListVC {
+
+   func configureUI() {
+      title = "Sessions"
+      view.backgroundColor = .grayBackground
+      view.addSubview(tableView)
+
+      NSLayoutConstraint.activate([
+         tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
+         tableView.topAnchor.constraint(equalTo: view.topAnchor),
+         tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
+         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+      ])
    }
 }

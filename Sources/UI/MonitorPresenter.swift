@@ -9,12 +9,14 @@
 import Foundation
 import UIKit
 import MonitorCore
+import DependencyContainer
 
 public struct ExportOption {
 
 }
 
 public final class MonitorPresenter {
+   private let repository: EventProvider
    private let exportOptions: [ExportOption]
    private weak var navigationController: UINavigationController?
 
@@ -23,6 +25,11 @@ public final class MonitorPresenter {
       exportOptions: [ExportOption]
    ) {
       self.exportOptions = exportOptions
+      self.repository = repository
+
+      DI.register(as: SessionListRepository.self) { _ in
+         AnyEventProvider(provider: repository)
+      }
    }
 
    public func push(into nc: UINavigationController) {
@@ -47,22 +54,22 @@ public final class MonitorPresenter {
             nc.dismiss(animated: true)
          }
 
-      if let activeSession: ActivitySession = Optional({ fatalError() }()) {
-
-         let currentSession = SessionPresenter
-            .init() // pass activeSession
-            .onSelectEvent { event in
-               EventDetailsPresenter
-                  .init(event: event)
+      let currentSession = SessionPresenter
+         .init(session: repository.fetchActiveSession())
+         .onSelectEvent {
+            switch $0.event {
+            case let .network(event):
+               NetworkEventDetailsPresenter
+                  .init(event: event, subsystem: $0.subsystem)
                   .push(into: nc)
+
+            case .message:
+               break
             }
+         }
 
-         sessionList.push(into: nc, animated: false)
-         currentSession.push(into: nc, animated: false)
-
-      } else {
-         sessionList.push(into: nc, animated: false)
-      }
+      sessionList.push(into: nc, animated: false)
+      currentSession.push(into: nc, animated: false)
 
       vc.present(nc, animated: true)
    }
@@ -70,18 +77,43 @@ public final class MonitorPresenter {
 
 private extension MonitorPresenter {
 
-   func makePresenter(navigation: UINavigationController) -> SessionListPresenter {
+   func makePresenter(
+      navigation: UINavigationController
+   ) -> SessionListPresenter {
+
       SessionListPresenter
-         .init() // ..
-         .onSelectSession { session in
-            SessionPresenter
-               .init() // ..
-               .onSelectEvent { event in
-                  EventDetailsPresenter
-                     .init(event: event)  // ..
+         .init()
+         .onSelectSession { sessionID, completion in
+
+            self.repository.fetchEventSession(
+               identifier: sessionID,
+               completion: {
+                  SessionPresenter
+                     .init(session: $0)
+                     .onSelectEvent {
+
+                        switch $0.event {
+                        case let .network(event):
+                           NetworkEventDetailsPresenter
+                              .init(event: event, subsystem: $0.subsystem)
+                              .push(into: navigation)
+
+                        case .message:
+                           break
+                        }
+                     }
                      .push(into: navigation)
-               }
-               .push(into: navigation)
+
+                  completion()
+               })
          }
+   }
+}
+
+private struct AnyEventProvider: SessionListRepository {
+   let provider: EventProvider
+
+   func fetchSessions() -> Observable<[SessionInfo]> {
+      provider.fetchSessions()
    }
 }

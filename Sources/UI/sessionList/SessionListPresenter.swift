@@ -1,6 +1,6 @@
 //
 //  SessionListPresenter.swift
-//  EventMonitor
+//  NetworkMonitor
 //
 //  Created by Oleg Ketrar on 20.09.2019.
 //  Copyright © 2019 Oleg Ketrar. All rights reserved.
@@ -9,25 +9,24 @@
 import Foundation
 import UIKit
 import MonitorCore
+import DependencyContainer
 
 final class SessionListPresenter: SessionListVCPresenter {
    let viewModel: SessionListViewModel
 
-   private var onSelectSessionCallback: (ActivitySession) -> Void = { _ in }
+   typealias OnSessionSelectCallback = (
+      SessionIdentifier,
+      @escaping () -> Void
+   ) -> Void
+
+   private var onSelectSessionCallback: OnSessionSelectCallback = { _, _ in }
    private var onCloseButtonCallback: (() -> Void)? = nil
 
    init() {
-//      self.sessions = sessions.map { $0.value }
-//      self.observableSessions = sessions
-//      monitor.getObservableActivitySessions()
-
-      self.viewModel = SessionListViewModel(provider: { fatalError() }())
+      viewModel = SessionListViewModel(repository: DI.get())
    }
 
-   func onSelectSession(
-      _ callback: @escaping (ActivitySession) -> Void
-   ) -> Self {
-
+   func onSelectSession(_ callback: @escaping OnSessionSelectCallback) -> Self {
       self.onSelectSessionCallback = callback
       return self
    }
@@ -52,8 +51,12 @@ final class SessionListPresenter: SessionListVCPresenter {
    }
 
    func selectSession(at index: Int, completion: @escaping () -> Void) {
-      // get session by id from viewModel
-      // call delegate method
+
+      if let selectedSession = viewModel.getSessionIdentifier(at: index) {
+         onSelectSessionCallback(selectedSession, completion)
+      } else {
+         completion()
+      }
    }
 
    @objc private func actionDone() {

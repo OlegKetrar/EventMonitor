@@ -38,8 +38,43 @@ final class EventCell: UITableViewCell, ReusableCell {
       $0.translatesAutoresizingMaskIntoConstraints = false
    }
 
+   // MARK: - Interface
+
    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
       super.init(style: style, reuseIdentifier: reuseIdentifier)
+      configureUI()
+   }
+
+   required init?(coder aDecoder: NSCoder) {
+      fatalError("init(coder:) has not been implemented")
+   }
+
+   @discardableResult
+   func with(verb: String) -> Self {
+      verbLabel.text = verb
+      return self
+   }
+
+   @discardableResult
+   func with(request: String) -> Self {
+      titleLabel.text = request
+      return self
+   }
+
+   @discardableResult
+   func with(success: Bool) -> Self {
+      verbContainer.backgroundColor = success ? K.successPrimaryColor : K.failurePrimaryColor
+      backgroundColor = success ? K.successSecondaryColor : K.failureSecondaryColor
+
+      return self
+   }
+}
+
+// MARK: - Private
+
+private extension EventCell {
+
+   func configureUI() {
       selectionStyle = .none
       accessoryType = .disclosureIndicator
       contentView.backgroundColor = .clear
@@ -65,29 +100,5 @@ final class EventCell: UITableViewCell, ReusableCell {
          titleLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -15),
          titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5)
       ])
-   }
-
-   required init?(coder aDecoder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
-   }
-
-   @discardableResult
-   func with(verb: String) -> Self {
-      verbLabel.text = verb
-      return self
-   }
-
-   @discardableResult
-   func with(request: String) -> Self {
-      titleLabel.text = request
-      return self
-   }
-
-   @discardableResult
-   func with(success: Bool) -> Self {
-      verbContainer.backgroundColor = success ? K.successPrimaryColor : K.failurePrimaryColor
-      backgroundColor = success ? K.successSecondaryColor : K.failureSecondaryColor
-
-      return self
    }
 }

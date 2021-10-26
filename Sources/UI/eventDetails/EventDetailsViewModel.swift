@@ -9,22 +9,27 @@
 import Foundation
 import MonitorCore
 
-struct EventDetailsViewState {
-   var postParameters: String? // presenter.event.request.getFormattedPostParameters()
-   var headers: String = "" // presenter.event.request.getFormattedHeaders() ?? ""
-   var response: String = "" // presenter.event.response.jsonString ?? "no-response"
+struct NetworkEventDetailsViewState {
+   var titleString: String
+   var requestVerb: String
+   var statusString: String
+   var isFailed: Bool
 
-   var statusString: String = "" // presenter.event.statusString
-   var requestVerb: String = "" // presenter.event.request.verb.uppercased()
-   var isFailed: Bool = false // presenter.event.response.failureReason == nil
-   var titleString: String = "" // presenter.event.titleString
+   var postParameters: String?
+   var headers: String
+   var response: String
 }
 
-final class EventDetailsViewModel {
-   let state: Observable<EventDetailsViewState>
+final class NetworkEventDetailsViewModel {
+   private let event: NetworkEvent
+   private let subsystem: String
 
-   init() {
-      self.state = Observable(EventDetailsViewState())
+   let state: NetworkEventDetailsViewState
+
+   init(event: NetworkEvent, subsystem: String) {
+      self.event = event
+      self.subsystem = subsystem
+      self.state = event.format()
    }
 
    func formatEvent() -> String {
@@ -34,11 +39,22 @@ final class EventDetailsViewModel {
 
 private extension NetworkEvent {
 
-   var titleString: String {
-      return "\(request.basepoint)\(request.method)\(request.getParams)"
+   func format() -> NetworkEventDetailsViewState {
+      NetworkEventDetailsViewState(
+         titleString: formattedTitle(),
+         requestVerb: request.verb.uppercased(),
+         statusString: formattedStatusString(),
+         isFailed: response.failureReason != nil,
+         postParameters: request.getFormattedPostParameters(),
+         headers: request.getFormattedHeaders() ?? "",
+         response: response.jsonString ?? "no-response")
    }
 
-   var statusString: String {
+   func formattedTitle() -> String {
+      "\(request.basepoint)\(request.method)\(request.getParams)"
+   }
+
+   func formattedStatusString() -> String {
       let codeStr = response.statusCode.map { "\($0)" } ?? "no-status-code"
 
       if let failureStr = response.failureReason {
@@ -52,22 +68,22 @@ private extension NetworkEvent {
 private extension NetworkEvent.Request {
 
    func getFormattedHeaders() -> String? {
-      guard !headers.isEmpty else { return nil }
-      return headers.semicolonSeparatedPairList()
+      headers.isEmpty
+         ? nil
+         : headers.semicolonSeparatedPairList()
    }
 
    func getFormattedPostParameters() -> String? {
-      guard !postParams.isEmpty else { return nil }
-      return postParams.semicolonSeparatedPairList()
+      postParams.isEmpty
+         ? nil
+         : postParams.semicolonSeparatedPairList()
    }
 }
 
 private extension Dictionary where Key == String, Value == String {
 
    func semicolonSeparatedPairList() -> String {
-      return self
-         .map { "\($0) : \($1)" }
-         .joined(separator: "\n")
+      self.map { "\($0) : \($1)" }.joined(separator: "\n")
    }
 }
 

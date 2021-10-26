@@ -8,4 +8,10 @@
 
 public protocol EventProvider {
 
+   func fetchSessions() -> Observable<[SessionInfo]>
+   func fetchActiveSession() -> Observable<EventSession>
+
+   func fetchEventSession(
+      identifier: SessionIdentifier,
+      completion: @escaping (Observable<EventSession>) -> Void)
 }

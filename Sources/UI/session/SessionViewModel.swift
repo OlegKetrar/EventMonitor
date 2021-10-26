@@ -9,90 +9,138 @@
 import Foundation
 import MonitorCore
 
-struct SubsystemFilter {
+struct EventCellModel {
+   var verb: String
+   var method: String
+   var isSuccess: Bool
+}
+
+struct SessionViewState {
+
+   enum Event {
+      case message(String)
+      case network(EventCellModel)
+   }
+
    var title: String
-   var isAll: Bool
-   var isApplied: Bool
-}
+   var filters: [SubsystemFilter]
+   var events: [Event]
 
-extension SubsystemFilter {
-
-   init(subsystem: String, isApplied: Bool) {
-      self.init(title: subsystem, isAll: false, isApplied: isApplied)
-   }
-
-   static var clear: SubsystemFilter {
-      SubsystemFilter(
-         title: "Clear filter",
-         isAll: true,
-         isApplied: false)
+   var hasFilters: Bool {
+      filters.isEmpty == false
    }
 }
-
-// TODO: add State
 
 final class SessionViewModel {
-   private let originalSession: Observable<ActivitySession>
-   private let filteredSession: Observable<ActivitySession>
+   private let session: Observable<EventSession>
+   private var appliedFilters: [String]
 
-   private var appliedSubsystemFilter: String?
+   let state: Observable<SessionViewState>
 
-   var session: Observable<ActivitySession> { filteredSession }
+   init(session: Observable<EventSession>) {
 
-   init(session: Observable<ActivitySession>) {
-      self.originalSession = session
-      self.filteredSession = Observable(session.value)
+      let formatter = DateFormatter()
+      formatter.timeStyle = .medium
+      formatter.dateStyle = .medium
 
-      session.notify(observer: self, callback: { vm, value in
-         vm.filteredSession.mutate {
-            $0.groupedEvents = vm.filterEvents(value.groupedEvents)
+      func formatTitle(_ session: EventSession) -> String {
+         if session.isActive {
+            return "active"
+         } else {
+            return formatter.string(from: session.identifier.createdAt)
+         }
+      }
+
+      self.session = session
+      self.appliedFilters = []
+
+      self.state = Observable(SessionViewState(
+         title: formatTitle(session.value),
+         filters: findFilters(in: session.value, applied: []),
+         events: formatEvents(in: session.value, filters: [])
+      ))
+
+      session.notify(observer: self, on: .main, callback: { vm, newSession in
+         vm.state.mutate {
+            $0.title = formatTitle(newSession)
+            $0.filters = findFilters(in: newSession, applied: vm.appliedFilters)
+            $0.events = formatEvents(in: newSession, filters: vm.appliedFilters)
          }
       })
-   }
-
-   func hasFilters() -> Bool {
-      findAllSubsystemFilters() != nil
-   }
-
-   func findAllSubsystemFilters() -> [SubsystemFilter]? {
-
-      let subsystems = originalSession.value.groupedEvents.map { $0.subsystem }
-
-      var filters = Array(Set(subsystems)).map {
-         SubsystemFilter(
-            subsystem: $0,
-            isApplied: $0 == appliedSubsystemFilter)
-      }
-
-      guard filters.count > 1 else {
-         return nil
-      }
-
-      if appliedSubsystemFilter != nil {
-         filters.append(.clear)
-      }
-
-      return filters
    }
 
    func filterEvents(by filter: SubsystemFilter) {
 
       if filter.isAll {
-         self.appliedSubsystemFilter = nil
+         self.appliedFilters = []
       } else {
-         self.appliedSubsystemFilter = filter.title
+         self.appliedFilters = [filter.title]
       }
 
-      filteredSession.mutate {
-         $0.groupedEvents = filterEvents(originalSession.value.groupedEvents)
+      state.mutate {
+         $0.filters = findFilters(in: session.value, applied: appliedFilters)
+         $0.events = formatEvents(in: session.value, filters: appliedFilters)
       }
    }
 
-   private func filterEvents(_ original: [GroupedEvent]) -> [GroupedEvent] {
-      if let subsystem = appliedSubsystemFilter {
-         return original.filter { $0.subsystem == subsystem }
+   func getSessionEvent(at index: Int) -> GroupedEvent? {
+      let sessionEvents = session.value.events
+
+      if sessionEvents.indices.contains(index) {
+         return sessionEvents[index]
       } else {
-         return original
+         return nil
       }
    }
+}
+
+private func findFilters(
+   in session: EventSession,
+   applied appliedFilters: [String]
+) -> [SubsystemFilter] {
+
+   let subsystems = session.events.map { $0.subsystem }
+
+   var filters = Array(Set(subsystems)).map {
+      SubsystemFilter(
+         subsystem: $0,
+         isApplied: appliedFilters.contains($0))
+   }
+
+   guard filters.count > 1 else {
+      return []
+   }
+
+   if appliedFilters.isEmpty == false {
+      filters.append(.clear)
+   }
+
+   return filters
+}
+
+private func formatEvents(
+   in session: EventSession,
+   filters: [String]
+) -> [SessionViewState.Event] {
+
+   session.events
+      .filter {
+         if filters.isEmpty {
+            return true
+         } else {
+            return filters.contains($0.subsystem)
+         }
+      }
+      .map {
+         switch $0.event {
+         case let .network(e):
+            return .network(EventCellModel(
+               verb: e.request.verb.uppercased(),
+               method: e.request.method,
+               isSuccess: e.response.failureReason == nil))
+
+         case let .message(e):
+            return .message(e.message)
+         }
+      }
 }

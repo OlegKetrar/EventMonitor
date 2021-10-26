@@ -1,5 +1,5 @@
 //
-//  EventDetailsPresenter.swift
+//  NetworkEventDetailsPresenter.swift
 //  NetworkMonitor
 //
 //  Created by Oleg Ketrar on 20.09.2019.
@@ -10,18 +10,18 @@ import Foundation
 import UIKit
 import MonitorCore
 
-final class EventDetailsPresenter: EventDetailsVCPresenter {
-   let viewModel: EventDetailsViewModel
+final class NetworkEventDetailsPresenter: NetworkEventDetailsVCPresenter {
+   let viewModel: NetworkEventDetailsViewModel
 
    private weak var navigationController: UINavigationController?
 
-   init(event: GroupedEvent) {
-      viewModel = EventDetailsViewModel()
+   init(event: NetworkEvent, subsystem: String) {
+      viewModel = NetworkEventDetailsViewModel(event: event, subsystem: subsystem)
    }
 
    func push(into nc: UINavigationController, animated: Bool = true) {
       navigationController = nc
-      nc.pushViewController(EventDetailsVC(presenter: self), animated: animated)
+      nc.pushViewController(NetworkEventDetailsVC(presenter: self), animated: animated)
    }
 
    func shareEvent(_ completion: @escaping () -> Void) {

@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import MonitorCore
+import DependencyContainer
 
 final class SessionPresenter: SessionVCPresenter {
    let viewModel: SessionViewModel
@@ -16,8 +17,8 @@ final class SessionPresenter: SessionVCPresenter {
    private weak var navigationController: UINavigationController?
    private var onSelectEventCallback: (GroupedEvent) -> Void = { _ in }
 
-   init() {
-      viewModel = { fatalError() }()
+   init(session: Observable<EventSession>) {
+      viewModel = SessionViewModel(session: session)
    }
 
    func onSelectEvent(_ callback: @escaping (GroupedEvent) -> Void) -> Self {
@@ -31,8 +32,8 @@ final class SessionPresenter: SessionVCPresenter {
    }
 
    func shareSession(_ completion: @escaping () -> Void) {
-
-      let sessionToShare: ActivitySession = {
+/*
+      let sessionToShare: EventSession = {
 //         session.value
 
          fatalError()
@@ -53,9 +54,14 @@ final class SessionPresenter: SessionVCPresenter {
             self?.navigationController?.present($0, animated: true)
             completion()
          })
+ */
    }
 
    func selectEvent(at index: Int, completion: @escaping () -> Void) {
-      // TODO:
+      if let event = viewModel.getSessionEvent(at: index) {
+         onSelectEventCallback(event)
+      }
+
+      completion()
    }
 }
