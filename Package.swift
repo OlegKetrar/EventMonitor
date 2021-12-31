@@ -13,7 +13,6 @@ let package = Package(
    ],
    dependencies: [
       .package(url: "https://github.com/OlegKetrar/JsonSyntax", .exact("0.2.1")),
-      .package(name: "DependencyContainer", path: "../DependencyContainer"),
    ],
    targets: [
       .target(
@@ -25,8 +24,6 @@ let package = Package(
          dependencies: [
             .product(name: "JsonSyntax-Static", package: "JsonSyntax"),
             .target(name: "MonitorCore"),
-            .product(name: "DependencyContainer", package: "DependencyContainer"),
-            // ToolsFoundation.Reusable ?
          ],
          path: "Sources/UI",
          linkerSettings: [

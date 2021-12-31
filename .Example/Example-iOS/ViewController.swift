@@ -9,27 +9,6 @@
 import UIKit
 import NetworkMonitor
 
-/*
- Monitor.presenter.show(over: self)
- Monitor.presenter.push(into: navigationController)
- Monitor.presenter.enableShakeToShow(rootViewController: self)
- Monitor.presenter.disableShakeToShow()
-
- Monitor.exporter.options = [
-    SessionExportOption(title: "cURL", formatter: cURLFormatter()),
-    EventExportOption(title: "cURL", formatter: cURLFormatter()),
-    ...
- ]
-
- let netLogger = Monitor.makeLogger(subsystem: "network")
- let kmtxLogger = Monitor.makeLogger(subsystem: "kmtx")
- let genesysLogger = Mmonitor.makeLogger(subsystem: "genesys")
- let debugLogger = Mmonitor.makeLogger(subsystem: "debug-info")
-
- netLogger.log(networkEvent)
- debugLogger.log("blablabla")
- */
-
 final class ViewController: UIViewController {
 
    override func viewDidLoad() {
@@ -88,7 +67,7 @@ private extension ViewController {
    @objc func actionAddSystemEvent() {
       Monitor
          .makeLogger(subsystem: "system")
-         .log(event: .message(MessageEvent(message: "log")))
+         .log(event: .network(.makeMock()))
    }
 
    @objc func actionAddCustomEvent() {

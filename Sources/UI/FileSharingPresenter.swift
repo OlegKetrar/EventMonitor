@@ -10,49 +10,45 @@ import UIKit
 
 struct FileSharingPresenter {
 
-   func shareFile(
-      name: String,
-      content: @escaping () -> String,
-      completion: @escaping (UIViewController) -> Void
-   ) {
+   func shareFile(at path: String?, presentOver vc: UIViewController?) {
+      vc?.present(
+         makeAlertForFile(at: path),
+         animated: true,
+         completion: nil)
+   }
 
-      // TODO: remove tmp files
+   private func makeAlertForFile(at path: String?) -> UIViewController {
 
-      FileWritter().writeFile(
-         name: name,
-         content: content,
-         completion: { filePath in
+      guard let filePath = path else {
+         return makeErrorAlert()
+      }
 
-            guard let filePath = filePath else {
-               completion(makeErrorAlert())
-               return
-            }
+      let shareVC = UIActivityViewController(
+         activityItems: [URL(fileURLWithPath: filePath)],
+         applicationActivities: nil)
 
-            let shareVC = UIActivityViewController(
-               activityItems: [URL(fileURLWithPath: filePath)],
-               applicationActivities: nil)
+      shareVC.excludedActivityTypes = [
+         .addToReadingList,
+         .assignToContact,
+         .openInIBooks,
+         .postToFacebook,
+         .postToTencentWeibo,
+         .postToFlickr,
+         .postToWeibo,
+         .postToVimeo,
+         .postToTwitter,
+         .saveToCameraRoll
+      ]
 
-            shareVC.excludedActivityTypes = [
-               .addToReadingList,
-               .assignToContact,
-               .openInIBooks,
-               .postToFacebook,
-               .postToTencentWeibo,
-               .postToFlickr,
-               .postToWeibo,
-               .postToVimeo,
-               .postToTwitter,
-               .saveToCameraRoll
-            ]
+      // TODO: use callback to remove tmp files
 
-            completion(shareVC)
-         })
+      return shareVC
    }
 
    private func makeErrorAlert() -> UIAlertController {
 
       let alert = UIAlertController(
-         title: "Can't share log file",
+         title: "Can't share file",
          message: nil,
          preferredStyle: .alert)
 

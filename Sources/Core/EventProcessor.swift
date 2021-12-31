@@ -11,6 +11,8 @@ import Foundation
 public final class EventProcessor {
    private let storage: EventStorage
    private let activeSession: Observable<EventSession>
+   private let sessionExport: ExportCapability<SessionFormatting>
+   private var eventExport: [ExportCapability<EventFormatting>]
 
    public init(storage: EventStorage) {
       let activeSessionID = SessionIdentifier()
@@ -18,10 +20,39 @@ public final class EventProcessor {
       self.storage = storage
       self.storage.startSession(identifier: activeSessionID)
 
+      let defaultFormatter = PlainTextFormatter()
+
+      let sessionFormatter = SessionFormatter(
+         header: { "Created at: \($0.identifier.timestamp)" },
+         separator: "--> ",
+         terminator: "\n\n",
+         eventFormatter: defaultFormatter)
+
+      self.sessionExport = ExportCapability(
+         name: "plain text",
+         exporter: FileExporter(formatter: sessionFormatter))
+
+      self.eventExport = [
+         ExportCapability(
+            name: "plain text",
+            exporter: FileExporter(formatter: defaultFormatter))
+      ]
+
       self.activeSession = Observable(EventSession(
          identifier: activeSessionID,
          isActive: true,
          events: []))
+   }
+
+   public func setExportOptions(_ options: [ExportOption]) {
+      self.eventExport.append(contentsOf: options.map {
+         switch $0 {
+         case let .eventOption(name, formatter):
+            return ExportCapability(
+               name: name,
+               exporter: FileExporter(formatter: formatter))
+         }
+      })
    }
 
    public func log(event: GroupedEvent) {
@@ -45,7 +76,7 @@ extension EventProcessor: EventProvider {
       storage.readStoredSessions {
          allSessions.append(contentsOf: $0.map {
             SessionInfo(
-               identifier: $0.identifier,
+               identifier: $0,
                isActive: false)
          })
       }
@@ -75,5 +106,13 @@ extension EventProcessor: EventProvider {
                   events: $0)))
             })
       }
+   }
+
+   public func sessionExportCapability() -> ExportCapability<SessionFormatting> {
+      sessionExport
+   }
+
+   public func eventExportCapabilities() -> [ExportCapability<EventFormatting>] {
+      eventExport
    }
 }

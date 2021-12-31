@@ -6,12 +6,10 @@
 //  Copyright © 2021 Oleg Ketrar. All rights reserved.
 //
 
-import Foundation
-
 public protocol EventStorage {
 
    /// Return all ended sessions.
-   func readStoredSessions(_ completion: @escaping ([StoredSession]) -> Void)
+   func readStoredSessions(_ completion: @escaping ([SessionIdentifier]) -> Void)
 
    /// Read events for stored session
    func readEvents(

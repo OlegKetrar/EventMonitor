@@ -8,28 +8,27 @@
 
 import Foundation
 import MonitorCore
-import MonitorUI
 
 public typealias Event = MonitorCore.Event
 public typealias NetworkEvent = MonitorCore.NetworkEvent
-public typealias MessageEvent = MonitorCore.MessageEvent
+public typealias ExportOption = MonitorCore.ExportOption
 
 public final class Monitor {
 
-   private static let processor = EventProcessor(storage: {
+   private static let processor: EventProcessor = {
       let tmpDir = NSTemporaryDirectory() as NSString
       let path = tmpDir.appendingPathComponent("network-monitor.session-logs")
+      let store = FileEventStorage(directoryPath: path)
+      let processor = EventProcessor(storage: store)
 
-      return FileEventStorage(directoryPath: path)
-   }())
+      return processor
+   }()
 
-   public static var exportOptions: [ExportOption] = [
-      // .. default
-   ]
+   public static func setExportOptions(_ options: [ExportOption]) {
+      processor.setExportOptions(options)
+   }
 
-   public static let presenter = PresenterConfig(
-      getExportOptions: { exportOptions },
-      getEventProvider: { processor })
+   public static let presenter = PresenterConfig(provider: processor)
 
    public static func makeLogger(subsystem: String) -> Logger {
       LoggerImpl {

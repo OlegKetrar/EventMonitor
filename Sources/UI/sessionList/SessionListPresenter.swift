@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import MonitorCore
-import DependencyContainer
 
 final class SessionListPresenter: SessionListVCPresenter {
    let viewModel: SessionListViewModel
@@ -22,8 +21,8 @@ final class SessionListPresenter: SessionListVCPresenter {
    private var onSelectSessionCallback: OnSessionSelectCallback = { _, _ in }
    private var onCloseButtonCallback: (() -> Void)? = nil
 
-   init() {
-      viewModel = SessionListViewModel(repository: DI.get())
+   init(repository: SessionListRepository) {
+      viewModel = SessionListViewModel(repository: repository)
    }
 
    func onSelectSession(_ callback: @escaping OnSessionSelectCallback) -> Self {

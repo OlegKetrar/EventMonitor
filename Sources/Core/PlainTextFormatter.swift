@@ -7,12 +7,18 @@
 //
 
 import Foundation
-import MonitorCore
 
-public struct PlainTextFormatter {
+public struct PlainTextFormatter: EventFormatting {
    public init() {}
 
-   public func format(event e: NetworkEvent) -> String {
+   public func format(_ event: GroupedEvent) -> String {
+      switch event.event {
+      case let .network(e):
+         return format(event: e)
+      }
+   }
+
+   func format(event e: NetworkEvent) -> String {
 
       let statusStr = e.response.failureReason == nil ? "success" : "failure"
       let statusCodeStr = e.response.statusCode.map { "\($0)" } ?? "no-status-code"

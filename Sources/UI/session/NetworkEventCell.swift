@@ -1,5 +1,5 @@
 //
-//  EventCell.swift
+//  NetworkEventCell.swift
 //  NetworkMonitor
 //
 //  Created by Oleg Ketrar on 15.09.2019.
@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-final class EventCell: UITableViewCell, ReusableCell {
+final class NetworkEventCell: UITableViewCell, ReusableCell {
 
    private struct K {
       static let successPrimaryColor = #colorLiteral(red: 0.2871317863, green: 0.8010149598, blue: 0.5653145909, alpha: 1)
@@ -72,7 +72,7 @@ final class EventCell: UITableViewCell, ReusableCell {
 
 // MARK: - Private
 
-private extension EventCell {
+private extension NetworkEventCell {
 
    func configureUI() {
       selectionStyle = .none

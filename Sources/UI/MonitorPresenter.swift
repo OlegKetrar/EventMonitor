@@ -9,27 +9,13 @@
 import Foundation
 import UIKit
 import MonitorCore
-import DependencyContainer
 
-public struct ExportOption {
-
-}
-
-public final class MonitorPresenter {
+public struct MonitorPresenter {
    private let repository: EventProvider
-   private let exportOptions: [ExportOption]
    private weak var navigationController: UINavigationController?
 
-   public init(
-      repository: EventProvider,
-      exportOptions: [ExportOption]
-   ) {
-      self.exportOptions = exportOptions
+   public init(repository: EventProvider) {
       self.repository = repository
-
-      DI.register(as: SessionListRepository.self) { _ in
-         AnyEventProvider(provider: repository)
-      }
    }
 
    public func push(into nc: UINavigationController) {
@@ -55,16 +41,18 @@ public final class MonitorPresenter {
          }
 
       let currentSession = SessionPresenter
-         .init(session: repository.fetchActiveSession())
+         .init(
+            session: repository.fetchActiveSession(),
+            exportCapability: repository.sessionExportCapability())
          .onSelectEvent {
             switch $0.event {
             case let .network(event):
                NetworkEventDetailsPresenter
-                  .init(event: event, subsystem: $0.subsystem)
+                  .init(
+                     event: event,
+                     subsystem: $0.subsystem,
+                     exportCapabilities: repository.eventExportCapabilities())
                   .push(into: nc)
-
-            case .message:
-               break
             }
          }
 
@@ -82,24 +70,26 @@ private extension MonitorPresenter {
    ) -> SessionListPresenter {
 
       SessionListPresenter
-         .init()
+         .init(repository: AnyEventProvider(provider: repository))
          .onSelectSession { sessionID, completion in
 
-            self.repository.fetchEventSession(
+            repository.fetchEventSession(
                identifier: sessionID,
                completion: {
                   SessionPresenter
-                     .init(session: $0)
+                     .init(
+                        session: $0,
+                        exportCapability: repository.sessionExportCapability())
                      .onSelectEvent {
 
                         switch $0.event {
                         case let .network(event):
                            NetworkEventDetailsPresenter
-                              .init(event: event, subsystem: $0.subsystem)
+                              .init(
+                                 event: event,
+                                 subsystem: $0.subsystem,
+                                 exportCapabilities: repository.eventExportCapabilities())
                               .push(into: navigation)
-
-                        case .message:
-                           break
                         }
                      }
                      .push(into: navigation)

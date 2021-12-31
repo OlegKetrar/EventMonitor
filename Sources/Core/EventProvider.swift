@@ -14,4 +14,7 @@ public protocol EventProvider {
    func fetchEventSession(
       identifier: SessionIdentifier,
       completion: @escaping (Observable<EventSession>) -> Void)
+    
+   func sessionExportCapability() -> ExportCapability<SessionFormatting>
+   func eventExportCapabilities() -> [ExportCapability<EventFormatting>]
 }

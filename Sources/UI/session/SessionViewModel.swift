@@ -18,11 +18,11 @@ struct EventCellModel {
 struct SessionViewState {
 
    enum Event {
-      case message(String)
       case network(EventCellModel)
    }
 
    var title: String
+   var exportFileName: String
    var filters: [SubsystemFilter]
    var events: [Event]
 
@@ -56,6 +56,7 @@ final class SessionViewModel {
 
       self.state = Observable(SessionViewState(
          title: formatTitle(session.value),
+         exportFileName: formatter.string(from: session.value.identifier.createdAt),
          filters: findFilters(in: session.value, applied: []),
          events: formatEvents(in: session.value, filters: [])
       ))
@@ -91,6 +92,10 @@ final class SessionViewModel {
       } else {
          return nil
       }
+   }
+
+   func formatSession(with formatter: SessionFormatting) -> String {
+      formatter.format(session.value)
    }
 }
 
@@ -138,9 +143,6 @@ private func formatEvents(
                verb: e.request.verb.uppercased(),
                method: e.request.method,
                isSuccess: e.response.failureReason == nil))
-
-         case let .message(e):
-            return .message(e.message)
          }
       }
 }

@@ -23,7 +23,7 @@ final class SessionVC: UIViewController, HavePreloaderButton, HaveShareButton {
    private var viewState: SessionViewState { presenter.viewModel.state.value }
 
    private lazy var tableView = UITableView(frame: .zero, style: .plain).with {
-      $0.register(cell: EventCell.self)
+      $0.register(cell: NetworkEventCell.self)
       $0.rowHeight = UITableView.automaticDimension
       $0.estimatedRowHeight = 50
       $0.contentInset.top = 15
@@ -97,18 +97,9 @@ extension SessionVC: UITableViewDataSource {
    ) -> UITableViewCell {
 
       switch viewState.events[indexPath.row] {
-      case let .message(msgEvent):
-         // FIXME:
-
-         return tableView
-            .dequeue(cell: EventCell.self, for: indexPath)
-            .with(verb: "lol")
-            .with(request: msgEvent)
-            .with(success: false)
-
       case let .network(networkEvent):
          return tableView
-            .dequeue(cell: EventCell.self, for: indexPath)
+            .dequeue(cell: NetworkEventCell.self, for: indexPath)
             .with(verb: networkEvent.verb)
             .with(request: networkEvent.method)
             .with(success: networkEvent.isSuccess)

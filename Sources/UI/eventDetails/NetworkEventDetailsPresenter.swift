@@ -15,8 +15,15 @@ final class NetworkEventDetailsPresenter: NetworkEventDetailsVCPresenter {
 
    private weak var navigationController: UINavigationController?
 
-   init(event: NetworkEvent, subsystem: String) {
-      viewModel = NetworkEventDetailsViewModel(event: event, subsystem: subsystem)
+   init(
+      event: NetworkEvent,
+      subsystem: String,
+      exportCapabilities: [ExportCapability<EventFormatting>]
+   ) {
+      viewModel = NetworkEventDetailsViewModel(
+         event: event,
+         subsystem: subsystem,
+         exportCapabilities: exportCapabilities)
    }
 
    func push(into nc: UINavigationController, animated: Bool = true) {
@@ -25,18 +32,13 @@ final class NetworkEventDetailsPresenter: NetworkEventDetailsVCPresenter {
    }
 
    func shareEvent(_ completion: @escaping () -> Void) {
-//      let eventToShare = viewModel.formatEvent()
+      viewModel.makeExportableFile { [weak self] filepath in
 
-      FileSharingPresenter().shareFile(
-         name: "", // eventToShare.fileName
-         content: {
-            self.viewModel.formatEvent()
+         FileSharingPresenter().shareFile(
+            at: filepath,
+            presentOver: self?.navigationController)
 
-//            PlainTextFormatter().format(event: eventToShare)
-         },
-         completion: { [weak self] in
-            self?.navigationController?.present($0, animated: true)
-            completion()
-         })
+         completion()
+      }
    }
 }

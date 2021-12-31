@@ -20,7 +20,7 @@ final class FileEventStorage: EventStorage {
    }
 
    func readStoredSessions(
-      _ completion: @escaping ([StoredSession]) -> Void
+      _ completion: @escaping ([SessionIdentifier]) -> Void
    ) {
 
       completion(archiver
@@ -37,12 +37,7 @@ final class FileEventStorage: EventStorage {
                return true
             }
          }
-         .map {
-            StoredSession(identifier: $0)
-         }
-         .sorted(by: {
-            $0.identifier > $1.identifier
-         }))
+         .sorted(by: >))
    }
 
    func readEvents(
@@ -79,14 +74,16 @@ private final class LogArchiver {
    }
 
    func createSessionFile(name: String) {
-      let filePath = (directoryPath as NSString).appendingPathComponent(name)
+      queue.async { [self] in
+         let filePath = (directoryPath as NSString).appendingPathComponent(name)
 
-      FileManager.default.createFile(
-         atPath: filePath,
-         contents: Data(),
-         attributes: nil)
+         FileManager.default.createFile(
+            atPath: filePath,
+            contents: Data(),
+            attributes: nil)
 
-      sessionFileHandle = FileHandle(forUpdatingAtPath: filePath)
+         sessionFileHandle = FileHandle(forUpdatingAtPath: filePath)
+      }
    }
 
    func write<T: Encodable>(item: T) {

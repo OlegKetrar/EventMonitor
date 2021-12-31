@@ -23,17 +23,40 @@ struct NetworkEventDetailsViewState {
 final class NetworkEventDetailsViewModel {
    private let event: NetworkEvent
    private let subsystem: String
+   private let exportCapabilities: [ExportCapability<EventFormatting>]
+
+   private lazy var exportFileName: String = {
+      "\(event.request.verb.lowercased())\(event.request.method).log"
+         .replacingOccurrences(of: "/", with: "_")
+   }()
 
    let state: NetworkEventDetailsViewState
 
-   init(event: NetworkEvent, subsystem: String) {
+   init(
+      event: NetworkEvent,
+      subsystem: String,
+      exportCapabilities: [ExportCapability<EventFormatting>]
+   ) {
       self.event = event
       self.subsystem = subsystem
+      self.exportCapabilities = exportCapabilities
       self.state = event.format()
    }
 
-   func formatEvent() -> String {
-      fatalError()
+   func makeExportableFile(_ completion: @escaping (String?) -> Void) {
+      guard let exporter = exportCapabilities.first?.exporter else {
+         completion(nil)
+         return
+      }
+
+      exporter.prepareFile(
+         named: exportFileName,
+         content: {
+            $0.format(GroupedEvent(subsystem: subsystem, event: .network(event)))
+         },
+         completion: {
+            completion($0)
+         })
    }
 }
 
@@ -89,10 +112,12 @@ private extension Dictionary where Key == String, Value == String {
 
 private extension GroupedEvent {
 
-   var fileName: String {
-      fatalError()
-//      return "\(request.verb)\(request.method).log"
-//         .replacingOccurrences(of: "/", with: "_")
-//         .lowercased()
+   func makeFileName() -> String {
+      switch event {
+      case let .network(e):
+         return "\(e.request.verb)\(e.request.method).log"
+            .replacingOccurrences(of: "/", with: "_")
+            .lowercased()
+      }
    }
 }

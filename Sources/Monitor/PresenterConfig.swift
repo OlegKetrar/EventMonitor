@@ -11,33 +11,24 @@ import MonitorCore
 import MonitorUI
 
 public final class PresenterConfig {
-   private let getExportOptions: () -> [ExportOption]
    private let getEventProvider: () -> EventProvider
 
    /// We create another UIWindow to have a callback on shakeEvent.
    private var motionWindow: MotionWindow?
 
-   init(
-      getExportOptions: @escaping () -> [ExportOption],
-      getEventProvider: @escaping () -> EventProvider
-   ) {
-      self.getExportOptions = getExportOptions
-      self.getEventProvider = getEventProvider
+   init(provider: @autoclosure @escaping () -> EventProvider) {
+      self.getEventProvider = provider
    }
 
    public func show(over viewController: UIViewController) {
       MonitorPresenter
-         .init(
-            repository: getEventProvider(),
-            exportOptions: getExportOptions())
+         .init(repository: getEventProvider())
          .present(over: viewController)
    }
 
    public func push(into navigationController: UINavigationController) {
       MonitorPresenter
-         .init(
-            repository: getEventProvider(),
-            exportOptions: getExportOptions())
+         .init(repository: getEventProvider())
          .push(into: navigationController)
    }
 
@@ -59,9 +50,7 @@ public final class PresenterConfig {
          else { return }
 
          MonitorPresenter
-            .init(
-               repository: strongSelf.getEventProvider(),
-               exportOptions: strongSelf.getExportOptions())
+            .init(repository: strongSelf.getEventProvider())
             .presentCurrentSession(over: rootVC)
       }
 
