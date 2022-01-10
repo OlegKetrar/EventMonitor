@@ -1,6 +1,6 @@
 //
 //  PlainTextFormatter.swift
-//  NetworkMonitor
+//  EventMonitor
 //
 //  Created by Oleg Ketrar on 16.05.2019.
 //  Copyright © 2019 Oleg Ketrar. All rights reserved.
