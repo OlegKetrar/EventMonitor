@@ -28,22 +28,15 @@ final class MonitorTests: XCTestCase {
                jsonString: nil,
                failureReason: "failure")))
 
-         let messageEvent = Event.message(MessageEvent(message: "test"))
-
          let logger: Logger = Monitor
             .makeLogger(subsystem: "network")
 
          logger.log(event: networkEvent)
-         logger.log(event: messageEvent)
 
          Monitor.presenter.push(into: UINavigationController())
          Monitor.presenter.show(over: UIViewController())
          Monitor.presenter.enableShakeToShow(rootViewController: UIViewController())
          Monitor.presenter.disableShakeToShow()
-
-         Monitor.exportOptions = [
-
-         ]
       }
    }
 }
