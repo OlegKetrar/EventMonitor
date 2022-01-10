@@ -43,7 +43,7 @@ final class NetworkEventDetailsViewModel {
       self.state = event.format()
    }
 
-   func makeExportableFile(_ completion: @escaping (String?) -> Void) {
+   func makeExportableFile(_ completion: @escaping (LocalFileRef?) -> Void) {
       guard let exporter = exportCapabilities.first?.exporter else {
          completion(nil)
          return

@@ -7,24 +7,25 @@
 //
 
 import UIKit
+import MonitorCore
 
 struct FileSharingPresenter {
 
-   func shareFile(at path: String?, presentOver vc: UIViewController?) {
+   func share(file: LocalFileRef?, presentOver vc: UIViewController?) {
       vc?.present(
-         makeAlertForFile(at: path),
+         makeAlertForFile(file),
          animated: true,
          completion: nil)
    }
 
-   private func makeAlertForFile(at path: String?) -> UIViewController {
+   private func makeAlertForFile(_ file: LocalFileRef?) -> UIViewController {
 
-      guard let filePath = path else {
+      guard let existingFile = file else {
          return makeErrorAlert()
       }
 
       let shareVC = UIActivityViewController(
-         activityItems: [URL(fileURLWithPath: filePath)],
+         activityItems: [URL(fileURLWithPath: existingFile.path)],
          applicationActivities: nil)
 
       shareVC.excludedActivityTypes = [
@@ -40,7 +41,11 @@ struct FileSharingPresenter {
          .saveToCameraRoll
       ]
 
-      // TODO: use callback to remove tmp files
+      shareVC.completionWithItemsHandler = { _, _, _, _ in
+
+         // let arc to remove file from disk
+         _ = file
+      }
 
       return shareVC
    }

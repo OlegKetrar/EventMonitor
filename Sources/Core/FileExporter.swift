@@ -10,7 +10,6 @@ import Foundation
 
 public final class FileExporter<Formatter> {
    private let formatter: Formatter
-   private var pathsToRemove: [String] = []
 
    init(formatter: Formatter) {
       self.formatter = formatter
@@ -19,26 +18,46 @@ public final class FileExporter<Formatter> {
    public func prepareFile(
       named filename: String,
       content: (Formatter) -> String,
-      completion: @escaping (String?) -> Void
+      completion: @escaping (LocalFileRef?) -> Void
    ) {
 
       let contentStr = content(formatter)
 
-      FileWritter().writeFile(
-         name: filename,
-         content: { contentStr },
-         completion: { [self] in
-            if let filepath = $0 {
-               pathsToRemove.append(filepath)
+      DispatchQueue.global().async {
+
+         let exportDir = NSTemporaryDirectory()
+            .ns
+            .appendingPathComponent("network-monitor.exporting-logs")
+
+         let filepath = exportDir.ns.appendingPathComponent(filename)
+
+         FileManager.default.createDirectoryIfNotExist(at: exportDir)
+
+         let writedSuccessfully = FileManager.default.createFile(
+            atPath: filepath,
+            contents: contentStr.data(using: .utf8))
+
+         if writedSuccessfully {
+            DispatchQueue.main.async {
+               completion(LocalFileRef(path: filepath))
             }
 
-            completion($0)
-         })
+         } else {
+            DispatchQueue.main.async { completion(nil) }
+         }
+      }
+   }
+}
+
+/// RAII abstraction to clean up file.
+public final class LocalFileRef {
+   public let path: String
+
+   init(path: String) {
+      self.path = path
    }
 
    deinit {
-      pathsToRemove.forEach {
-         try? FileManager.default.removeItem(atPath: $0)
-      }
+      try? FileManager.default.removeItem(atPath: path)
    }
 }

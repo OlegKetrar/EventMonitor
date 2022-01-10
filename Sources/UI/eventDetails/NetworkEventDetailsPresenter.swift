@@ -32,10 +32,10 @@ final class NetworkEventDetailsPresenter: NetworkEventDetailsVCPresenter {
    }
 
    func shareEvent(_ completion: @escaping () -> Void) {
-      viewModel.makeExportableFile { [weak self] filepath in
+      viewModel.makeExportableFile { [weak self] file in
 
-         FileSharingPresenter().shareFile(
-            at: filepath,
+         FileSharingPresenter().share(
+            file: file,
             presentOver: self?.navigationController)
 
          completion()

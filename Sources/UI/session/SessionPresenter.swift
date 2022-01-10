@@ -47,8 +47,8 @@ final class SessionPresenter: SessionVCPresenter {
             viewModel.formatSession(with: $0)
          },
          completion: { [weak self] in
-            FileSharingPresenter().shareFile(
-               at: $0,
+            FileSharingPresenter().share(
+               file: $0,
                presentOver: self?.navigationController)
 
             completion()
