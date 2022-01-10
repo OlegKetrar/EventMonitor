@@ -11,7 +11,9 @@ import MonitorCore
 
 public typealias Event = MonitorCore.Event
 public typealias NetworkEvent = MonitorCore.NetworkEvent
+public typealias GroupedEvent = MonitorCore.GroupedEvent
 public typealias ExportOption = MonitorCore.ExportOption
+public typealias EventFormatting = MonitorCore.EventFormatting
 
 public final class Monitor {
 
@@ -24,6 +26,7 @@ public final class Monitor {
       return processor
    }()
 
+   @available(*, unavailable, message: "Unimplemented yet")
    public static func setExportOptions(_ options: [ExportOption]) {
       processor.setExportOptions(options)
    }
