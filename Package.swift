@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.4
 import PackageDescription
 
 let package = Package(
@@ -9,7 +9,6 @@ let package = Package(
    products: [
       .library(
          name: "NetworkMonitor",
-         type: .dynamic,
          targets: ["NetworkMonitor"]),
    ],
    dependencies: [
@@ -17,14 +16,37 @@ let package = Package(
    ],
    targets: [
       .target(
-         name: "NetworkMonitor",
+         name: "MonitorCore",
+         path: "Sources/Core"),
+
+      .target(
+         name: "MonitorUI",
          dependencies: [
             .product(name: "JsonSyntax-Static", package: "JsonSyntax"),
+            .target(name: "MonitorCore"),
          ],
-         path: "Sources",
+         path: "Sources/UI",
          linkerSettings: [
             .linkedFramework("UIKit"),
          ]),
+
+      .target(
+         name: "NetworkMonitor",
+         dependencies: [
+            .target(name: "MonitorCore"),
+            .target(name: "MonitorUI"),
+         ],
+         path: "Sources/Monitor",
+         linkerSettings: [
+            .linkedFramework("UIKit"),
+         ]),
+
+      .testTarget(
+         name: "MonitorTests",
+         dependencies: [
+            .target(name: "NetworkMonitor"),
+         ],
+         path: "Tests/Monitor")
    ],
    swiftLanguageVersions: [.v5]
 )
