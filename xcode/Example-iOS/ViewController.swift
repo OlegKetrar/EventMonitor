@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import NetworkMonitor
+import EventMonitor
 
 final class ViewController: UIViewController {
 
