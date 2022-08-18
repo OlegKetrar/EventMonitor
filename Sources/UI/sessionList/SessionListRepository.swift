@@ -1,6 +1,6 @@
 //
 //  SessionListRepository.swift
-//  NetworkMonitor
+//  EventMonitor
 //
 //  Created by Oleg Ketrar on 26.10.2021.
 //  Copyright © 2021 Oleg Ketrar. All rights reserved.

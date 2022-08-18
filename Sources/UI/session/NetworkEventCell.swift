@@ -1,6 +1,6 @@
 //
 //  NetworkEventCell.swift
-//  NetworkMonitor
+//  EventMonitor
 //
 //  Created by Oleg Ketrar on 15.09.2019.
 //  Copyright © 2019 Oleg Ketrar. All rights reserved.

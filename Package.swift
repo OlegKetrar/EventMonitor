@@ -2,14 +2,14 @@
 import PackageDescription
 
 let package = Package(
-   name: "NetworkMonitor",
+   name: "EventMonitor",
    platforms: [
       .iOS(.v9),
    ],
    products: [
       .library(
-         name: "NetworkMonitor",
-         targets: ["NetworkMonitor"]),
+         name: "EventMonitor",
+         targets: ["EventMonitor"]),
    ],
    dependencies: [
       .package(url: "https://github.com/OlegKetrar/JsonSyntax", .exact("0.2.1")),
@@ -31,7 +31,7 @@ let package = Package(
          ]),
 
       .target(
-         name: "NetworkMonitor",
+         name: "EventMonitor",
          dependencies: [
             .target(name: "MonitorCore"),
             .target(name: "MonitorUI"),
@@ -44,7 +44,7 @@ let package = Package(
       .testTarget(
          name: "MonitorTests",
          dependencies: [
-            .target(name: "NetworkMonitor"),
+            .target(name: "EventMonitor"),
          ],
          path: "Tests/Monitor")
    ],

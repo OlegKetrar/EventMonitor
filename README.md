@@ -1,4 +1,4 @@
-# NetworkMonitor
+# EventMonitor
 
 ## Installation
 
@@ -6,7 +6,7 @@
 
 add to your `Cartfile`
 ```
-github "OlegKetrar/NetworkMonitor" "master"
+github "OlegKetrar/EventMonitor" "master"
 ```
 
 then run

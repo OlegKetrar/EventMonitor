@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "555E958F278E61050088E744"
-               BuildableName = "EventMonitor.framework"
-               BlueprintName = "EventMonitor"
+               BuildableName = "EventMonitorFramework.framework"
+               BlueprintName = "EventMonitorFramework"
                ReferencedContainer = "container:monitor.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -51,8 +51,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "555E958F278E61050088E744"
-            BuildableName = "EventMonitor.framework"
-            BlueprintName = "EventMonitor"
+            BuildableName = "EventMonitorFramework.framework"
+            BlueprintName = "EventMonitorFramework"
             ReferencedContainer = "container:monitor.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

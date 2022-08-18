@@ -1,20 +1,20 @@
 //
 //  Wrapper.swift
-//  EventMonitor
+//  EventMonitorFramework
 //
 //  Created by Oleg Ketrar on 12.01.2022.
 //  Copyright © 2022 Oleg Ketrar. All rights reserved.
 //
 
 import Foundation
-import NetworkMonitor
+import EventMonitor
 
-public typealias Event = NetworkMonitor.Event
-public typealias NetworkEvent = NetworkMonitor.NetworkEvent
-public typealias GroupedEvent = NetworkMonitor.GroupedEvent
-public typealias ExportOption = NetworkMonitor.ExportOption
-public typealias EventFormatting = NetworkMonitor.EventFormatting
+public typealias Event = EventMonitor.Event
+public typealias NetworkEvent = EventMonitor.NetworkEvent
+public typealias GroupedEvent = EventMonitor.GroupedEvent
+public typealias ExportOption = EventMonitor.ExportOption
+public typealias EventFormatting = EventMonitor.EventFormatting
 
-public typealias PresenterConfig = NetworkMonitor.PresenterConfig
-public typealias Monitor = NetworkMonitor.Monitor
-public typealias Logger = NetworkMonitor.Logger
+public typealias PresenterConfig = EventMonitor.PresenterConfig
+public typealias Monitor = EventMonitor.Monitor
+public typealias Logger = EventMonitor.Logger

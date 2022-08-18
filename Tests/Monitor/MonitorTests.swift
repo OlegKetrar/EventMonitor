@@ -1,13 +1,13 @@
 //
 //  MonitorTests.swift
-//  NetworkMonitorTests
+//  EventMonitorTests
 //
 //  Created by Oleg Ketrar on 24.10.2021.
 //  Copyright © 2021 Oleg Ketrar. All rights reserved.
 //
 
 import XCTest
-import NetworkMonitor
+import EventMonitor
 
 final class MonitorTests: XCTestCase {
 

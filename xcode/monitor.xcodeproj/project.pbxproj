@@ -13,9 +13,9 @@
 		5520875A23413FA60049EDBA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5520875823413FA60049EDBA /* Main.storyboard */; };
 		5520875C23413FA70049EDBA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5520875B23413FA70049EDBA /* Assets.xcassets */; };
 		5520875F23413FA70049EDBA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5520875D23413FA70049EDBA /* LaunchScreen.storyboard */; };
-		553AC0D0278EFFA600F31E51 /* EventMonitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 555E9590278E61050088E744 /* EventMonitor.framework */; platformFilter = ios; };
-		553AC0D1278EFFA600F31E51 /* EventMonitor.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 555E9590278E61050088E744 /* EventMonitor.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		555E959A278E62750088E744 /* NetworkMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 555E9599278E62750088E744 /* NetworkMonitor */; };
+		553AC0D0278EFFA600F31E51 /* EventMonitorFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 555E9590278E61050088E744 /* EventMonitorFramework.framework */; platformFilter = ios; };
+		553AC0D1278EFFA600F31E51 /* EventMonitorFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 555E9590278E61050088E744 /* EventMonitorFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		55CF7DA328AE179E000BE320 /* EventMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 55CF7DA228AE179E000BE320 /* EventMonitor */; };
 		55D1BF2F278F2115004B2F24 /* Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D1BF2D278F2115004B2F24 /* Wrapper.swift */; };
 		55D1BF30278F2115004B2F24 /* EventMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 55D1BF2E278F2115004B2F24 /* EventMonitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
@@ -37,7 +37,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				553AC0D1278EFFA600F31E51 /* EventMonitor.framework in Embed Frameworks */,
+				553AC0D1278EFFA600F31E51 /* EventMonitorFramework.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -52,11 +52,11 @@
 		5520875B23413FA70049EDBA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5520875E23413FA70049EDBA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5520876023413FA70049EDBA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		555E9590278E61050088E744 /* EventMonitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EventMonitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		555E9590278E61050088E744 /* EventMonitorFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EventMonitorFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		55CF7DA028AE177F000BE320 /* EventMonitor */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = EventMonitor; path = ..; sourceTree = "<group>"; };
 		55D1BF2D278F2115004B2F24 /* Wrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wrapper.swift; sourceTree = "<group>"; };
 		55D1BF2E278F2115004B2F24 /* EventMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventMonitor.h; sourceTree = "<group>"; };
 		55EB2BA9272613B100F8D922 /* Example-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		55EB2BAA272613C200F8D922 /* NetworkMonitor */ = {isa = PBXFileReference; lastKnownFileType = folder; name = NetworkMonitor; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,7 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				553AC0D0278EFFA600F31E51 /* EventMonitor.framework in Frameworks */,
+				553AC0D0278EFFA600F31E51 /* EventMonitorFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,7 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				555E959A278E62750088E744 /* NetworkMonitor in Frameworks */,
+				55CF7DA328AE179E000BE320 /* EventMonitor in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +93,13 @@
 			path = "Example-iOS";
 			sourceTree = "<group>";
 		};
+		55CF7DA128AE179E000BE320 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		55D1BF2C278F2115004B2F24 /* framework */ = {
 			isa = PBXGroup;
 			children = (
@@ -105,11 +112,12 @@
 		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
-				55EB2BAA272613C200F8D922 /* NetworkMonitor */,
+				55CF7DA028AE177F000BE320 /* EventMonitor */,
 				55D1BF2C278F2115004B2F24 /* framework */,
 				5520875123413FA60049EDBA /* Example-iOS */,
 				55EB2BA9272613B100F8D922 /* Example-iOS.app */,
-				555E9590278E61050088E744 /* EventMonitor.framework */,
+				555E9590278E61050088E744 /* EventMonitorFramework.framework */,
+				55CF7DA128AE179E000BE320 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -148,9 +156,9 @@
 			productReference = 55EB2BA9272613B100F8D922 /* Example-iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		555E958F278E61050088E744 /* EventMonitor */ = {
+		555E958F278E61050088E744 /* EventMonitorFramework */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 555E9596278E61050088E744 /* Build configuration list for PBXNativeTarget "EventMonitor" */;
+			buildConfigurationList = 555E9596278E61050088E744 /* Build configuration list for PBXNativeTarget "EventMonitorFramework" */;
 			buildPhases = (
 				555E958B278E61050088E744 /* Headers */,
 				555E958C278E61050088E744 /* Sources */,
@@ -161,12 +169,12 @@
 			);
 			dependencies = (
 			);
-			name = EventMonitor;
+			name = EventMonitorFramework;
 			packageProductDependencies = (
-				555E9599278E62750088E744 /* NetworkMonitor */,
+				55CF7DA228AE179E000BE320 /* EventMonitor */,
 			);
 			productName = NetworkMonitor;
-			productReference = 555E9590278E61050088E744 /* EventMonitor.framework */;
+			productReference = 555E9590278E61050088E744 /* EventMonitorFramework.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -207,7 +215,7 @@
 			projectRoot = "";
 			targets = (
 				5520874F23413FA60049EDBA /* Example-iOS */,
-				555E958F278E61050088E744 /* EventMonitor */,
+				555E958F278E61050088E744 /* EventMonitorFramework */,
 			);
 		};
 /* End PBXProject section */
@@ -257,7 +265,7 @@
 		553AC0D3278EFFA600F31E51 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilter = ios;
-			target = 555E958F278E61050088E744 /* EventMonitor */;
+			target = 555E958F278E61050088E744 /* EventMonitorFramework */;
 			targetProxy = 553AC0D2278EFFA600F31E51 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -452,7 +460,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = oleg.ketrar.EventMonitor;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = EventMonitorFramework;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -504,7 +512,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = oleg.ketrar.EventMonitor;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = EventMonitorFramework;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -639,7 +647,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		555E9596278E61050088E744 /* Build configuration list for PBXNativeTarget "EventMonitor" */ = {
+		555E9596278E61050088E744 /* Build configuration list for PBXNativeTarget "EventMonitorFramework" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				555E9594278E61050088E744 /* Debug */,
@@ -660,9 +668,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		555E9599278E62750088E744 /* NetworkMonitor */ = {
+		55CF7DA228AE179E000BE320 /* EventMonitor */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = NetworkMonitor;
+			productName = EventMonitor;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
