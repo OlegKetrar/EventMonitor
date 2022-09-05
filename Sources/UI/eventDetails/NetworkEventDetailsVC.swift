@@ -10,14 +10,14 @@ import Foundation
 import UIKit
 
 protocol NetworkEventDetailsVCPresenter {
-   var viewModel: NetworkEventDetailsViewModel { get }
+   var viewState: NetworkEventDetailsViewState { get }
 
    func shareEvent(_ completion: @escaping () -> Void)
 }
 
 final class NetworkEventDetailsVC: UIViewController, HavePreloaderButton, HaveShareButton {
    private let presenter: NetworkEventDetailsVCPresenter
-   private var viewState: NetworkEventDetailsViewState { presenter.viewModel.state }
+   private var viewState: NetworkEventDetailsViewState { presenter.viewState }
 
    init(presenter: NetworkEventDetailsVCPresenter) {
       self.presenter = presenter

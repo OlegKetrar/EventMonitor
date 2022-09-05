@@ -46,12 +46,16 @@ final class SessionPresenter: SessionVCPresenter {
          content: {
             viewModel.formatSession(with: $0)
          },
-         completion: { [weak self] in
-            FileSharingPresenter().share(
-               file: $0,
-               presentOver: self?.navigationController)
+         completion: { [weak self] file in
+            FileSharingPresenter(filePath: file?.path).share(
+               over: self?.navigationController,
+               completion: {
 
-            completion()
+                  // let arc to remove file from disk
+                  _ = file
+
+                  completion()
+               })
          })
    }
 

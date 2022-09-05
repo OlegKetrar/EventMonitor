@@ -7,25 +7,29 @@
 //
 
 import UIKit
-import MonitorCore
 
 struct FileSharingPresenter {
+   let filePath: String?
 
-   func share(file: LocalFileRef?, presentOver vc: UIViewController?) {
+   func share(
+      over vc: UIViewController?,
+      completion: @escaping () -> Void
+   ) {
+
       vc?.present(
-         makeAlertForFile(file),
+         makeAlert(completion),
          animated: true,
          completion: nil)
    }
 
-   private func makeAlertForFile(_ file: LocalFileRef?) -> UIViewController {
+   private func makeAlert(_ completion: @escaping () -> Void) -> UIViewController {
 
-      guard let existingFile = file else {
-         return makeErrorAlert()
+      guard let existingFilePath = filePath else {
+         return makeErrorAlert(completion)
       }
 
       let shareVC = UIActivityViewController(
-         activityItems: [URL(fileURLWithPath: existingFile.path)],
+         activityItems: [URL(fileURLWithPath: existingFilePath)],
          applicationActivities: nil)
 
       shareVC.excludedActivityTypes = [
@@ -42,15 +46,13 @@ struct FileSharingPresenter {
       ]
 
       shareVC.completionWithItemsHandler = { _, _, _, _ in
-
-         // let arc to remove file from disk
-         _ = file
+         completion()
       }
 
       return shareVC
    }
 
-   private func makeErrorAlert() -> UIAlertController {
+   private func makeErrorAlert(_ completion: @escaping () -> Void) -> UIAlertController {
 
       let alert = UIAlertController(
          title: "Can't share file",
@@ -58,7 +60,7 @@ struct FileSharingPresenter {
          preferredStyle: .alert)
 
       let ok = UIAlertAction(title: "OK", style: .default, handler: { _ in
-         alert.dismiss(animated: true, completion: nil)
+         alert.dismiss(animated: true, completion: completion)
       })
 
       alert.addAction(ok)

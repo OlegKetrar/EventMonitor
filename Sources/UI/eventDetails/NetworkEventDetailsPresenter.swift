@@ -10,9 +10,8 @@ import Foundation
 import UIKit
 import MonitorCore
 
-final class NetworkEventDetailsPresenter: NetworkEventDetailsVCPresenter {
-   let viewModel: NetworkEventDetailsViewModel
-
+final class NetworkEventDetailsPresenter {
+   private let viewModel: NetworkEventDetailsViewModel
    private weak var navigationController: UINavigationController?
 
    init(
@@ -30,15 +29,26 @@ final class NetworkEventDetailsPresenter: NetworkEventDetailsVCPresenter {
       navigationController = nc
       nc.pushViewController(NetworkEventDetailsVC(presenter: self), animated: animated)
    }
+}
+
+extension NetworkEventDetailsPresenter: NetworkEventDetailsVCPresenter {
+
+   var viewState: NetworkEventDetailsViewState {
+      viewModel.state
+   }
 
    func shareEvent(_ completion: @escaping () -> Void) {
       viewModel.makeExportableFile { [weak self] file in
 
-         FileSharingPresenter().share(
-            file: file,
-            presentOver: self?.navigationController)
+         FileSharingPresenter(filePath: file?.path).share(
+            over: self?.navigationController,
+            completion: {
 
-         completion()
+               // let arc to remove file from disk
+               _ = file
+
+               completion()
+            })
       }
    }
 }
