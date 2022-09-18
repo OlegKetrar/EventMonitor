@@ -10,14 +10,16 @@ import Foundation
 import UIKit
 
 protocol NetworkEventDetailsVCPresenter {
-   var viewState: NetworkEventDetailsViewState { get }
+   var viewModel: NetworkEventViewModel { get }
+   var isOnlySharing: Bool { get }
 
    func shareEvent(_ completion: @escaping () -> Void)
+   func makeMenuPopover() -> UIViewController
 }
 
 final class NetworkEventDetailsVC: UIViewController, HavePreloaderButton, HaveShareButton {
    private let presenter: NetworkEventDetailsVCPresenter
-   private var viewState: NetworkEventDetailsViewState { presenter.viewState }
+   private var viewState: NetworkEventViewModel { presenter.viewModel }
 
    init(presenter: NetworkEventDetailsVCPresenter) {
       self.presenter = presenter
@@ -38,11 +40,43 @@ final class NetworkEventDetailsVC: UIViewController, HavePreloaderButton, HaveSh
    // MARK: - Action
 
    @objc func actionShare() {
-      navigationItem.rightBarButtonItem = configuredPreloaderBarButton()
 
-      presenter.shareEvent { [weak self] in
-         self?.navigationItem.rightBarButtonItem = self?.configuredShareButton()
+      if presenter.isOnlySharing {
+         navigationItem.rightBarButtonItem = configuredPreloaderBarButton()
+
+         presenter.shareEvent { [weak self] in
+            self?.navigationItem.rightBarButtonItem = self?.configuredShareButton()
+         }
+
+      } else {
+         let popover = presenter.makeMenuPopover()
+         popover.modalPresentationStyle = .currentContext
+
+         navigationController?.present(popover, animated: true)
       }
+   }
+}
+
+// MARK: - UIPopoverPresentationControllerDelegate
+
+extension NetworkEventDetailsVC: UIPopoverPresentationControllerDelegate {
+
+   func adaptivePresentationStyle(
+      for controller: UIPresentationController
+   ) -> UIModalPresentationStyle {
+       return .none
+   }
+
+   func popoverPresentationControllerDidDismissPopover(
+      _ popoverPresentationController: UIPopoverPresentationController
+   ) {
+
+   }
+
+   func popoverPresentationControllerShouldDismissPopover(
+      _ popoverPresentationController: UIPopoverPresentationController
+   ) -> Bool {
+       return true
    }
 }
 

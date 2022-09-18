@@ -17,7 +17,14 @@ extension HavePreloaderButton {
    func configuredPreloaderBarButton(tint color: UIColor = .gray) -> UIBarButtonItem {
 
       return UIBarButtonItem(customView: {
-         let preloader = UIActivityIndicatorView(style: .gray)
+         let preloader: UIActivityIndicatorView
+
+         if #available(iOS 13.0, *) {
+            preloader = UIActivityIndicatorView(style: .medium)
+         } else {
+            preloader = UIActivityIndicatorView(style: .gray)
+         }
+
          preloader.color = color
          preloader.startAnimating()
          return preloader

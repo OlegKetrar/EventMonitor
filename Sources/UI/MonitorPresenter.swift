@@ -47,12 +47,7 @@ public struct MonitorPresenter {
          .onSelectEvent {
             switch $0.event {
             case let .network(event):
-               NetworkEventDetailsPresenter
-                  .init(
-                     event: event,
-                     subsystem: $0.subsystem,
-                     exportCapabilities: repository.eventExportCapabilities())
-                  .push(into: nc)
+               open(event: event, subsystem: $0.subsystem, into: nc)
             }
          }
 
@@ -84,12 +79,10 @@ private extension MonitorPresenter {
 
                         switch $0.event {
                         case let .network(event):
-                           NetworkEventDetailsPresenter
-                              .init(
-                                 event: event,
-                                 subsystem: $0.subsystem,
-                                 exportCapabilities: repository.eventExportCapabilities())
-                              .push(into: navigation)
+                           open(
+                              event: event,
+                              subsystem: $0.subsystem,
+                              into: navigation)
                         }
                      }
                      .push(into: navigation)
@@ -97,6 +90,20 @@ private extension MonitorPresenter {
                   completion()
                })
          }
+   }
+
+   func open(
+      event: NetworkEvent,
+      subsystem: String,
+      into navigation: UINavigationController
+   ) {
+
+      NetworkEventDetailsPresenter
+         .init(
+            event: event,
+            subsystem: subsystem,
+            exportCapabilities: repository.eventExportCapabilities())
+         .push(into: navigation)
    }
 }
 

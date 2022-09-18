@@ -80,8 +80,6 @@ extension SessionListVC: UITableViewDataSource {
       cellForRowAt indexPath: IndexPath
    ) -> UITableViewCell {
 
-      // TODO: make custom cell
-
       let cell = tableView.dequeueReusableCell(
          withIdentifier: "cell",
          for: indexPath)
