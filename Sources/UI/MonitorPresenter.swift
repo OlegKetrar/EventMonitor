@@ -12,7 +12,7 @@ import MonitorCore
 
 public struct MonitorPresenter {
    private let repository: EventProvider
-   private weak var navigationController: UINavigationController?
+//   private weak var navigationController: UINavigationController?
 
    public init(repository: EventProvider) {
       self.repository = repository

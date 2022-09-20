@@ -4,12 +4,20 @@ import PackageDescription
 let package = Package(
    name: "EventMonitor",
    platforms: [
-      .iOS(.v9),
+      .iOS(.v13),
    ],
    products: [
       .library(
          name: "EventMonitor",
          targets: ["EventMonitor"]),
+
+      .library(
+         name: "MonitorSwiftUITest",
+         targets: ["MonitorSwiftUITest"]),
+
+      .library(
+         name: "MonitorCoreV2",
+         targets: ["MonitorCoreV2"]),
    ],
    dependencies: [
       .package(url: "https://github.com/OlegKetrar/JsonSyntax", .exact("0.2.1")),
@@ -18,6 +26,15 @@ let package = Package(
       .target(
          name: "MonitorCore",
          path: "Sources/Core"),
+
+      .target(
+         name: "MonitorCoreV2",
+         path: "Sources/CoreV2"),
+
+      .target(
+         name: "MonitorSwiftUITest",
+         dependencies: ["MonitorCoreV2"],
+         path: "Sources/SwiftUITest"),
 
       .target(
          name: "MonitorUI",
