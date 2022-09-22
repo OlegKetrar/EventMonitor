@@ -1,5 +1,5 @@
 //
-//  SessionListRepository.swift
+//  ArchiveRepository.swift
 //  EventMonitor
 //
 //  Created by Oleg Ketrar on 26.10.2021.
@@ -11,6 +11,6 @@ import MonitorCore
 // TODO: delete session
 // TODO: start new session (stop current / restart)
 
-protocol SessionListRepository {
+protocol ArchiveRepository {
    func fetchSessions() -> Observable<[SessionInfo]>
 }

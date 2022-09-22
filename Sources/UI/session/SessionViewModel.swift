@@ -9,35 +9,25 @@
 import Foundation
 import MonitorCore
 
-struct EventCellModel {
-   var verb: String
-   var method: String
-   var isSuccess: Bool
-}
-
 struct SessionViewState {
-
-   enum Event {
-      case network(EventCellModel)
-   }
 
    var title: String
    var exportFileName: String
    var filters: [SubsystemFilter]
-   var events: [Event]
+   var events: [AnyEvent]
 
    var hasFilters: Bool {
       filters.isEmpty == false
    }
 }
 
-final class SessionViewModel {
+public final class SessionViewModel {
    private let session: Observable<EventSession>
    private var appliedFilters: [String]
 
    let state: Observable<SessionViewState>
 
-   init(session: Observable<EventSession>) {
+   public init(session: Observable<EventSession>) {
 
       let formatter = DateFormatter()
       formatter.timeStyle = .medium
@@ -70,7 +60,7 @@ final class SessionViewModel {
       })
    }
 
-   func filterEvents(by filter: SubsystemFilter) {
+   public func filterEvents(by filter: SubsystemFilter) {
 
       if filter.isAll {
          self.appliedFilters = []
@@ -84,19 +74,9 @@ final class SessionViewModel {
       }
    }
 
-   func getSessionEvent(at index: Int) -> GroupedEvent? {
-      let sessionEvents = session.value.events
-
-      if sessionEvents.indices.contains(index) {
-         return sessionEvents[index]
-      } else {
-         return nil
-      }
-   }
-
-   func formatSession(with formatter: SessionFormatting) -> String {
-      formatter.format(session.value)
-   }
+//   func formatSession(with formatter: SessionFormatting) -> String {
+//      formatter.format(session.value)
+//   }
 }
 
 private func findFilters(
@@ -126,23 +106,13 @@ private func findFilters(
 private func formatEvents(
    in session: EventSession,
    filters: [String]
-) -> [SessionViewState.Event] {
+) -> [AnyEvent] {
 
-   session.events
-      .filter {
-         if filters.isEmpty {
-            return true
-         } else {
-            return filters.contains($0.subsystem)
-         }
+   session.events.filter {
+      if filters.isEmpty {
+         return true
+      } else {
+         return filters.contains($0.subsystem)
       }
-      .map {
-         switch $0.event {
-         case let .network(e):
-            return .network(EventCellModel(
-               verb: e.request.verb.uppercased(),
-               method: e.request.method,
-               isSuccess: e.response.failureReason == nil))
-         }
-      }
+   }
 }

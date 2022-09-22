@@ -9,7 +9,7 @@
 public struct EventSession {
    public let identifier: SessionIdentifier
    public var isActive: Bool
-   public var events: [GroupedEvent]
+   public var events: [AnyEvent]
 }
 
 public struct SessionInfo {

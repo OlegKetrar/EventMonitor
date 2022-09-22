@@ -8,46 +8,50 @@
 
 import Foundation
 import MonitorCore
+import MonitorUI
 
 public typealias Event = MonitorCore.Event
-public typealias NetworkEvent = MonitorCore.NetworkEvent
-public typealias GroupedEvent = MonitorCore.GroupedEvent
-public typealias ExportOption = MonitorCore.ExportOption
-public typealias EventFormatting = MonitorCore.EventFormatting
-
+public typealias NetworkEvent = MonitorUI.NetworkEvent
+public typealias MessageEvent = MonitorUI.MessageEvent
+//public typealias ExportOption = MonitorCore.ExportOption
+//public typealias EventFormatting = MonitorCore.EventFormatting
+/*
 public final class Monitor {
 
    private static let processor: EventProcessor = {
-      let tmpDir = NSTemporaryDirectory() as NSString
-      let path = tmpDir.appendingPathComponent("network-monitor.session-logs")
-      let store = FileEventStorage(directoryPath: path)
-      let processor = EventProcessor(storage: store)
+//      let tmpDir = NSTemporaryDirectory() as NSString
+//      let path = tmpDir.appendingPathComponent("network-monitor.session-logs")
+//      let store = FileEventStorage(directoryPath: path)
+//      let processor = EventProcessor(storage: store)
+//
+//      return processor
 
-      return processor
+      fatalError()
    }()
 
-   @available(*, unavailable, message: "Unimplemented yet")
-   public static func setExportOptions(_ options: [ExportOption]) {
-      processor.setExportOptions(options)
-   }
+//   @available(*, unavailable, message: "Unimplemented yet")
+//   public static func setExportOptions(_ options: [ExportOption]) {
+//      processor.setExportOptions(options)
+//   }
 
    public static let presenter = PresenterConfig(provider: processor)
 
-   public static func makeLogger(subsystem: String) -> Logger {
-      LoggerImpl {
-         processor.log(event: GroupedEvent(subsystem: subsystem, event: $0))
-      }
-   }
+//   public static func makeLogger(subsystem: String) -> Logger {
+//      LoggerImpl {
+//         processor.log(event: GroupedEvent(subsystem: subsystem, event: $0))
+//      }
+//   }
 }
-
-private class LoggerImpl: Logger {
-   private let logFunction: (Event) -> Void
-
-   init(_ logFunction: @escaping (Event) -> Void) {
-      self.logFunction = logFunction
-   }
-
-   func log(event: Event) {
-      logFunction(event)
-   }
-}
+//
+//private class LoggerImpl: Logger {
+//   private let logFunction: (Event) -> Void
+//
+//   init(_ logFunction: @escaping (Event) -> Void) {
+//      self.logFunction = logFunction
+//   }
+//
+//   func log(event: Event) {
+//      logFunction(event)
+//   }
+//}
+*/

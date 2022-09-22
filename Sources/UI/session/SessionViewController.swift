@@ -9,21 +9,21 @@
 import Foundation
 import UIKit
 import MonitorCore
-import Dispatch
 
-protocol SessionVCPresenter {
+public protocol SessionVCPresenter {
    var viewModel: SessionViewModel { get }
+   var configuration: SessionViewConfiguration { get }
 
-   func selectEvent(at index: Int, completion: @escaping () -> Void)
+   func selectEvent(at index: IndexPath, completion: @escaping () -> Void)
    func shareSession(_ completion: @escaping () -> Void)
 }
 
-final class SessionVC: UIViewController, HavePreloaderButton, HaveShareButton {
+public class SessionViewController: UIViewController, HavePreloaderButton, HaveShareButton {
    private let presenter: SessionVCPresenter
+   private let config: SessionViewConfiguration
    private var viewState: SessionViewState { presenter.viewModel.state.value }
 
    private lazy var tableView = UITableView(frame: .zero, style: .plain).with {
-      $0.register(cell: NetworkEventCell.self)
       $0.rowHeight = UITableView.automaticDimension
       $0.estimatedRowHeight = 50
       $0.contentInset.top = 15
@@ -36,20 +36,22 @@ final class SessionVC: UIViewController, HavePreloaderButton, HaveShareButton {
       $0.tableFooterView = UIView()
    }
 
-   init(presenter: SessionVCPresenter) {
+   public init(presenter: SessionVCPresenter) {
       self.presenter = presenter
+      self.config = presenter.configuration
       super.init(nibName: nil, bundle: nil)
    }
 
-   required init?(coder: NSCoder) {
+   required public init?(coder: NSCoder) {
       fatalError("init(coder:) has not been implemented")
    }
 
    // MARK: - Overrides
 
-   override func viewDidLoad() {
+   override public func viewDidLoad() {
       super.viewDidLoad()
       configureUI()
+      config.configure(tableView: tableView)
       updateTitle()
 
       presenter.viewModel.state.notify(
@@ -61,7 +63,7 @@ final class SessionVC: UIViewController, HavePreloaderButton, HaveShareButton {
          })
    }
 
-   override func viewWillAppear(_ animated: Bool) {
+   override public func viewWillAppear(_ animated: Bool) {
       super.viewWillAppear(animated)
 
       if let indexPath = tableView.indexPathForSelectedRow {
@@ -82,43 +84,35 @@ final class SessionVC: UIViewController, HavePreloaderButton, HaveShareButton {
 
 // MARK: - UITableViewDataSource
 
-extension SessionVC: UITableViewDataSource {
+extension SessionViewController: UITableViewDataSource {
 
-   func tableView(
+   public func tableView(
       _ tableView: UITableView,
       numberOfRowsInSection section: Int
    ) -> Int {
-      viewState.events.count
+      config.getItemsCount()
    }
 
-   func tableView(
+   public func tableView(
       _ tableView: UITableView,
       cellForRowAt indexPath: IndexPath
    ) -> UITableViewCell {
-
-      switch viewState.events[indexPath.row] {
-      case let .network(networkEvent):
-         return tableView
-            .dequeue(cell: NetworkEventCell.self, for: indexPath)
-            .with(verb: networkEvent.verb)
-            .with(request: networkEvent.method)
-            .with(success: networkEvent.isSuccess)
-      }
+      config.makeCell(indexPath: indexPath, tableView: tableView)
    }
 }
 
 // MARK: - UITableViewDelegate
 
-extension SessionVC: UITableViewDelegate {
+extension SessionViewController: UITableViewDelegate {
 
-   func tableView(
+   public func tableView(
       _ tableView: UITableView,
       didSelectRowAt indexPath: IndexPath
    ) {
 
       // TODO: show activity
 
-      presenter.selectEvent(at: indexPath.row) {
+      presenter.selectEvent(at: indexPath) {
          // TODO: hide activity
       }
    }
@@ -127,9 +121,9 @@ extension SessionVC: UITableViewDelegate {
 // MARK: - UIContextMenuInteractionDelegate
 
 @available(iOS 13.0, *)
-extension SessionVC: UIContextMenuInteractionDelegate {
+extension SessionViewController: UIContextMenuInteractionDelegate {
 
-   func contextMenuInteraction(
+   public func contextMenuInteraction(
       _ interaction: UIContextMenuInteraction,
       configurationForMenuAtLocation location: CGPoint
    ) -> UIContextMenuConfiguration? {
@@ -157,7 +151,7 @@ extension SessionVC: UIContextMenuInteractionDelegate {
 
 // MARK: - Private
 
-private extension SessionVC {
+private extension SessionViewController {
 
    func updateTitle() {
       if #available(iOS 13.0, *), viewState.hasFilters {
@@ -183,7 +177,6 @@ private extension SessionVC {
       tableView.delegate = self
    }
 
-   @available(iOS 13.0, *)
    func makeTitleView(title: String) -> UIView {
       let button = UIButton(type: .system)
       button.setTitle(title, for: .normal)

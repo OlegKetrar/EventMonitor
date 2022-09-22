@@ -1,4 +1,4 @@
-// swift-tools-version:5.4
+// swift-tools-version:5.7
 import PackageDescription
 
 let package = Package(
@@ -10,31 +10,14 @@ let package = Package(
       .library(
          name: "EventMonitor",
          targets: ["EventMonitor"]),
-
-      .library(
-         name: "MonitorSwiftUITest",
-         targets: ["MonitorSwiftUITest"]),
-
-      .library(
-         name: "MonitorCoreV2",
-         targets: ["MonitorCoreV2"]),
    ],
    dependencies: [
-      .package(url: "https://github.com/OlegKetrar/JsonSyntax", .exact("0.2.1")),
+      .package(url: "https://github.com/OlegKetrar/JsonSyntax", exact: "0.2.1"),
    ],
    targets: [
       .target(
          name: "MonitorCore",
-         path: "Sources/Core"),
-
-      .target(
-         name: "MonitorCoreV2",
          path: "Sources/CoreV2"),
-
-      .target(
-         name: "MonitorSwiftUITest",
-         dependencies: ["MonitorCoreV2"],
-         path: "Sources/SwiftUITest"),
 
       .target(
          name: "MonitorUI",
@@ -58,12 +41,12 @@ let package = Package(
             .linkedFramework("UIKit"),
          ]),
 
-      .testTarget(
-         name: "MonitorTests",
-         dependencies: [
-            .target(name: "EventMonitor"),
-         ],
-         path: "Tests/Monitor")
+//      .testTarget(
+//         name: "MonitorTests",
+//         dependencies: [
+//            .target(name: "EventMonitor"),
+//         ],
+//         path: "Tests/Monitor")
    ],
    swiftLanguageVersions: [.v5]
 )

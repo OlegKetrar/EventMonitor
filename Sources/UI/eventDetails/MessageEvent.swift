@@ -14,7 +14,7 @@ public struct MessageEvent: Codable {
    public var function: String
 
    public init(
-      message: String,
+      _ message: String,
       file: String = #file,
       line: UInt = #line,
       function: String = #function

@@ -6,19 +6,19 @@
 //  Copyright © 2021 Oleg Ketrar. All rights reserved.
 //
 
-struct SubsystemFilter {
-   var title: String
-   var isAll: Bool
-   var isApplied: Bool
+public struct SubsystemFilter {
+   public var title: String
+   public var isAll: Bool
+   public var isApplied: Bool
 }
 
 extension SubsystemFilter {
 
-   init(subsystem: String, isApplied: Bool) {
+   public init(subsystem: String, isApplied: Bool) {
       self.init(title: subsystem, isAll: false, isApplied: isApplied)
    }
 
-   static var clear: SubsystemFilter {
+   public static var clear: SubsystemFilter {
       SubsystemFilter(
          title: "Clear filter",
          isAll: true,

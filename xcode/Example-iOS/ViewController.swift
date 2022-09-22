@@ -15,7 +15,7 @@ final class ViewController: UIViewController {
       super.viewDidLoad()
       configureUI()
 
-      Monitor.presenter.enableShakeToShow(rootViewController: self)
+//      Monitor.presenter.enableShakeToShow(rootViewController: self)
    }
 }
 
@@ -65,21 +65,25 @@ private extension ViewController {
    }
 
    @objc func actionAddSystemEvent() {
-      Monitor
+      MonitorComposer.shared
          .makeLogger(subsystem: "system")
-         .log(event: .network(.makeMock()))
+         .log(NetworkEvent.makeMock())
    }
 
    @objc func actionAddCustomEvent() {
-      Monitor.makeLogger(subsystem: "custom").log(event: .network(.makeMock()))
+      MonitorComposer.shared.log(MessageEvent("FFFFF"))
    }
 
    @objc func actionShowMonitor() {
-      navigationController.map { Monitor.presenter.show(over: $0) }
+      MonitorComposer.shared
+         .makeView()
+         .present(over: navigationController)
    }
 
    @objc func actionPushMonitor() {
-      navigationController.map { Monitor.presenter.push(into: $0) }
+      MonitorComposer.shared
+         .makeView()
+         .push(into: navigationController)
    }
 }
 

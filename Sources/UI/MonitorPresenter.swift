@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import MonitorCore
 
+/*
 public struct MonitorPresenter {
    private let repository: EventProvider
 //   private weak var navigationController: UINavigationController?
@@ -62,7 +63,7 @@ private extension MonitorPresenter {
 
    func makePresenter(
       navigation: UINavigationController
-   ) -> SessionListPresenter {
+   ) -> ArchivePresenter {
 
       SessionListPresenter
          .init(repository: AnyEventProvider(provider: repository))
@@ -106,11 +107,4 @@ private extension MonitorPresenter {
          .push(into: navigation)
    }
 }
-
-private struct AnyEventProvider: SessionListRepository {
-   let provider: EventProvider
-
-   func fetchSessions() -> Observable<[SessionInfo]> {
-      provider.fetchSessions()
-   }
-}
+*/

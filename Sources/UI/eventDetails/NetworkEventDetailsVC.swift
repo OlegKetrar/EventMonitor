@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-protocol NetworkEventDetailsVCPresenter {
+public protocol NetworkEventDetailsVCPresenter {
    var viewModel: NetworkEventViewModel { get }
    var isOnlySharing: Bool { get }
 
@@ -17,22 +17,22 @@ protocol NetworkEventDetailsVCPresenter {
    func makeMenuPopover() -> UIViewController
 }
 
-final class NetworkEventDetailsVC: UIViewController, HavePreloaderButton, HaveShareButton {
+public  class NetworkEventDetailsVC: UIViewController, HavePreloaderButton, HaveShareButton {
    private let presenter: NetworkEventDetailsVCPresenter
    private var viewState: NetworkEventViewModel { presenter.viewModel }
 
-   init(presenter: NetworkEventDetailsVCPresenter) {
+   public init(presenter: NetworkEventDetailsVCPresenter) {
       self.presenter = presenter
       super.init(nibName: nil, bundle: nil)
    }
 
-   required init?(coder: NSCoder) {
+   required public init?(coder: NSCoder) {
       fatalError("init(coder:) has not been implemented")
    }
 
    // MARK: - Overrides
 
-   override func viewDidLoad() {
+   override public func viewDidLoad() {
       super.viewDidLoad()
       configureUI()
    }
@@ -61,19 +61,19 @@ final class NetworkEventDetailsVC: UIViewController, HavePreloaderButton, HaveSh
 
 extension NetworkEventDetailsVC: UIPopoverPresentationControllerDelegate {
 
-   func adaptivePresentationStyle(
+   public func adaptivePresentationStyle(
       for controller: UIPresentationController
    ) -> UIModalPresentationStyle {
        return .none
    }
 
-   func popoverPresentationControllerDidDismissPopover(
+   public func popoverPresentationControllerDidDismissPopover(
       _ popoverPresentationController: UIPopoverPresentationController
    ) {
 
    }
 
-   func popoverPresentationControllerShouldDismissPopover(
+   public func popoverPresentationControllerShouldDismissPopover(
       _ popoverPresentationController: UIPopoverPresentationController
    ) -> Bool {
        return true

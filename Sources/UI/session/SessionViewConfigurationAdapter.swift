@@ -7,35 +7,36 @@
 
 import Foundation
 import UIKit
+import MonitorCore
 
-struct SessionViewConfigurationAdapter: SessionViewConfiguration {
+public struct SessionViewConfigurationAdapter: SessionViewConfiguration {
 
-   let events: [AnyEvent]
+   let events: Observable<[AnyEvent]>
    let factories: [AnyEventViewFactory]
 
-   func configure(tableView: UITableView) {
+   public func configure(tableView: UITableView) {
       factories.forEach {
          $0.configureTableView(tableView)
       }
    }
 
-   func getItemsCount() -> Int {
-      events.count
+   public func getItemsCount() -> Int {
+      events.value.count
    }
 
-   func makeCell(indexPath: IndexPath, tableView: UITableView) -> UITableViewCell {
+   public func makeCell(indexPath: IndexPath, tableView: UITableView) -> UITableViewCell {
       factories
          .lazy
          .compactMap {
-            $0.makeCell(events, indexPath, tableView)
+            $0.makeCell(events.value, indexPath, tableView)
          }
          .first ?? UITableViewCell()
    }
 
-   func makeDetailViewController(for indexPath: IndexPath) -> UIViewController? {
-      guard events.indices.contains(indexPath.row) else { return nil }
+   public func makeDetailViewController(for indexPath: IndexPath) -> UIViewController? {
+      guard events.value.indices.contains(indexPath.row) else { return nil }
 
-      let event = events[indexPath.row]
+      let event = events.value[indexPath.row]
 
       return factories
          .lazy
@@ -44,12 +45,12 @@ struct SessionViewConfigurationAdapter: SessionViewConfiguration {
    }
 }
 
-struct AnyEventViewFactory {
-   let configureTableView: (UITableView) -> Void
-   let makeCell: ([AnyEvent], IndexPath, UITableView) -> UITableViewCell?
-   let makeDetailViewController: (AnyEvent) -> UIViewController?
+public struct AnyEventViewFactory {
+   public let configureTableView: (UITableView) -> Void
+   public let makeCell: ([AnyEvent], IndexPath, UITableView) -> UITableViewCell?
+   public let makeDetailViewController: (AnyEvent) -> UIViewController?
 
-   init<Factory>(_ factory: Factory)
+   public init<Factory>(_ factory: Factory)
    where
       Factory: EventViewConfiguration,
       Factory.EventCell: UITableViewCell
@@ -70,14 +71,14 @@ struct AnyEventViewFactory {
          guard
             allEvents.indices.contains(indexPath.row),
             let cell = anyCell as? Factory.EventCell,
-            let event = allEvents[indexPath.row] as? Factory.Event
+            let event = allEvents[indexPath.row].payload as? Factory.Event
          else { return nil }
 
          return factory.configure(cell: cell, event: event)
       }
 
       self.makeDetailViewController = { anyEvent in
-         if let event = anyEvent as? Factory.Event {
+         if let event = anyEvent.payload as? Factory.Event {
             return factory.buildDetailView(event)
          } else {
             return nil

@@ -1,5 +1,5 @@
 //
-//  SessionListPresenter.swift
+//  ArchivePresenter.swift
 //  EventMonitor
 //
 //  Created by Oleg Ketrar on 20.09.2019.
@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 import MonitorCore
 
-final class SessionListPresenter: SessionListVCPresenter {
-   let viewModel: SessionListViewModel
+final class ArchivePresenter: SessionListVCPresenter {
+   let viewModel: ArchiveViewModel
 
    typealias OnSessionSelectCallback = (
       SessionIdentifier,
@@ -21,8 +21,8 @@ final class SessionListPresenter: SessionListVCPresenter {
    private var onSelectSessionCallback: OnSessionSelectCallback = { _, _ in }
    private var onCloseButtonCallback: (() -> Void)? = nil
 
-   init(repository: SessionListRepository) {
-      viewModel = SessionListViewModel(repository: repository)
+   init(repository: ArchiveRepository) {
+      viewModel = ArchiveViewModel(repository: repository)
    }
 
    func onSelectSession(_ callback: @escaping OnSessionSelectCallback) -> Self {
@@ -36,7 +36,7 @@ final class SessionListPresenter: SessionListVCPresenter {
    }
 
    func push(into nc: UINavigationController, animated: Bool = true) {
-      let listVC = SessionListVC(presenter: self)
+      let listVC = ArchiveViewController(presenter: self)
 
       // Add close button when needed
       if onCloseButtonCallback != nil {

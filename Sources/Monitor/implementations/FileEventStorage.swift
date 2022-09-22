@@ -42,12 +42,12 @@ final class FileEventStorage: EventStorage {
 
    func readEvents(
       sessionIdentifier: SessionIdentifier,
-      completion: @escaping ([GroupedEvent]) -> Void
+      completion: @escaping ([AnyEvent]) -> Void
    ) {
 
       let filename = sessionIdentifier.makeFilename()
       let filePath = archiver.directoryPath.ns.appendingPathComponent(filename)
-      let events: [GroupedEvent] = archiver.readItemsFromFile(at: filePath)
+      let events: [AnyEvent] = archiver.readItemsFromFile(at: filePath)
 
       completion(events)
    }
@@ -57,10 +57,12 @@ final class FileEventStorage: EventStorage {
       activeSessionID = identifier
    }
 
-   func write(event: GroupedEvent) {
+   func write(event: AnyEvent) {
       archiver.write(item: event)
    }
 }
+
+protocol Test {}
 
 private final class LogArchiver {
    let directoryPath: String

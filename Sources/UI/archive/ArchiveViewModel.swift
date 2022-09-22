@@ -1,5 +1,5 @@
 //
-//  SessionListViewModel.swift
+//  ArchiveViewModel.swift
 //  EventMonitor
 //
 //  Created by Oleg Ketrar on 24.10.2021.
@@ -10,16 +10,16 @@ import Foundation
 import Dispatch
 import MonitorCore
 
-struct SessionListViewState {
+struct ArchiveViewState {
    var titles: [String] = []
 }
 
-final class SessionListViewModel {
+final class ArchiveViewModel {
    private let allSessions: Observable<[SessionInfo]>
 
-   let state: Observable<SessionListViewState>
+   let state: Observable<ArchiveViewState>
 
-   init(repository: SessionListRepository) {
+   init(repository: ArchiveRepository) {
       let formatter = DateFormatter()
       formatter.timeStyle = .medium
       formatter.dateStyle = .medium
@@ -35,7 +35,7 @@ final class SessionListViewModel {
       }
 
       self.allSessions = repository.fetchSessions()
-      self.state = Observable(SessionListViewState(
+      self.state = Observable(ArchiveViewState(
          titles: self.allSessions.value.map(convertSession(_:))))
 
       self.allSessions.notify(

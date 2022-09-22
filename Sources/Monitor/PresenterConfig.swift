@@ -21,15 +21,15 @@ public final class PresenterConfig {
    }
 
    public func show(over viewController: UIViewController) {
-      MonitorPresenter
-         .init(repository: getEventProvider())
-         .present(over: viewController)
+//      MonitorPresenter
+//         .init(repository: getEventProvider())
+//         .present(over: viewController)
    }
 
    public func push(into navigationController: UINavigationController) {
-      MonitorPresenter
-         .init(repository: getEventProvider())
-         .push(into: navigationController)
+//      MonitorPresenter
+//         .init(repository: getEventProvider())
+//         .push(into: navigationController)
    }
 
    /// Enables Monitor presenting on shake gesture.
@@ -49,9 +49,9 @@ public final class PresenterConfig {
             motion == .motionShake
          else { return }
 
-         MonitorPresenter
-            .init(repository: strongSelf.getEventProvider())
-            .presentCurrentSession(over: rootVC)
+//         MonitorPresenter
+//            .init(repository: strongSelf.getEventProvider())
+//            .presentCurrentSession(over: rootVC)
       }
 
       motionWindow?.makeKeyAndVisible()

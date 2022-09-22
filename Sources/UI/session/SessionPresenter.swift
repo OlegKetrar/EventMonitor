@@ -14,54 +14,56 @@ import MonitorCore
 
 final class SessionPresenter: SessionVCPresenter {
    let viewModel: SessionViewModel
-   private let exportCapability: ExportCapability<SessionFormatting>
+   let configuration: SessionViewConfiguration
+
+//   private let exportCapability: ExportCapability<SessionFormatting>
 
    private weak var navigationController: UINavigationController?
-   private var onSelectEventCallback: (GroupedEvent) -> Void = { _ in }
 
    init(
       session: Observable<EventSession>,
-      exportCapability: ExportCapability<SessionFormatting>
+      configs: [AnyEventViewFactory],
+      navigation: UINavigationController?
    ) {
       self.viewModel = SessionViewModel(session: session)
-      self.exportCapability = exportCapability
+      self.navigationController = navigation
+
+      let events = Observable(session.value.events)
+      session.notify { newSession in
+         events.mutate { $0 = newSession.events }
+      }
+
+      self.configuration = SessionViewConfigurationAdapter(
+         events: events,
+         factories: configs)
 
        // pass `exportCapabilities` to viewModel
        // viewState should contain `hasShareButton: Bool`
    }
 
-   func onSelectEvent(_ callback: @escaping (GroupedEvent) -> Void) -> Self {
-      self.onSelectEventCallback = callback
-      return self
-   }
-
-   func push(into nc: UINavigationController, animated: Bool = true) {
-      navigationController = nc
-      nc.pushViewController(SessionVC(presenter: self), animated: animated)
-   }
-
    func shareSession(_ completion: @escaping () -> Void) {
-      exportCapability.exporter.prepareFile(
-         named: "\(viewModel.state.value.exportFileName).log",
-         content: {
-            viewModel.formatSession(with: $0)
-         },
-         completion: { [weak self] file in
-            FileSharingPresenter(filePath: file?.path).share(
-               over: self?.navigationController,
-               completion: {
-
-                  // let arc to remove file from disk
-                  _ = file
-
-                  completion()
-               })
-         })
+//      exportCapability.exporter.prepareFile(
+//         named: "\(viewModel.state.value.exportFileName).log",
+//         content: {
+//            viewModel.formatSession(with: $0)
+//         },
+//         completion: { [weak self] file in
+//            FileSharingPresenter(filePath: file?.path).share(
+//               over: self?.navigationController,
+//               completion: {
+//
+//                  // let arc to remove file from disk
+//                  _ = file
+//
+//                  completion()
+//               })
+//         })
    }
 
-   func selectEvent(at index: Int, completion: @escaping () -> Void) {
-      if let event = viewModel.getSessionEvent(at: index) {
-         onSelectEventCallback(event)
+   func selectEvent(at indexPath: IndexPath, completion: @escaping () -> Void) {
+
+      if let detailVC = configuration.makeDetailViewController(for: indexPath) {
+         navigationController?.pushViewController(detailVC, animated: true)
       }
 
       completion()

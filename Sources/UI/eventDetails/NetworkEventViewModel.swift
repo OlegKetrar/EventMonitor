@@ -9,20 +9,20 @@
 import Foundation
 import MonitorCore
 
-struct NetworkEventViewModel {
-   var titleString: String
-   var requestVerb: String
-   var statusString: String
-   var isFailed: Bool
+public struct NetworkEventViewModel {
+   public var titleString: String
+   public var requestVerb: String
+   public var statusString: String
+   public var isFailed: Bool
 
-   var postParameters: String?
-   var headers: String
-   var response: String
+   public var postParameters: String?
+   public var headers: String
+   public var response: String
 }
 
 extension NetworkEventViewModel {
 
-   init(_ event: NetworkEvent) {
+   public init(_ event: NetworkEvent) {
       self.init(
          titleString: event.formattedTitle(),
          requestVerb: event.request.verb.uppercased(),

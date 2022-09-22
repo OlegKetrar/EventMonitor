@@ -14,11 +14,11 @@ public protocol EventStorage {
    /// Read events for stored session
    func readEvents(
       sessionIdentifier: SessionIdentifier,
-      completion: @escaping ([GroupedEvent]) -> Void)
+      completion: @escaping ([AnyEvent]) -> Void)
 
    /// Start new session with name.
    func startSession(identifier: SessionIdentifier)
 
    /// Save event to active session.
-   func write(event: GroupedEvent)
+   func write(event: AnyEvent)
 }

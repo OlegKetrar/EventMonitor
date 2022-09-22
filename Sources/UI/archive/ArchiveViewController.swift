@@ -1,5 +1,5 @@
 //
-//  SessionListVC.swift
+//  ArchiveViewController.swift
 //  EventMonitor
 //
 //  Created by Oleg Ketrar on 14.05.2019.
@@ -10,14 +10,14 @@ import Foundation
 import UIKit
 
 protocol SessionListVCPresenter {
-   var viewModel: SessionListViewModel { get }
+   var viewModel: ArchiveViewModel { get }
 
    func selectSession(at index: Int, completion: @escaping () -> Void)
 }
 
-final class SessionListVC: UIViewController {
+final class ArchiveViewController: UIViewController {
    private let presenter: SessionListVCPresenter
-   private var viewState: SessionListViewState { presenter.viewModel.state.value }
+   private var viewState: ArchiveViewState { presenter.viewModel.state.value }
 
    // MARK: - Outlets
 
@@ -66,7 +66,7 @@ final class SessionListVC: UIViewController {
 
 // MARK: - UITableViewDataSource
 
-extension SessionListVC: UITableViewDataSource {
+extension ArchiveViewController: UITableViewDataSource {
 
    func tableView(
       _ tableView: UITableView,
@@ -98,7 +98,7 @@ extension SessionListVC: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 
-extension SessionListVC: UITableViewDelegate {
+extension ArchiveViewController: UITableViewDelegate {
 
    func tableView(
       _ tableView: UITableView,
@@ -115,7 +115,7 @@ extension SessionListVC: UITableViewDelegate {
 
 // MARK: - Private
 
-private extension SessionListVC {
+private extension ArchiveViewController {
 
    func configureUI() {
       title = "Sessions"

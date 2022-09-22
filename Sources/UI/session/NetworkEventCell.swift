@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-final class NetworkEventCell: UITableViewCell, ReusableCell {
+public class NetworkEventCell: UITableViewCell, ReusableCell {
 
    private struct K {
       static let successPrimaryColor = #colorLiteral(red: 0.2871317863, green: 0.8010149598, blue: 0.5653145909, alpha: 1)
@@ -40,29 +40,29 @@ final class NetworkEventCell: UITableViewCell, ReusableCell {
 
    // MARK: - Interface
 
-   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+   override public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
       super.init(style: style, reuseIdentifier: reuseIdentifier)
       configureUI()
    }
 
-   required init?(coder aDecoder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
+   required public init?(coder aDecoder: NSCoder) {
+      nil
    }
 
    @discardableResult
-   func with(verb: String) -> Self {
+   public func with(verb: String) -> Self {
       verbLabel.text = verb
       return self
    }
 
    @discardableResult
-   func with(request: String) -> Self {
+   public func with(request: String) -> Self {
       titleLabel.text = request
       return self
    }
 
    @discardableResult
-   func with(success: Bool) -> Self {
+   public func with(success: Bool) -> Self {
       verbContainer.backgroundColor = success ? K.successPrimaryColor : K.failurePrimaryColor
       backgroundColor = success ? K.successSecondaryColor : K.failureSecondaryColor
 

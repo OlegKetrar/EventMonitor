@@ -10,37 +10,30 @@ import Foundation
 import UIKit
 import MonitorCore
 
-final class NetworkEventDetailsPresenter: NetworkEventDetailsVCPresenter {
+public class NetworkEventDetailsPresenter: NetworkEventDetailsVCPresenter {
 
-   let viewModel: NetworkEventViewModel
-   let isOnlySharing: Bool
+   public let viewModel: NetworkEventViewModel
+   public let isOnlySharing: Bool
 
    private let event: NetworkEvent
    private let subsystem: String
-   private let exportCapabilities: [ExportCapability<EventFormatting>]
+//   private let exportCapabilities: [ExportCapability<EventFormatting>]
    private weak var detailsVC: UIViewController?
 
-   init(
+   public init(
       event: NetworkEvent,
-      subsystem: String,
-      exportCapabilities: [ExportCapability<EventFormatting>]
+      subsystem: String
+//      exportCapabilities: [ExportCapability<EventFormatting>]
    ) {
       self.viewModel = NetworkEventViewModel(event)
       self.isOnlySharing = true
       self.event = event
       self.subsystem = subsystem
-      self.exportCapabilities = exportCapabilities
+//      self.exportCapabilities = exportCapabilities
    }
 
-   func push(into nc: UINavigationController, animated: Bool = true) {
-      let vc = NetworkEventDetailsVC(presenter: self)
-      detailsVC = vc
-
-      nc.pushViewController(vc, animated: animated)
-   }
-
-   func shareEvent(_ completion: @escaping () -> Void) {
-
+   public func shareEvent(_ completion: @escaping () -> Void) {
+/*
       guard let exporter = exportCapabilities.first?.exporter else {
          completion()
          return
@@ -65,9 +58,10 @@ final class NetworkEventDetailsPresenter: NetworkEventDetailsVCPresenter {
                   completion()
                })
          })
+ */
    }
 
-   func makeMenuPopover() -> UIViewController {
+   public func makeMenuPopover() -> UIViewController {
       fatalError("unimplemented yet")
    }
 }
