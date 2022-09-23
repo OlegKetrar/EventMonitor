@@ -11,25 +11,21 @@ import MonitorCore
 import MonitorUI
 
 public final class PresenterConfig {
-   private let getEventProvider: () -> EventProvider
+   private let viewFactory: () -> MonitorView
 
    /// We create another UIWindow to have a callback on shakeEvent.
    private var motionWindow: MotionWindow?
 
-   init(provider: @autoclosure @escaping () -> EventProvider) {
-      self.getEventProvider = provider
+   init(viewFactory: @escaping () -> MonitorView) {
+      self.viewFactory = viewFactory
    }
 
-   public func show(over viewController: UIViewController) {
-//      MonitorPresenter
-//         .init(repository: getEventProvider())
-//         .present(over: viewController)
+   public func show(over viewController: UIViewController?) {
+      viewFactory().present(over: viewController)
    }
 
-   public func push(into navigationController: UINavigationController) {
-//      MonitorPresenter
-//         .init(repository: getEventProvider())
-//         .push(into: navigationController)
+   public func push(into navigationController: UINavigationController?) {
+      viewFactory().push(into: navigationController)
    }
 
    /// Enables Monitor presenting on shake gesture.
@@ -49,9 +45,7 @@ public final class PresenterConfig {
             motion == .motionShake
          else { return }
 
-//         MonitorPresenter
-//            .init(repository: strongSelf.getEventProvider())
-//            .presentCurrentSession(over: rootVC)
+         strongSelf.viewFactory().presentActiveSession(over: rootVC)
       }
 
       motionWindow?.makeKeyAndVisible()

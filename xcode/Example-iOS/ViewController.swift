@@ -15,7 +15,7 @@ final class ViewController: UIViewController {
       super.viewDidLoad()
       configureUI()
 
-//      Monitor.presenter.enableShakeToShow(rootViewController: self)
+      MonitorComposer.shared.presenter.enableShakeToShow(rootViewController: self)
    }
 }
 
@@ -76,13 +76,13 @@ private extension ViewController {
 
    @objc func actionShowMonitor() {
       MonitorComposer.shared
-         .makeView()
-         .present(over: navigationController)
+         .presenter
+         .show(over: navigationController)
    }
 
    @objc func actionPushMonitor() {
       MonitorComposer.shared
-         .makeView()
+         .presenter
          .push(into: navigationController)
    }
 }

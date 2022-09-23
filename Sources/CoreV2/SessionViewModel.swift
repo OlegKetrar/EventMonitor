@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import MonitorCore
 
 public struct SessionViewState {
 

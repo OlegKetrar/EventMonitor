@@ -56,6 +56,8 @@ extension NetworkEventCell: HaveReuseIdentifier {
 public class MonitorComposer {
    public static let shared = MonitorComposer()
 
+   private var viewConfig = EventViewConfig()
+
    private let processor: EventProcessor = {
       let tmpDir = NSTemporaryDirectory() as NSString
       let path = tmpDir.appendingPathComponent("network-monitor.session-logs")
@@ -64,6 +66,12 @@ public class MonitorComposer {
 
       return processor
    }()
+
+   public private(set) lazy var presenter = PresenterConfig(viewFactory: {
+      UIKitMonitorView(
+         provider: self.processor,
+         config: self.viewConfig)
+   })
 
    init() {
       self.register(
@@ -74,8 +82,6 @@ public class MonitorComposer {
          event: MessageEvent.self,
          configuration: MessageEventConfig())
    }
-
-   private var viewConfig = EventViewConfig()
 
    public func register<ConcreteEvent: Event>(
       event: ConcreteEvent.Type,
@@ -97,12 +103,6 @@ public class MonitorComposer {
       EventLogger(
          subsystem: subsystem,
          impl: processor)
-   }
-
-   public func makeView() -> MonitorView {
-      UIKitMonitorView(
-         provider: processor,
-         config: viewConfig)
    }
 }
 
