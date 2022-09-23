@@ -10,18 +10,9 @@ import Foundation
 import UIKit
 import MonitorCore
 
-public protocol SessionVCPresenter {
-   var viewModel: SessionViewModel { get }
-   var configuration: SessionViewConfiguration { get }
-
-   func selectEvent(at index: IndexPath, completion: @escaping () -> Void)
-   func shareSession(_ completion: @escaping () -> Void)
-}
-
 public class SessionViewController: UIViewController, HavePreloaderButton, HaveShareButton {
-   private let presenter: SessionVCPresenter
    private let config: SessionViewConfiguration
-   private var viewState: SessionViewState { presenter.viewModel.state.value }
+   private var viewState: SessionViewState { config.viewModel.state.value }
 
    private lazy var tableView = UITableView(frame: .zero, style: .plain).with {
       $0.rowHeight = UITableView.automaticDimension
@@ -36,9 +27,8 @@ public class SessionViewController: UIViewController, HavePreloaderButton, HaveS
       $0.tableFooterView = UIView()
    }
 
-   public init(presenter: SessionVCPresenter) {
-      self.presenter = presenter
-      self.config = presenter.configuration
+   public init(configuration: SessionViewConfiguration) {
+      self.config = configuration
       super.init(nibName: nil, bundle: nil)
    }
 
@@ -54,7 +44,7 @@ public class SessionViewController: UIViewController, HavePreloaderButton, HaveS
       config.configure(tableView: tableView)
       updateTitle()
 
-      presenter.viewModel.state.notify(
+      config.viewModel.state.notify(
          observer: self,
          on: .main,
          callback: { vc, _ in
@@ -76,9 +66,9 @@ public class SessionViewController: UIViewController, HavePreloaderButton, HaveS
    @objc func actionShare() {
       navigationItem.rightBarButtonItem = configuredPreloaderBarButton()
 
-      presenter.shareSession { [weak self] in
-         self?.navigationItem.rightBarButtonItem = self?.configuredShareButton()
-      }
+//      presenter.shareSession { [weak self] in
+//         self?.navigationItem.rightBarButtonItem = self?.configuredShareButton()
+//      }
    }
 }
 
@@ -97,7 +87,7 @@ extension SessionViewController: UITableViewDataSource {
       _ tableView: UITableView,
       cellForRowAt indexPath: IndexPath
    ) -> UITableViewCell {
-      config.makeCell(indexPath: indexPath, tableView: tableView)
+      config.makeCell(tableView: tableView, indexPath: indexPath)
    }
 }
 
@@ -109,12 +99,7 @@ extension SessionViewController: UITableViewDelegate {
       _ tableView: UITableView,
       didSelectRowAt indexPath: IndexPath
    ) {
-
-      // TODO: show activity
-
-      presenter.selectEvent(at: indexPath) {
-         // TODO: hide activity
-      }
+      config.didSelectCell(at: indexPath)
    }
 }
 
@@ -141,7 +126,7 @@ extension SessionViewController: UIContextMenuInteractionDelegate {
                         attributes: filter.isAll ? [.destructive] : [],
                         state: filter.isApplied ? .on : .off,
                         handler: { _ in
-                           self?.presenter.viewModel.filterEvents(by: filter)
+                           self?.config.viewModel.filterEvents(by: filter)
                         })
                   })
             }

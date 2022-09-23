@@ -11,11 +11,11 @@ import MonitorCore
 
 public struct UIKitMonitorView {
    let provider: EventProvider
-   let configs: [AnyEventViewFactory]
+   let config: EventViewConfig
 
-   public init(provider: EventProvider, configs: [AnyEventViewFactory]) {
+   public init(provider: EventProvider, config: EventViewConfig) {
       self.provider = provider
-      self.configs = configs
+      self.config = config
    }
 }
 
@@ -42,12 +42,12 @@ extension UIKitMonitorView: MonitorView {
       let archiveVC = makeArchiveViewController(nc: nc)
       let activeSession = provider.fetchActiveSession()
 
-      let presenter = SessionPresenter(
-         session: activeSession,
-         configs: configs,
+      let adapter = SessionViewAdapter(
+         viewModel: SessionViewModel(session: activeSession),
+         config: config,
          navigation: nc)
 
-      let activeSessionVC = SessionViewController(presenter: presenter)
+      let activeSessionVC = SessionViewController(configuration: adapter)
 
       nc.setViewControllers([archiveVC, activeSessionVC], animated: false)
 
@@ -68,13 +68,13 @@ extension UIKitMonitorView {
                identifier: selectedSession,
                completion: { session in
 
-                  let presenter = SessionPresenter(
-                     session: session,
-                     configs: configs,
+                  let adapter = SessionViewAdapter(
+                     viewModel: SessionViewModel(session: session),
+                     config: config,
                      navigation: nc)
 
                   nc?.pushViewController(
-                     SessionViewController(presenter: presenter),
+                     SessionViewController(configuration: adapter),
                      animated: true)
 
                   completion()

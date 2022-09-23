@@ -9,14 +9,14 @@
 import Foundation
 import MonitorCore
 
-struct SessionViewState {
+public struct SessionViewState {
 
-   var title: String
-   var exportFileName: String
-   var filters: [SubsystemFilter]
-   var events: [AnyEvent]
+   public var title: String
+   public var exportFileName: String
+   public var filters: [SubsystemFilter]
+   public var events: [AnyEvent]
 
-   var hasFilters: Bool {
+   public var hasFilters: Bool {
       filters.isEmpty == false
    }
 }
@@ -25,7 +25,7 @@ public final class SessionViewModel {
    private let session: Observable<EventSession>
    private var appliedFilters: [String]
 
-   let state: Observable<SessionViewState>
+   public let state: Observable<SessionViewState>
 
    public init(session: Observable<EventSession>) {
 

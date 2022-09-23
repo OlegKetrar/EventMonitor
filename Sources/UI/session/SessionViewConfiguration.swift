@@ -6,14 +6,15 @@
 //
 
 import Foundation
-import UIKit
+import class UIKit.UITableView
+import class UIKit.UITableViewCell
+import class MonitorCore.SessionViewModel
 
 public protocol SessionViewConfiguration {
+   var viewModel: SessionViewModel { get }
+
    func configure(tableView: UITableView)
-
    func getItemsCount() -> Int
-   func makeCell(indexPath: IndexPath, tableView: UITableView) -> UITableViewCell
-   func makeDetailViewController(for indexPath: IndexPath) -> UIViewController?
-
-   // TODO: add filtering
+   func makeCell(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell
+   func didSelectCell(at indexPath: IndexPath)
 }

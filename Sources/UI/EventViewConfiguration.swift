@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol EventViewConfiguration {
+public protocol EventViewConfiguration<Event> {
    associatedtype Event
    associatedtype EventCell: UITableViewCell & HaveReuseIdentifier
 

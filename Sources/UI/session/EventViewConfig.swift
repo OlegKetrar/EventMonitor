@@ -1,6 +1,6 @@
 //
-//  SessionViewConfigurationAdapter.swift
-//
+//  EventViewConfig.swift
+//  EventMonitor
 //
 //  Created by Oleg Ketrar on 18.09.2022.
 //
@@ -9,10 +9,20 @@ import Foundation
 import UIKit
 import MonitorCore
 
-public struct SessionViewConfigurationAdapter: SessionViewConfiguration {
+public struct EventViewConfig {
+   var factories: [AnyEventViewFactory] = []
 
-   let events: Observable<[AnyEvent]>
-   let factories: [AnyEventViewFactory]
+   public init() {}
+
+   public mutating func add<ConcreteEvent: Event>(
+      _ factory: any EventViewConfiguration<ConcreteEvent>
+   ) {
+
+      factories.append(AnyEventViewFactory(factory))
+   }
+}
+
+extension EventViewConfig {
 
    public func configure(tableView: UITableView) {
       factories.forEach {
@@ -20,37 +30,34 @@ public struct SessionViewConfigurationAdapter: SessionViewConfiguration {
       }
    }
 
-   public func getItemsCount() -> Int {
-      events.value.count
-   }
+   public func makeCell(
+      tableView: UITableView,
+      indexPath: IndexPath,
+      event: AnyEvent
+   ) -> UITableViewCell? {
 
-   public func makeCell(indexPath: IndexPath, tableView: UITableView) -> UITableViewCell {
       factories
          .lazy
          .compactMap {
-            $0.makeCell(events.value, indexPath, tableView)
+            $0.makeCell(tableView, indexPath, event)
          }
-         .first ?? UITableViewCell()
+         .first
    }
 
-   public func makeDetailViewController(for indexPath: IndexPath) -> UIViewController? {
-      guard events.value.indices.contains(indexPath.row) else { return nil }
-
-      let event = events.value[indexPath.row]
-
-      return factories
+   public func makeDetailViewController(event: AnyEvent) -> UIViewController? {
+      factories
          .lazy
          .compactMap { $0.makeDetailViewController(event) }
          .first
    }
 }
 
-public struct AnyEventViewFactory {
-   public let configureTableView: (UITableView) -> Void
-   public let makeCell: ([AnyEvent], IndexPath, UITableView) -> UITableViewCell?
-   public let makeDetailViewController: (AnyEvent) -> UIViewController?
+struct AnyEventViewFactory {
+   let configureTableView: (UITableView) -> Void
+   let makeCell: (UITableView, IndexPath, AnyEvent) -> UITableViewCell?
+   let makeDetailViewController: (AnyEvent) -> UIViewController?
 
-   public init<Factory>(_ factory: Factory)
+   init<Factory>(_ factory: Factory)
    where
       Factory: EventViewConfiguration,
       Factory.EventCell: UITableViewCell
@@ -62,16 +69,15 @@ public struct AnyEventViewFactory {
             forCellReuseIdentifier: Factory.EventCell.reuseID)
       }
 
-      self.makeCell = { allEvents, indexPath, tableView in
+      self.makeCell = { tableView, indexPath, anyEvent in
 
          let anyCell = tableView.dequeueReusableCell(
             withIdentifier: Factory.EventCell.reuseID,
             for: indexPath)
 
          guard
-            allEvents.indices.contains(indexPath.row),
             let cell = anyCell as? Factory.EventCell,
-            let event = allEvents[indexPath.row].payload as? Factory.Event
+            let event = anyEvent.payload as? Factory.Event
          else { return nil }
 
          return factory.configure(cell: cell, event: event)

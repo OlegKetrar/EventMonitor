@@ -75,22 +75,18 @@ public class MonitorComposer {
          configuration: MessageEventConfig())
    }
 
-   private var configs: [AnyEventViewFactory] = []
+   private var viewConfig = EventViewConfig()
 
-   public func register<SomeEvent, ViewConfiguration>(
-      event: SomeEvent.Type,
-      configuration: ViewConfiguration
-   ) where
-      SomeEvent: Event,
-      ViewConfiguration: EventViewConfiguration,
-      ViewConfiguration.Event == SomeEvent
-   {
+   public func register<ConcreteEvent: Event>(
+      event: ConcreteEvent.Type,
+      configuration: any EventViewConfiguration<ConcreteEvent>
+   ) {
 
       TypeRegistry.register(
          id: String(describing: event),
          value: event)
 
-      configs.append(AnyEventViewFactory(configuration))
+      viewConfig.add(configuration)
    }
 
    public func log<SomeEvent: Event>(_ event: SomeEvent) {
@@ -106,7 +102,7 @@ public class MonitorComposer {
    public func makeView() -> MonitorView {
       UIKitMonitorView(
          provider: processor,
-         configs: configs)
+         config: viewConfig)
    }
 }
 

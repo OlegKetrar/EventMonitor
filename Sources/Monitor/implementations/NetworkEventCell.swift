@@ -8,8 +8,9 @@
 
 import Foundation
 import UIKit
+import MonitorUI
 
-public class NetworkEventCell: UITableViewCell, ReusableCell {
+public class NetworkEventCell: UITableViewCell {
 
    private struct K {
       static let successPrimaryColor = #colorLiteral(red: 0.2871317863, green: 0.8010149598, blue: 0.5653145909, alpha: 1)
@@ -31,7 +32,7 @@ public class NetworkEventCell: UITableViewCell, ReusableCell {
    }
 
    private let titleLabel = UILabel(frame: .zero).with {
-      $0.textColor = .grayPrimaryText
+      $0.textColor = UIColor.grayPrimaryText
       $0.font = .systemFont(ofSize: 16, weight: .semibold)
       $0.lineBreakMode = .byWordWrapping
       $0.numberOfLines = 0
@@ -102,3 +103,15 @@ private extension NetworkEventCell {
       ])
    }
 }
+
+protocol HasWith: AnyObject {}
+
+extension HasWith {
+
+   func with(_ closure: (Self) throws -> Void) rethrows -> Self {
+      try closure(self)
+      return self
+   }
+}
+
+extension UIView: HasWith {}
