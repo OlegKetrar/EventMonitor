@@ -33,20 +33,18 @@ struct NetworkEventConfig: EventViewConfiguration {
 }
 
 struct MessageEventConfig: EventViewConfiguration {
-   typealias Event = MessageEvent
-   typealias EventCell = NetworkEventCell
 
-   func configure(cell: NetworkEventCell, event: MessageEvent) -> NetworkEventCell {
-//      cell.with(verb: event.request.verb.uppercased())
-//      cell.with(request: event.request.method)
-//      cell.with(success: event.response.failureReason == nil)
-
-      return cell
+   func configure(cell: MessageEventCell, event: MessageEvent) -> MessageEventCell {
+      return cell.with(text: event.message)
    }
 
    func buildDetailView(_ event: MessageEvent) -> UIViewController? {
       return nil
    }
+}
+
+extension MessageEventCell: HaveReuseIdentifier {
+   public static var reuseID: String { String(describing: self) }
 }
 
 extension NetworkEventCell: HaveReuseIdentifier {
