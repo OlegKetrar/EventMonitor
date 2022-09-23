@@ -17,7 +17,14 @@ let package = Package(
    targets: [
       .target(
          name: "MonitorCore",
-         path: "Sources/CoreV2"),
+         path: "Sources/Core"),
+
+      .testTarget(
+         name: "CoreTests",
+         dependencies: [
+            .target(name: "MonitorCore"),
+         ],
+         path: "Tests/Core"),
 
       .target(
          name: "MonitorUI",
@@ -36,17 +43,17 @@ let package = Package(
             .target(name: "MonitorCore"),
             .target(name: "MonitorUI"),
          ],
-         path: "Sources/Monitor",
+         path: "Sources/Composer",
          linkerSettings: [
             .linkedFramework("UIKit"),
          ]),
 
-//      .testTarget(
-//         name: "MonitorTests",
-//         dependencies: [
-//            .target(name: "EventMonitor"),
-//         ],
-//         path: "Tests/Monitor")
+      .testTarget(
+         name: "ComposerTests",
+         dependencies: [
+            .target(name: "EventMonitor"),
+         ],
+         path: "Tests/Composer"),
    ],
    swiftLanguageVersions: [.v5]
 )

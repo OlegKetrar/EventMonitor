@@ -1,39 +1,21 @@
 //
-//  AnyEvent.swift
+//  AnyEvent+Codable.swift
+//  EventMonitor
 //
-//
-//  Created by Oleg Ketrar on 19.09.2022.
+//  Created by Oleg Ketrar on 24.09.2022.
+//  Copyright © 2022 Oleg Ketrar. All rights reserved.
 //
 
-public struct TypeRegistry {
-   private static var dict: [String : any Codable.Type] = [:]
-
-   static func get(_ id: String) -> (any Codable.Type)? {
-      dict[id]
-   }
-
-   public static func register(id: String, value: any Codable.Type) {
-      dict[id] = value
-   }
-}
+import Foundation
 
 struct ParsingError: Error {}
 
-public struct AnyEvent: Codable {
-   public var subsystem: String
-   public var type: any Codable.Type
-   public var payload: any Codable
-
-   public init<T: Event>(_ event: T, subsystem: String) {
-      self.subsystem = subsystem
-      self.type = T.self
-      self.payload = event
-   }
+extension AnyEvent: Codable {
 
    enum CodingKeys: String, CodingKey {
-       case subsystem
-       case type
-       case payload
+       case subsystem = "s"
+       case type = "t"
+       case payload = "p"
    }
 
    public init(from decoder: Decoder) throws {

@@ -62,8 +62,6 @@ final class FileEventStorage: EventStorage {
    }
 }
 
-protocol Test {}
-
 private final class LogArchiver {
    let directoryPath: String
 

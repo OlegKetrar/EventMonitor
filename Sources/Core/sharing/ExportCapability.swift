@@ -11,7 +11,7 @@ public protocol SessionFormatting {
 }
 
 public protocol EventFormatting {
-   func format(_ event: GroupedEvent) -> String
+   func format(_ event: AnyEvent) -> String
 }
 
 public struct ExportCapability<Formatter> {

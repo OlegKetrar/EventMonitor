@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+/*
 public struct PlainTextFormatter: EventFormatting {
    public init() {}
 
@@ -63,3 +63,4 @@ private extension Dictionary {
       return "{\(pairsStr)\n}"
    }
 }
+*/
