@@ -48,14 +48,6 @@ struct MessageEventConfig: EventViewConfiguration {
    }
 }
 
-extension MessageEventCell: HaveReuseIdentifier {
-   public static var reuseID: String { String(describing: self) }
-}
-
-extension NetworkEventCell: HaveReuseIdentifier {
-   public static var reuseID: String { String(describing: self) }
-}
-
 public class MonitorComposer {
    public static let shared = MonitorComposer()
 

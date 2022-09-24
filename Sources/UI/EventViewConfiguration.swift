@@ -10,12 +10,8 @@ import UIKit
 
 public protocol EventViewConfiguration<Event> {
    associatedtype Event
-   associatedtype EventCell: UITableViewCell & HaveReuseIdentifier
+   associatedtype EventCell: UITableViewCell
 
    func configure(cell: EventCell, event: Event) -> EventCell
    func buildDetailView(_ event: Event) -> UIViewController?
-}
-
-public protocol HaveReuseIdentifier {
-   static var reuseID: String { get }
 }
