@@ -14,10 +14,11 @@ import MonitorCore
 extension MessageEvent: Event {}
 
 struct MessageEventConfig: EventConfiguration {
+   typealias Event = MonitorUI.MessageEvent
 
    func configure(
       cell: MessageEventCell,
-      event: MessageEvent
+      event: MonitorUI.MessageEvent
    ) -> MessageEventCell {
 
       return cell.with(text: event.message)

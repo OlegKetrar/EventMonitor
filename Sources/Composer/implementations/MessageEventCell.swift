@@ -40,7 +40,7 @@ private extension MessageEventCell {
 
    func configureUI() {
       selectionStyle = .none
-      accessoryType = .disclosureIndicator
+      accessoryType = .none
       contentView.backgroundColor = .clear
       backgroundColor = .clear
 
@@ -49,9 +49,9 @@ private extension MessageEventCell {
 
       NSLayoutConstraint.activate([
          titleLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 15),
-         titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
+         titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
          titleLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -15),
-         titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5)
+         titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
       ])
    }
 }

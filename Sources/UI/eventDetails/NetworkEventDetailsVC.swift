@@ -13,6 +13,8 @@ public class NetworkEventDetailsVC: UIViewController, HavePreloaderButton {
    private let viewModel: NetworkEventViewModel
    private let menuConfiguration: MenuConfiguration?
 
+   private var menuInteractionDelegate: MenuInteractionDelegate?
+
    public init(
       viewModel: NetworkEventViewModel,
       menuConfiguration: MenuConfiguration?
@@ -23,7 +25,7 @@ public class NetworkEventDetailsVC: UIViewController, HavePreloaderButton {
    }
 
    required public init?(coder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
+      nil
    }
 
    // MARK: - Overrides
@@ -51,8 +53,8 @@ public class NetworkEventDetailsVC: UIViewController, HavePreloaderButton {
             }
          }
 
-      case let .menu(makePopover):
-         navigationController?.present(makePopover(), animated: true)
+      case .menu:
+         break
 
       case .none:
          break
@@ -60,39 +62,54 @@ public class NetworkEventDetailsVC: UIViewController, HavePreloaderButton {
    }
 }
 
-// MARK: - UIPopoverPresentationControllerDelegate
-
-extension NetworkEventDetailsVC: UIPopoverPresentationControllerDelegate {
-
-   public func adaptivePresentationStyle(
-      for controller: UIPresentationController
-   ) -> UIModalPresentationStyle {
-       return .none
-   }
-
-   public func popoverPresentationControllerDidDismissPopover(
-      _ popoverPresentationController: UIPopoverPresentationController
-   ) {
-
-   }
-
-   public func popoverPresentationControllerShouldDismissPopover(
-      _ popoverPresentationController: UIPopoverPresentationController
-   ) -> Bool {
-       return true
-   }
-}
-
 // MARK: - Private
 
 private extension NetworkEventDetailsVC {
 
-   func makeMenuBarButton() -> UIBarButtonItem {
-      UIBarButtonItem(
-         image: UIImage(systemName: "ellipsis.circle"),
-         style: .plain,
-         target: self,
-         action: #selector(actionMenu))
+   func setRightBarButtonLoading(_ loading: Bool) {
+      if loading {
+         navigationItem.rightBarButtonItem = configuredPreloaderBarButton()
+      } else {
+         updateRightBarButton()
+      }
+   }
+
+   func updateRightBarButton() {
+      switch menuConfiguration {
+      case let .singleAction(icon, _):
+         navigationItem.rightBarButtonItem = makeActionBarButton(image: icon)
+
+      case let .menu(makeMenu):
+         navigationItem.rightBarButtonItem = makeMenuBarButton(make: makeMenu)
+
+      case .none:
+         navigationItem.rightBarButtonItem = nil
+      }
+   }
+
+   func makeMenuBarButton(
+      make: @escaping (@escaping (Bool) -> Void) -> UIMenu
+   ) -> UIBarButtonItem {
+
+      let button = UIButton(type: .system)
+      button.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
+
+      let menuFactory = { [weak self] in
+         make({ self?.setRightBarButtonLoading($0) })
+      }
+
+      if #available(iOS 14, *) {
+         button.showsMenuAsPrimaryAction = true
+         button.menu = menuFactory()
+
+      } else {
+         let interactionDelegate = MenuInteractionDelegate(menuFactory: menuFactory)
+         menuInteractionDelegate = interactionDelegate
+
+         button.addInteraction(UIContextMenuInteraction(delegate: interactionDelegate))
+      }
+
+      return UIBarButtonItem(customView: button)
    }
 
    func makeActionBarButton(image: UIImage) -> UIBarButtonItem {
@@ -101,19 +118,6 @@ private extension NetworkEventDetailsVC {
          style: .plain,
          target: self,
          action: #selector(actionMenu))
-   }
-
-   func updateRightBarButton() {
-      switch menuConfiguration {
-      case let .singleAction(icon, _):
-         navigationItem.rightBarButtonItem = makeActionBarButton(image: icon)
-
-      case .menu:
-         navigationItem.rightBarButtonItem = makeMenuBarButton()
-
-      case .none:
-         navigationItem.rightBarButtonItem = nil
-      }
    }
 
    func configureUI() {
@@ -280,5 +284,27 @@ private extension NetworkEventDetailsVC {
       ])
 
       return sectionView
+   }
+}
+
+private class MenuInteractionDelegate: NSObject, UIContextMenuInteractionDelegate {
+   private let menuFactory: () -> UIMenu
+
+   init(menuFactory: @escaping () -> UIMenu) {
+      self.menuFactory = menuFactory
+      super.init()
+   }
+
+   func contextMenuInteraction(
+      _ interaction: UIContextMenuInteraction,
+      configurationForMenuAtLocation location: CGPoint
+   ) -> UIContextMenuConfiguration? {
+
+      UIContextMenuConfiguration(
+         identifier: nil,
+         previewProvider: nil,
+         actionProvider: { [weak self] _ in
+            self?.menuFactory()
+         })
    }
 }

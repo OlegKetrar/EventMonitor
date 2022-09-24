@@ -89,9 +89,13 @@ struct AnyEventViewFactory {
             return nil
          }
 
+         let eventMenu = EventContextMenu(items: factory.actions.map {
+            EventMenuItem(event: event, action: $0)
+         })
+
          return factory.buildDetailView(
             event: event,
-            menuViewModel: EventContextMenu(items: []))
+            menuViewModel: eventMenu)
       }
    }
 }

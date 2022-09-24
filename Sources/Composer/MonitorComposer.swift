@@ -40,9 +40,9 @@ public class MonitorComposer {
          event: MonitorUI.NetworkEvent.self,
          configuration: NetworkEventConfig())
 
-//      self.register(
-//         event: MessageEvent.self,
-//         configuration: MessageEventConfig())
+      self.register(
+         event: MonitorUI.MessageEvent.self,
+         configuration: MessageEventConfig())
    }
 
    public func register<ConcreteEvent, Configuration>(

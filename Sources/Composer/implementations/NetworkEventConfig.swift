@@ -27,19 +27,30 @@ struct NetworkEventConfig: EventConfiguration {
       }
 
       var image: UIImage {
+         let img: UIImage?
+
          switch self {
-         case .shareLog: return UIImage()
-         case .cUrl: return UIImage()
-         case .tasteIt: return UIImage()
+         case .shareLog:
+            img = UIImage(systemName: "square.and.arrow.up")
+         case .cUrl:
+            img = UIImage(systemName: "doc.circle.fill")
+         case .tasteIt:
+            img = UIImage(systemName: "play.circle")
          }
+
+         return img ?? UIImage()
       }
 
       func perform(_ event: MonitorUI.NetworkEvent) async throws {
+         try await Task.sleep(nanoseconds: 2_000_000_000)
+
          switch self {
          case .shareLog: break
          case .cUrl: break
          case .tasteIt: break
          }
+
+         debugPrint("-- done: \(self.title)")
       }
    }
 
@@ -56,7 +67,7 @@ struct NetworkEventConfig: EventConfiguration {
       menuViewModel: EventMenuViewModel
    ) -> UIViewController? {
 
-      let menuConfig = MenuPopoverBuilder
+      let menuConfig = MenuBuilder
          .init(viewModel: menuViewModel)
          .makeConfiguration()
 
