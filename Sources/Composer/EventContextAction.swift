@@ -7,6 +7,7 @@
 //
 
 import class UIKit.UIImage
+import class UIKit.UINavigationController
 
 /// Describes contextual action to perform with custom event.
 public protocol EventContextAction<Event> {
@@ -15,5 +16,5 @@ public protocol EventContextAction<Event> {
    var title: String { get }
    var image: UIImage { get }
 
-   func perform(_ event: Event) async throws
+   func perform(_ event: Event, navigation: UINavigationController?) async throws
 }

@@ -59,6 +59,8 @@ struct SessionViewAdapter: SessionViewConfiguration {
          return nil
       }
 
-      return config.makeDetailViewController(event: allEvents[index])
+      return config.makeDetailViewController(
+         event: allEvents[index],
+         navigation: navigation)
    }
 }

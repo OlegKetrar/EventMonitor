@@ -41,13 +41,32 @@ struct NetworkEventConfig: EventConfiguration {
          return img ?? UIImage()
       }
 
-      func perform(_ event: MonitorUI.NetworkEvent) async throws {
-         try await Task.sleep(nanoseconds: 2_000_000_000)
+      func perform(
+         _ event: MonitorUI.NetworkEvent,
+         navigation: UINavigationController?
+      ) async throws {
 
          switch self {
-         case .shareLog: break
-         case .cUrl: break
-         case .tasteIt: break
+         case .shareLog:
+            let exporter = FileExporter(formatter: PlainTextFormatter())
+
+            let file = await exporter.prepareFile(
+               named: event.makeFileName(),
+               content: { $0.format(event: event) })
+
+            await MainActor.run {
+               FileSharingPresenter(filePath: file?.path)
+                  .share(over: navigation, completion: {
+                     // let arc to remove file from disk
+                     _ = file
+                  })
+            }
+
+         case .cUrl:
+            try await Task.sleep(nanoseconds: 1_000_000_000)
+
+         case .tasteIt:
+            try await Task.sleep(nanoseconds: 1_000_000_000)
          }
 
          debugPrint("-- done: \(self.title)")
@@ -64,12 +83,13 @@ struct NetworkEventConfig: EventConfiguration {
 
    func buildDetailView(
       event: MonitorUI.NetworkEvent,
-      menuViewModel: EventMenuViewModel
+      menuItems: [any MonitorUI.EventMenuItem],
+      navigation: UINavigationController?
    ) -> UIViewController? {
 
       let menuConfig = MenuBuilder
-         .init(viewModel: menuViewModel)
-         .makeConfiguration()
+         .init(items: menuItems)
+         .makeConfiguration(navigation)
 
       return NetworkEventDetailsVC(
          viewModel: NetworkEventViewModel(event),
@@ -77,4 +97,17 @@ struct NetworkEventConfig: EventConfiguration {
    }
 
    var actions = NetworkEventAction.allCases
+
+   func format(event: NetworkEvent) -> String {
+      PlainTextFormatter().format(event: event)
+   }
+}
+
+private extension NetworkEvent {
+
+   func makeFileName() -> String {
+      "\(request.verb)\(request.method).log"
+         .replacingOccurrences(of: "/", with: "_")
+         .lowercased()
+   }
 }

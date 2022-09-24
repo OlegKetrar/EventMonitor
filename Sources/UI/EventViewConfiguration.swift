@@ -9,15 +9,15 @@
 import UIKit
 import MonitorCore
 
-public protocol EventMenuUIItem {
+public protocol EventMenuItem {
    var title: String { get }
    var image: UIImage { get }
+
+   func perform(_ ctx: UINavigationController?) async throws
 }
 
-public protocol EventMenuViewModel {
-   var items: [any EventMenuUIItem] { get }
-
-   func selectItem(at index: Int) async throws
+public protocol EventMenuItemsProvider {
+   var items: [any EventMenuItem] { get }
 }
 
 public protocol EventViewConfiguration<Event> {
@@ -28,5 +28,6 @@ public protocol EventViewConfiguration<Event> {
 
    func buildDetailView(
       event: Event,
-      menuViewModel: EventMenuViewModel) -> UIViewController?
+      menuItems: [any EventMenuItem],
+      navigation: UINavigationController?) -> UIViewController?
 }

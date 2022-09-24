@@ -26,8 +26,13 @@ struct MessageEventConfig: EventConfiguration {
 
    func buildDetailView(
       event: MonitorUI.MessageEvent,
-      menuViewModel: MonitorUI.EventMenuViewModel
+      menuItems: [any MonitorUI.EventMenuItem],
+      navigation: UINavigationController?
    ) -> UIViewController? {
       return nil
+   }
+
+   func format(event: MessageEvent) -> String {
+      event.message
    }
 }

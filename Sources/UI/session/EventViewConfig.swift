@@ -19,5 +19,7 @@ public protocol EventViewConfig {
       indexPath: IndexPath,
       event: AnyEvent) -> UITableViewCell?
 
-   func makeDetailViewController(event: AnyEvent) -> UIViewController?
+   func makeDetailViewController(
+      event: AnyEvent,
+      navigation: UINavigationController?) -> UIViewController?
 }

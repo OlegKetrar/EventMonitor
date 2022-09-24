@@ -45,10 +45,14 @@ extension EventConfig: EventViewConfig {
          .first
    }
 
-   public func makeDetailViewController(event: AnyEvent) -> UIViewController? {
+   public func makeDetailViewController(
+      event: AnyEvent,
+      navigation: UINavigationController?
+   ) -> UIViewController? {
+
       factories
          .lazy
-         .compactMap { $0.makeDetailViewController(event) }
+         .compactMap { $0.makeDetailViewController(event, navigation) }
          .first
    }
 }
@@ -56,7 +60,7 @@ extension EventConfig: EventViewConfig {
 struct AnyEventViewFactory {
    let configureTableView: (UITableView) -> Void
    let makeCell: (UITableView, IndexPath, AnyEvent) -> UITableViewCell?
-   let makeDetailViewController: (AnyEvent) -> UIViewController?
+   let makeDetailViewController: (AnyEvent, UINavigationController?) -> UIViewController?
 
    init<Factory>(_ factory: Factory)
    where
@@ -84,18 +88,19 @@ struct AnyEventViewFactory {
          return factory.configure(cell: cell, event: event)
       }
 
-      self.makeDetailViewController = { anyEvent in
+      self.makeDetailViewController = { anyEvent, navigation in
          guard let event = anyEvent.payload as? Factory.Event else {
             return nil
          }
 
-         let eventMenu = EventContextMenu(items: factory.actions.map {
-            EventMenuItem(event: event, action: $0)
-         })
+         let menuActions = factory.actions.map {
+            AnyEventContextAction(event: event, action: $0)
+         }
 
          return factory.buildDetailView(
             event: event,
-            menuViewModel: eventMenu)
+            menuItems: menuActions,
+            navigation: navigation)
       }
    }
 }
@@ -104,32 +109,21 @@ extension UITableViewCell {
    static var reuseID: String { String(describing: self) }
 }
 
-struct EventMenuItem: EventMenuUIItem {
+struct AnyEventContextAction: EventMenuItem {
    let title: String
    let image: UIImage
-   let select: () async throws -> Void
+   private let performFunction: (UINavigationController?) async throws -> Void
 
    init<Event>(event: Event, action: any EventContextAction<Event>) {
       self.title = action.title
       self.image = action.image
-      self.select = { try await action.perform(event) }
-   }
-}
 
-class EventContextMenu: EventMenuViewModel {
-   var _items: [EventMenuItem]
-
-   var items: [EventMenuUIItem] {
-      _items
-   }
-
-   init(items: [EventMenuItem]) {
-      self._items = items
-   }
-
-   func selectItem(at index: Int) async throws {
-      if _items.indices.contains(index) {
-         try await _items[index].select()
+      self.performFunction = {
+         try await action.perform(event, navigation: $0)
       }
+   }
+
+   func perform(_ ctx: UINavigationController?) async throws {
+      try await performFunction(ctx)
    }
 }

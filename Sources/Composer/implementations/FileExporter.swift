@@ -17,34 +17,27 @@ public final class FileExporter<Formatter> {
 
    public func prepareFile(
       named filename: String,
-      content: (Formatter) -> String,
-      completion: @escaping (LocalFileRef?) -> Void
-   ) {
+      content: (Formatter) -> String
+   ) async -> LocalFileRef? {
 
       let contentStr = content(formatter)
 
-      DispatchQueue.global().async {
+      let exportDir = NSTemporaryDirectory()
+         .ns
+         .appendingPathComponent("network-monitor.exporting-logs")
 
-         let exportDir = NSTemporaryDirectory()
-            .ns
-            .appendingPathComponent("network-monitor.exporting-logs")
+      let filepath = exportDir.ns.appendingPathComponent(filename)
 
-         let filepath = exportDir.ns.appendingPathComponent(filename)
+      FileManager.default.createDirectoryIfNotExist(at: exportDir)
 
-         FileManager.default.createDirectoryIfNotExist(at: exportDir)
+      let writedSuccessfully = FileManager.default.createFile(
+         atPath: filepath,
+         contents: contentStr.data(using: .utf8))
 
-         let writedSuccessfully = FileManager.default.createFile(
-            atPath: filepath,
-            contents: contentStr.data(using: .utf8))
-
-         if writedSuccessfully {
-            DispatchQueue.main.async {
-               completion(LocalFileRef(path: filepath))
-            }
-
-         } else {
-            DispatchQueue.main.async { completion(nil) }
-         }
+      if writedSuccessfully {
+         return LocalFileRef(path: filepath)
+      } else {
+         return nil
       }
    }
 }

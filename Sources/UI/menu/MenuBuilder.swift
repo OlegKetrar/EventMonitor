@@ -10,24 +10,24 @@ import Foundation
 import UIKit
 
 public struct MenuBuilder {
-   let viewModel: EventMenuViewModel
+   let items: [any EventMenuItem]
 
-   public init(viewModel: EventMenuViewModel) {
-      self.viewModel = viewModel
+   public init(items: [any EventMenuItem]) {
+      self.items = items
    }
 
-   public func makeConfiguration() -> MenuConfiguration? {
+   public func makeConfiguration(_ navigation: UINavigationController?) -> MenuConfiguration? {
 
-      if viewModel.items.count > 1 {
+      if items.count > 1 {
          return .menu({
-            makeMenu(setLoadingVisible: $0)
+            makeMenu(setLoadingVisible: $0, navigation: navigation)
          })
 
-      } else if let item = viewModel.items.first {
+      } else if let item = items.first {
          return .singleAction(
             icon: item.image,
             action: {
-               try await viewModel.selectItem(at: 0)
+               try await item.perform(navigation)
             })
 
       } else {
@@ -35,10 +35,14 @@ public struct MenuBuilder {
       }
    }
 
-   func makeMenu(setLoadingVisible: @escaping (Bool) -> Void) -> UIMenu {
+   func makeMenu(
+      setLoadingVisible: @escaping (Bool) -> Void,
+      navigation: UINavigationController?
+   ) -> UIMenu {
+
       UIMenu(
          title: "",
-         children: viewModel.items.enumerated().map { index, item in
+         children: items.map { item in
             UIAction(
                title: item.title,
                image: item.image,
@@ -48,7 +52,7 @@ public struct MenuBuilder {
                   setLoadingVisible(true)
 
                   Task {
-                     try await viewModel.selectItem(at: index)
+                     try await item.perform(navigation)
 
                      await MainActor.run {
                         setLoadingVisible(false)
