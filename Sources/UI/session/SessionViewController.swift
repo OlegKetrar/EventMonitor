@@ -117,19 +117,7 @@ extension SessionViewController: UIContextMenuInteractionDelegate {
          identifier: nil,
          previewProvider: nil,
          actionProvider: { [weak self] _ in
-            (self?.viewState.filters).map {
-               UIMenu(
-                  title: "Filter by subsystem:",
-                  children: $0.map { filter in
-                     UIAction(
-                        title: filter.title,
-                        attributes: filter.isAll ? [.destructive] : [],
-                        state: filter.isApplied ? .on : .off,
-                        handler: { _ in
-                           self?.config.viewModel.filterEvents(by: filter)
-                        })
-                  })
-            }
+            self?.makeFiltersMenu()
          })
    }
 }
@@ -166,7 +154,6 @@ private extension SessionViewController {
       let button = UIButton(type: .system)
       button.setTitle(title, for: .normal)
       button.setImage(UIImage(systemName: "arrow.down"), for: .normal)
-      button.addInteraction(UIContextMenuInteraction(delegate: self))
       button.contentEdgeInsets.left = 10
       button.contentEdgeInsets.right = 10
       button.contentEdgeInsets.top = 5
@@ -174,10 +161,30 @@ private extension SessionViewController {
       button.imageEdgeInsets.top = 2.5
       button.imageEdgeInsets.bottom = 2.5
       button.semanticContentAttribute = .forceRightToLeft
-
       button.backgroundColor = .grayLightSilver
       button.layer.cornerRadius = 7
 
+      if #available(iOS 14, *) {
+         button.menu = makeFiltersMenu()
+         button.showsMenuAsPrimaryAction = true
+      } else {
+         button.addInteraction(UIContextMenuInteraction(delegate: self))
+      }
+
       return button
+   }
+
+   func makeFiltersMenu() -> UIMenu {
+      UIMenu(
+         title: "Filter by subsystem:",
+         children: viewState.filters.map { filter in
+            UIAction(
+               title: filter.title,
+               attributes: filter.isAll ? [.destructive] : [],
+               state: filter.isApplied ? .on : .off,
+               handler: { [weak self] _ in
+                  self?.config.viewModel.filterEvents(by: filter)
+               })
+         })
    }
 }
