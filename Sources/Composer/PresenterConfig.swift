@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import MonitorCore
 import MonitorUI
 
 public final class PresenterConfig {

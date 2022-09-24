@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 
 public enum MenuConfiguration {
-   public typealias ActivityIndicatorController = (Bool) -> Void
+   public typealias SetLoadingVisible = (Bool) -> Void
 
    case singleAction(icon: UIImage, action: () async throws -> Void)
-   case menu((@escaping ActivityIndicatorController) -> UIMenu)
+   case menu((@escaping SetLoadingVisible) -> UIMenu)
 }

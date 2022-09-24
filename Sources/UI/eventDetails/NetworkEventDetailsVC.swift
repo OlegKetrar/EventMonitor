@@ -88,7 +88,7 @@ private extension NetworkEventDetailsVC {
    }
 
    func makeMenuBarButton(
-      make: @escaping (@escaping (Bool) -> Void) -> UIMenu
+      make: @escaping (@escaping MenuConfiguration.SetLoadingVisible) -> UIMenu
    ) -> UIBarButtonItem {
 
       let button = UIButton(type: .system)
