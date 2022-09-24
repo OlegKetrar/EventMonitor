@@ -56,11 +56,13 @@ struct NetworkEventConfig: EventConfiguration {
       menuViewModel: EventMenuViewModel
    ) -> UIViewController? {
 
-      let presenter = NetworkEventDetailsPresenter(
-         event: event,
-         subsystem: "") // FIXME
+      let menuConfig = MenuPopoverBuilder
+         .init(viewModel: menuViewModel)
+         .makeConfiguration()
 
-      return NetworkEventDetailsVC(presenter: presenter)
+      return NetworkEventDetailsVC(
+         viewModel: NetworkEventViewModel(event),
+         menuConfiguration: menuConfig)
    }
 
    var actions = NetworkEventAction.allCases

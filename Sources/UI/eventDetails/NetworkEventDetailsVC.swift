@@ -9,20 +9,16 @@
 import Foundation
 import UIKit
 
-public protocol NetworkEventDetailsVCPresenter {
-   var viewModel: NetworkEventViewModel { get }
-   var isOnlySharing: Bool { get }
+public class NetworkEventDetailsVC: UIViewController, HavePreloaderButton {
+   private let viewModel: NetworkEventViewModel
+   private let menuConfiguration: MenuConfiguration?
 
-   func shareEvent(_ completion: @escaping () -> Void)
-   func makeMenuPopover() -> UIViewController
-}
-
-public  class NetworkEventDetailsVC: UIViewController, HavePreloaderButton, HaveShareButton {
-   private let presenter: NetworkEventDetailsVCPresenter
-   private var viewState: NetworkEventViewModel { presenter.viewModel }
-
-   public init(presenter: NetworkEventDetailsVCPresenter) {
-      self.presenter = presenter
+   public init(
+      viewModel: NetworkEventViewModel,
+      menuConfiguration: MenuConfiguration?
+   ) {
+      self.viewModel = viewModel
+      self.menuConfiguration = menuConfiguration
       super.init(nibName: nil, bundle: nil)
    }
 
@@ -35,24 +31,31 @@ public  class NetworkEventDetailsVC: UIViewController, HavePreloaderButton, Have
    override public func viewDidLoad() {
       super.viewDidLoad()
       configureUI()
+      updateRightBarButton()
    }
 
    // MARK: - Action
 
-   @objc func actionShare() {
+   @objc func actionMenu() {
 
-      if presenter.isOnlySharing {
+      switch menuConfiguration {
+
+      case let .singleAction(_, action):
          navigationItem.rightBarButtonItem = configuredPreloaderBarButton()
 
-         presenter.shareEvent { [weak self] in
-            self?.navigationItem.rightBarButtonItem = self?.configuredShareButton()
+         Task { [weak self] in
+            try await action()
+
+            await MainActor.run {
+               self?.updateRightBarButton()
+            }
          }
 
-      } else {
-         let popover = presenter.makeMenuPopover()
-         popover.modalPresentationStyle = .currentContext
+      case let .menu(makePopover):
+         navigationController?.present(makePopover(), animated: true)
 
-         navigationController?.present(popover, animated: true)
+      case .none:
+         break
       }
    }
 }
@@ -84,9 +87,36 @@ extension NetworkEventDetailsVC: UIPopoverPresentationControllerDelegate {
 
 private extension NetworkEventDetailsVC {
 
-   func configureUI() {
+   func makeMenuBarButton() -> UIBarButtonItem {
+      UIBarButtonItem(
+         image: UIImage(systemName: "ellipsis.circle"),
+         style: .plain,
+         target: self,
+         action: #selector(actionMenu))
+   }
 
-      navigationItem.rightBarButtonItem = configuredShareButton()
+   func makeActionBarButton(image: UIImage) -> UIBarButtonItem {
+      UIBarButtonItem(
+         image: image,
+         style: .plain,
+         target: self,
+         action: #selector(actionMenu))
+   }
+
+   func updateRightBarButton() {
+      switch menuConfiguration {
+      case let .singleAction(icon, _):
+         navigationItem.rightBarButtonItem = makeActionBarButton(image: icon)
+
+      case .menu:
+         navigationItem.rightBarButtonItem = makeMenuBarButton()
+
+      case .none:
+         navigationItem.rightBarButtonItem = nil
+      }
+   }
+
+   func configureUI() {
       view.backgroundColor = .grayBackground
 
       let scrollView = UIScrollView(frame: .zero)
@@ -120,7 +150,7 @@ private extension NetworkEventDetailsVC {
       stackView.axis = .vertical
       stackView.addArrangedSubview(makeInfoSection())
 
-      if let paramsStr = viewState.postParameters {
+      if let paramsStr = viewModel.postParameters {
          stackView.addArrangedSubview(makeSection(
             title: "Parameters".uppercased(),
             content: paramsStr))
@@ -128,11 +158,11 @@ private extension NetworkEventDetailsVC {
 
       stackView.addArrangedSubview(makeSection(
          title: "Headers".uppercased(),
-         content: viewState.headers))
+         content: viewModel.headers))
 
       stackView.addArrangedSubview(makeSection(
          title: "Response".uppercased(),
-         content: viewState.response,
+         content: viewModel.response,
          highlight: true))
 
       return stackView
@@ -148,7 +178,7 @@ private extension NetworkEventDetailsVC {
       let statusLabel = UILabel(frame: .zero)
       statusLabel.textColor = .grayPrimaryText
       statusLabel.font = .systemFont(ofSize: 18, weight: .semibold)
-      statusLabel.text = viewState.statusString
+      statusLabel.text = viewModel.statusString
       statusLabel.numberOfLines = 0
       statusLabel.translatesAutoresizingMaskIntoConstraints = false
 
@@ -175,20 +205,20 @@ private extension NetworkEventDetailsVC {
       containerView.translatesAutoresizingMaskIntoConstraints = false
 
       let verbLabel = UILabel(frame: .zero)
-      verbLabel.text = viewState.requestVerb
+      verbLabel.text = viewModel.requestVerb
       verbLabel.textColor = .white
       verbLabel.font = .systemFont(ofSize: 16, weight: .bold)
       verbLabel.translatesAutoresizingMaskIntoConstraints = false
       verbLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
 
       let verbContainer = UIView(frame: .zero)
-      verbContainer.backgroundColor = viewState.isFailed ? #colorLiteral(red: 0.9773717523, green: 0.2437902689, blue: 0.2448684871, alpha: 1) : #colorLiteral(red: 0.2871317863, green: 0.8010149598, blue: 0.5653145909, alpha: 1)
+      verbContainer.backgroundColor = viewModel.isFailed ? #colorLiteral(red: 0.9773717523, green: 0.2437902689, blue: 0.2448684871, alpha: 1) : #colorLiteral(red: 0.2871317863, green: 0.8010149598, blue: 0.5653145909, alpha: 1)
       verbContainer.layer.cornerRadius = 3
       verbContainer.layer.masksToBounds = true
       verbContainer.translatesAutoresizingMaskIntoConstraints = false
 
       let titleLabel = UILabel(frame: .zero)
-      titleLabel.text = viewState.titleString
+      titleLabel.text = viewModel.titleString
       titleLabel.textColor = .grayPrimaryText
       titleLabel.font = .systemFont(ofSize: 18, weight: .semibold)
       titleLabel.lineBreakMode = .byWordWrapping

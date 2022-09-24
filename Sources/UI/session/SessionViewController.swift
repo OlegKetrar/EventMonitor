@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import MonitorCore
 
-public class SessionViewController: UIViewController, HavePreloaderButton, HaveShareButton {
+public class SessionViewController: UIViewController, HavePreloaderButton {
    private let config: SessionViewConfiguration
    private var viewState: SessionViewState { config.viewModel.state.value }
 
@@ -147,7 +147,7 @@ private extension SessionViewController {
    }
 
    func configureUI() {
-      navigationItem.rightBarButtonItem = configuredShareButton()
+//      navigationItem.rightBarButtonItem = configuredShareButton()
       view.backgroundColor = .grayBackground
       view.addSubview(tableView)
 

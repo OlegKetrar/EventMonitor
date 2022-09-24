@@ -7,63 +7,33 @@
 //
 
 import Foundation
-import UIKit
-import MonitorCore
 
-public class NetworkEventDetailsPresenter: NetworkEventDetailsVCPresenter {
-
-   public let viewModel: NetworkEventViewModel
-   public let isOnlySharing: Bool
-
-   private let event: NetworkEvent
-   private let subsystem: String
-//   private let exportCapabilities: [ExportCapability<EventFormatting>]
-   private weak var detailsVC: UIViewController?
-
-   public init(
-      event: NetworkEvent,
-      subsystem: String
-//      exportCapabilities: [ExportCapability<EventFormatting>]
-   ) {
-      self.viewModel = NetworkEventViewModel(event)
-      self.isOnlySharing = true
-      self.event = event
-      self.subsystem = subsystem
-//      self.exportCapabilities = exportCapabilities
-   }
-
-   public func shareEvent(_ completion: @escaping () -> Void) {
 /*
-      guard let exporter = exportCapabilities.first?.exporter else {
-         completion()
-         return
-      }
-
-      exporter.prepareFile(
-         named: event.makeFileName(),
-         content: {
-            $0.format(GroupedEvent(
-               subsystem: subsystem,
-               event: .network(event)))
-         },
-         completion: { [weak self] file in
-
-            FileSharingPresenter(filePath: file?.path).share(
-               over: self?.detailsVC,
-               completion: {
-
-                  // let arc to remove file from disk
-                  _ = file
-
-                  completion()
-               })
-         })
- */
+public func shareEvent(_ completion: @escaping () -> Void) {
+   guard let exporter = exportCapabilities.first?.exporter else {
+      completion()
+      return
    }
 
-   public func makeMenuPopover() -> UIViewController {
-      fatalError("unimplemented yet")
-   }
+   exporter.prepareFile(
+      named: event.makeFileName(),
+      content: {
+         $0.format(GroupedEvent(
+            subsystem: subsystem,
+            event: .network(event)))
+      },
+      completion: { [weak self] file in
+
+         FileSharingPresenter(filePath: file?.path).share(
+            over: self?.detailsVC,
+            completion: {
+
+               // let arc to remove file from disk
+               _ = file
+
+               completion()
+            })
+      })
 }
 
 private extension NetworkEvent {
@@ -74,3 +44,4 @@ private extension NetworkEvent {
          .lowercased()
    }
 }
+*/
