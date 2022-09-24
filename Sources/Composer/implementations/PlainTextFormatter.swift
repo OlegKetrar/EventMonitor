@@ -7,16 +7,9 @@
 //
 
 import Foundation
-/*
-public struct PlainTextFormatter: EventFormatting {
-   public init() {}
 
-   public func format(_ event: GroupedEvent) -> String {
-      switch event.event {
-      case let .network(e):
-         return format(event: e)
-      }
-   }
+public struct PlainTextFormatter {
+   public init() {}
 
    func format(event e: NetworkEvent) -> String {
 
@@ -63,4 +56,3 @@ private extension Dictionary {
       return "{\(pairsStr)\n}"
    }
 }
-*/

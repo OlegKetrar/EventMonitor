@@ -7,11 +7,26 @@
 //
 
 import UIKit
+import MonitorCore
+
+public protocol EventMenuUIItem {
+   var title: String { get }
+   var image: UIImage { get }
+}
+
+public protocol EventMenuViewModel {
+   var items: [any EventMenuUIItem] { get }
+
+   func selectItem(at index: Int) async throws
+}
 
 public protocol EventViewConfiguration<Event> {
    associatedtype Event
    associatedtype EventCell: UITableViewCell
 
    func configure(cell: EventCell, event: Event) -> EventCell
-   func buildDetailView(_ event: Event) -> UIViewController?
+
+   func buildDetailView(
+      event: Event,
+      menuViewModel: EventMenuViewModel) -> UIViewController?
 }

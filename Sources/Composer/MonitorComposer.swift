@@ -15,43 +15,10 @@ public typealias Event = MonitorCore.Event
 public typealias NetworkEvent = MonitorUI.NetworkEvent
 public typealias MessageEvent = MonitorUI.MessageEvent
 
-extension NetworkEvent: Event {}
-extension MessageEvent: Event {}
-
-struct NetworkEventConfig: EventViewConfiguration {
-
-   func configure(cell: NetworkEventCell, event: NetworkEvent) -> NetworkEventCell {
-      cell.with(verb: event.request.verb.uppercased())
-      cell.with(request: event.request.method)
-      cell.with(success: event.response.failureReason == nil)
-
-      return cell
-   }
-
-   func buildDetailView(_ event: NetworkEvent) -> UIViewController? {
-      let presenter = NetworkEventDetailsPresenter(
-         event: event,
-         subsystem: "") // FIXME
-
-      return NetworkEventDetailsVC(presenter: presenter)
-   }
-}
-
-struct MessageEventConfig: EventViewConfiguration {
-
-   func configure(cell: MessageEventCell, event: MessageEvent) -> MessageEventCell {
-      return cell.with(text: event.message)
-   }
-
-   func buildDetailView(_ event: MessageEvent) -> UIViewController? {
-      return nil
-   }
-}
-
 public class MonitorComposer {
    public static let shared = MonitorComposer()
 
-   private var viewConfig = EventViewConfig()
+   private var viewConfig = EventConfig()
 
    private let processor: EventProcessor = {
       let tmpDir = NSTemporaryDirectory() as NSString
@@ -70,18 +37,22 @@ public class MonitorComposer {
 
    init() {
       self.register(
-         event: NetworkEvent.self,
+         event: MonitorUI.NetworkEvent.self,
          configuration: NetworkEventConfig())
 
-      self.register(
-         event: MessageEvent.self,
-         configuration: MessageEventConfig())
+//      self.register(
+//         event: MessageEvent.self,
+//         configuration: MessageEventConfig())
    }
 
-   public func register<ConcreteEvent: Event>(
+   public func register<ConcreteEvent, Configuration>(
       event: ConcreteEvent.Type,
-      configuration: any EventViewConfiguration<ConcreteEvent>
-   ) {
+      configuration: Configuration
+   ) where
+      ConcreteEvent: Event,
+      Configuration: EventConfiguration,
+      Configuration.Event == ConcreteEvent
+   {
 
       TypeRegistry.register(
          id: String(describing: event),
