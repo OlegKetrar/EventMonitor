@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public class NetworkEventDetailsVC: UIViewController, HavePreloaderButton {
+public class NetworkEventDetailsVC: UIViewController {
    private let viewModel: NetworkEventViewModel
    private let menuConfiguration: MenuConfiguration?
 
@@ -124,6 +124,16 @@ private extension NetworkEventDetailsVC {
          style: .plain,
          target: self,
          action: #selector(actionMenu))
+   }
+
+   func configuredPreloaderBarButton(tint color: UIColor = .gray) -> UIBarButtonItem {
+
+      let preloader: UIActivityIndicatorView
+      preloader = UIActivityIndicatorView(style: .medium)
+      preloader.color = color
+      preloader.startAnimating()
+
+      return UIBarButtonItem(customView: preloader)
    }
 
    func configureUI() {

@@ -12,8 +12,6 @@ import MonitorUI
 import class UIKit.UIViewController
 
 public typealias Event = MonitorCore.Event
-public typealias NetworkEvent = MonitorUI.NetworkEvent
-public typealias MessageEvent = MonitorUI.MessageEvent
 
 public class MonitorComposer {
    public static let shared = MonitorComposer()
@@ -42,11 +40,11 @@ public class MonitorComposer {
 
    init() {
       self.register(
-         event: MonitorUI.NetworkEvent.self,
+         event: NetworkEvent.self,
          configuration: NetworkEventConfig())
 
       self.register(
-         event: MonitorUI.MessageEvent.self,
+         event: MessageEvent.self,
          configuration: MessageEventConfig())
    }
 

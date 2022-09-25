@@ -14,18 +14,18 @@ import MonitorCore
 extension MessageEvent: Event {}
 
 struct MessageEventConfig: EventConfiguration {
-   typealias Event = MonitorUI.MessageEvent
+   typealias Event = MessageEvent
 
    func configure(
       cell: MessageEventCell,
-      event: MonitorUI.MessageEvent
+      event: MessageEvent
    ) -> MessageEventCell {
 
       return cell.with(text: event.message)
    }
 
    func buildDetailView(
-      event: MonitorUI.MessageEvent,
+      event: MessageEvent,
       menuItems: [any MonitorUI.EventMenuItem],
       navigation: UINavigationController?
    ) -> UIViewController? {

@@ -11,10 +11,10 @@ import UIKit
 import MonitorUI
 import MonitorCore
 
-extension MonitorUI.NetworkEvent: Event {}
+extension NetworkEvent: Event {}
 
 struct NetworkEventConfig: EventConfiguration {
-   typealias Event = MonitorUI.NetworkEvent
+   typealias Event = NetworkEvent
 
    enum NetworkEventAction: String, CaseIterable, EventContextAction {
 
@@ -42,7 +42,7 @@ struct NetworkEventConfig: EventConfiguration {
       }
 
       func perform(
-         _ event: MonitorUI.NetworkEvent,
+         _ event: NetworkEvent,
          navigation: UINavigationController?
       ) async throws {
 
@@ -73,7 +73,7 @@ struct NetworkEventConfig: EventConfiguration {
       }
    }
 
-   func configure(cell: NetworkEventCell, event: MonitorUI.NetworkEvent) -> NetworkEventCell {
+   func configure(cell: NetworkEventCell, event: NetworkEvent) -> NetworkEventCell {
       cell.with(verb: event.request.verb.uppercased())
       cell.with(request: event.request.method)
       cell.with(success: event.response.failureReason == nil)
@@ -82,7 +82,7 @@ struct NetworkEventConfig: EventConfiguration {
    }
 
    func buildDetailView(
-      event: MonitorUI.NetworkEvent,
+      event: NetworkEvent,
       menuItems: [any MonitorUI.EventMenuItem],
       navigation: UINavigationController?
    ) -> UIViewController? {

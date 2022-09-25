@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import MonitorUI
 
 public struct MenuBuilder {
    let items: [any EventMenuItem]
