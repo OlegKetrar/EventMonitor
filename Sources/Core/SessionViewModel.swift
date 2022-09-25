@@ -83,9 +83,12 @@ private func findFilters(
    applied appliedFilters: [String]
 ) -> [SubsystemFilter] {
 
-   let subsystems = session.events.map { $0.subsystem }
+   let subsystems = Array(Set(session.events.map(\.subsystem)))
+      .sorted(by: {
+         $0.localizedCaseInsensitiveCompare($1) == .orderedAscending
+      })
 
-   var filters = Array(Set(subsystems)).map {
+   var filters = subsystems.map {
       SubsystemFilter(
          subsystem: $0,
          isApplied: appliedFilters.contains($0))
