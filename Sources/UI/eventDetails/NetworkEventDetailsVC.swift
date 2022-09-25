@@ -107,6 +107,12 @@ private extension NetworkEventDetailsVC {
          menuInteractionDelegate = interactionDelegate
 
          button.addInteraction(UIContextMenuInteraction(delegate: interactionDelegate))
+
+         // fixing darkMode artifacts
+         button.tintColor = .systemBlue
+         button.clipsToBounds = true
+         button.layer.cornerRadius = 8
+         button.backgroundColor = .white
       }
 
       return UIBarButtonItem(customView: button)
