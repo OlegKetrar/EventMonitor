@@ -11,7 +11,7 @@ import UIKit
 import MonitorCore
 
 /// The requirements of `MonitorUI` to know how to draw custom events.
-public protocol EventViewConfig {
+public protocol EventViewConfig: SessionFormatting {
    func configure(tableView: UITableView)
 
    func makeCell(

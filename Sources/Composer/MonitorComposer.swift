@@ -32,7 +32,12 @@ public class MonitorComposer {
    public private(set) lazy var presenter = PresenterConfig(viewFactory: {
       UIKitMonitorView(
          provider: self.processor,
-         config: self.viewConfig)
+         config: { session, navigation in
+            SessionViewAdapter(
+               viewModel: SessionViewModel(session: session),
+               config: self.viewConfig,
+               navigation: navigation)
+         })
    })
 
    init() {

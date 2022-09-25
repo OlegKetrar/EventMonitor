@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import MonitorCore
 
-public class SessionViewController: UIViewController, HavePreloaderButton {
+public class SessionViewController: UIViewController, HavePreloaderButton, HaveShareButton {
    private let config: SessionViewConfiguration
    private var viewState: SessionViewState { config.viewModel.state.value }
 
@@ -66,9 +66,10 @@ public class SessionViewController: UIViewController, HavePreloaderButton {
    @objc func actionShare() {
       navigationItem.rightBarButtonItem = configuredPreloaderBarButton()
 
-//      presenter.shareSession { [weak self] in
-//         self?.navigationItem.rightBarButtonItem = self?.configuredShareButton()
-//      }
+      Task { [self] in
+         await config.shareLog(navigation: navigationController)
+         navigationItem.rightBarButtonItem = configuredShareButton()
+      }
    }
 }
 
@@ -135,7 +136,7 @@ private extension SessionViewController {
    }
 
    func configureUI() {
-//      navigationItem.rightBarButtonItem = configuredShareButton()
+      navigationItem.rightBarButtonItem = configuredShareButton()
       view.backgroundColor = .grayBackground
       view.addSubview(tableView)
 

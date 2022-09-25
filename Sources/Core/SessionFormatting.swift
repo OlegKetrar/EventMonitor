@@ -6,6 +6,6 @@
 //  Copyright © 2022 Oleg Ketrar. All rights reserved.
 //
 
-//public protocol SessionFormatting {
-//   func format(_ session: EventSession) -> String
-//}
+public protocol SessionFormatting {
+   func formatSession(_ session: EventSession) -> String
+}

@@ -9,6 +9,7 @@
 import Foundation
 import class UIKit.UITableView
 import class UIKit.UITableViewCell
+import class UIKit.UINavigationController
 import class MonitorCore.SessionViewModel
 
 public protocol SessionViewConfiguration {
@@ -18,4 +19,6 @@ public protocol SessionViewConfiguration {
    func getItemsCount() -> Int
    func makeCell(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell
    func didSelectCell(at indexPath: IndexPath)
+
+   func shareLog(navigation: UINavigationController?) async
 }

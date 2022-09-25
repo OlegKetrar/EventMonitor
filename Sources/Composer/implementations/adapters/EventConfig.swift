@@ -55,12 +55,30 @@ extension EventConfig: EventViewConfig {
          .compactMap { $0.makeDetailViewController(event, navigation) }
          .first
    }
+
+   public func formatSession(_ session: EventSession) -> String {
+
+      let formatter = SessionFormatter(
+         header: { _ in nil },
+         separator: "",
+         terminator: "\n\n",
+         eventFormatter: { anyEvent in
+            factories
+               .lazy
+               .compactMap { $0.formatEvent(anyEvent) }
+               .first
+               ?? ""
+         })
+
+      return formatter.formatSession(session)
+   }
 }
 
 struct AnyEventViewFactory {
    let configureTableView: (UITableView) -> Void
    let makeCell: (UITableView, IndexPath, AnyEvent) -> UITableViewCell?
    let makeDetailViewController: (AnyEvent, UINavigationController?) -> UIViewController?
+   let formatEvent: (AnyEvent) -> String?
 
    init<Factory>(_ factory: Factory)
    where
@@ -102,28 +120,17 @@ struct AnyEventViewFactory {
             menuItems: menuActions,
             navigation: navigation)
       }
+
+      self.formatEvent = { anyEvent in
+         guard let event = anyEvent.payload as? Factory.Event else {
+            return nil
+         }
+
+         return factory.format(event: event)
+      }
    }
 }
 
 extension UITableViewCell {
    static var reuseID: String { String(describing: self) }
-}
-
-struct AnyEventContextAction: EventMenuItem {
-   let title: String
-   let image: UIImage
-   private let performFunction: (UINavigationController?) async throws -> Void
-
-   init<Event>(event: Event, action: any EventContextAction<Event>) {
-      self.title = action.title
-      self.image = action.image
-
-      self.performFunction = {
-         try await action.perform(event, navigation: $0)
-      }
-   }
-
-   func perform(_ ctx: UINavigationController?) async throws {
-      try await performFunction(ctx)
-   }
 }

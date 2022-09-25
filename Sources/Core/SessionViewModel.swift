@@ -73,9 +73,9 @@ public final class SessionViewModel {
       }
    }
 
-//   func formatSession(with formatter: SessionFormatting) -> String {
-//      formatter.format(session.value)
-//   }
+   public func formatSession(formatter: SessionFormatting) -> String {
+      formatter.formatSession(session.value)
+   }
 }
 
 private func findFilters(

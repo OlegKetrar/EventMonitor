@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import MonitorCore
+import MonitorUI
 
 struct SessionViewAdapter: SessionViewConfiguration {
 
@@ -62,5 +63,21 @@ struct SessionViewAdapter: SessionViewConfiguration {
       return config.makeDetailViewController(
          event: allEvents[index],
          navigation: navigation)
+   }
+
+   func shareLog(navigation: UINavigationController?) async {
+      let exporter = FileExporter(formatter: viewModel)
+
+      let file = await exporter.prepareFile(
+         named: "\(viewModel.state.value.exportFileName).log",
+         content: { $0.formatSession(formatter: config) })
+
+      await MainActor.run {
+         FileSharingPresenter(filePath: file?.path)
+            .share(over: navigation, completion: {
+               // let arc to remove file from disk
+               _ = file
+            })
+      }
    }
 }
