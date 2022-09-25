@@ -24,7 +24,7 @@ extension UIKitMonitorView: MonitorView {
 
    public func push(into nc: UINavigationController?) {
       nc?.pushViewController(
-         makeArchiveViewController(nc: nc),
+         makeArchiveViewController(nc: nc, onClose: nil),
          animated: true)
    }
 
@@ -32,7 +32,10 @@ extension UIKitMonitorView: MonitorView {
       let nc = UINavigationController()
       nc.overrideUserInterfaceStyle = .light
 
-      let archiveVC = makeArchiveViewController(nc: nc)
+      let archiveVC = makeArchiveViewController(nc: nc, onClose: { [weak nc] in
+         nc?.dismiss(animated: true)
+      })
+
       nc.setViewControllers([archiveVC], animated: false)
 
       vc?.present(nc, animated: true)
@@ -42,7 +45,10 @@ extension UIKitMonitorView: MonitorView {
       let nc = UINavigationController()
       nc.overrideUserInterfaceStyle = .light
 
-      let archiveVC = makeArchiveViewController(nc: nc)
+      let archiveVC = makeArchiveViewController(nc: nc, onClose: { [weak nc] in
+         nc?.dismiss(animated: true)
+      })
+
       let activeSession = provider.fetchActiveSession()
 
       let adapter = SessionViewAdapter(
@@ -60,7 +66,10 @@ extension UIKitMonitorView: MonitorView {
 
 extension UIKitMonitorView {
 
-   func makeArchiveViewController(nc: UINavigationController?) -> UIViewController {
+   func makeArchiveViewController(
+      nc: UINavigationController?,
+      onClose: (() -> Void)?
+   ) -> UIViewController {
 
       let repository = AnyEventProvider(provider: provider)
 
@@ -84,7 +93,19 @@ extension UIKitMonitorView {
                })
          }
 
-      return ArchiveViewController(presenter: presenter)
+      let viewController = ArchiveViewController(presenter: presenter)
+
+      if let onClose {
+         presenter.setCloseButtonCallback(onClose)
+
+         // Add close button when needed
+         viewController.navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .done,
+            target: presenter,
+            action: #selector(ArchivePresenter.actionClose))
+      }
+
+      return viewController
    }
 }
 

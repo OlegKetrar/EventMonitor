@@ -30,23 +30,8 @@ final class ArchivePresenter: SessionListVCPresenter {
       return self
    }
 
-   func withCloseButton(_ closure: @escaping () -> Void) -> Self {
+   func setCloseButtonCallback(_ closure: @escaping () -> Void) {
       self.onCloseButtonCallback = closure
-      return self
-   }
-
-   func push(into nc: UINavigationController, animated: Bool = true) {
-      let listVC = ArchiveViewController(presenter: self)
-
-      // Add close button when needed
-      if onCloseButtonCallback != nil {
-         listVC.navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .done,
-            target: self,
-            action: #selector(actionDone))
-      }
-
-      nc.pushViewController(listVC, animated: animated)
    }
 
    func selectSession(at index: Int, completion: @escaping () -> Void) {
@@ -58,7 +43,7 @@ final class ArchivePresenter: SessionListVCPresenter {
       }
    }
 
-   @objc private func actionDone() {
+   @objc func actionClose() {
       onCloseButtonCallback?()
    }
 }
