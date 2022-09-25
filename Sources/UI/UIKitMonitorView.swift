@@ -30,6 +30,7 @@ extension UIKitMonitorView: MonitorView {
 
    public func present(over vc: UIViewController?) {
       let nc = UINavigationController()
+      nc.overrideUserInterfaceStyle = .light
 
       let archiveVC = makeArchiveViewController(nc: nc)
       nc.setViewControllers([archiveVC], animated: false)
@@ -39,6 +40,7 @@ extension UIKitMonitorView: MonitorView {
 
    public func presentActiveSession(over vc: UIViewController?) {
       let nc = UINavigationController()
+      nc.overrideUserInterfaceStyle = .light
 
       let archiveVC = makeArchiveViewController(nc: nc)
       let activeSession = provider.fetchActiveSession()
