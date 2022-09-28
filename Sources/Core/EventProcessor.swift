@@ -11,8 +11,6 @@ import Foundation
 public final class EventProcessor {
    private let storage: EventStorage
    private let activeSession: Observable<EventSession>
-   private let sessionExport: ExportCapability<SessionFormatting>
-   private var eventExport: [ExportCapability<EventFormatting>]
 
    public init(storage: EventStorage) {
       let activeSessionID = SessionIdentifier()
@@ -20,6 +18,7 @@ public final class EventProcessor {
       self.storage = storage
       self.storage.startSession(identifier: activeSessionID)
 
+/*
       let defaultFormatter = PlainTextFormatter()
 
       let sessionFormatter = SessionFormatter(
@@ -37,6 +36,7 @@ public final class EventProcessor {
             name: "plain text",
             exporter: FileExporter(formatter: defaultFormatter))
       ]
+*/
 
       self.activeSession = Observable(EventSession(
          identifier: activeSessionID,
@@ -44,6 +44,7 @@ public final class EventProcessor {
          events: []))
    }
 
+/*
    public func setExportOptions(_ options: [ExportOption]) {
       self.eventExport.append(contentsOf: options.map {
          switch $0 {
@@ -54,13 +55,16 @@ public final class EventProcessor {
          }
       })
    }
+*/
 
-   public func log(event: GroupedEvent) {
+   public func log<T: Event>(event: T, subsystem: String) {
+      let newEvent = AnyEvent(event, subsystem: subsystem)
+
       activeSession.mutate {
-         $0.events.append(event)
+         $0.events.append(newEvent)
       }
 
-      storage.write(event: event)
+      storage.write(event: newEvent)
    }
 }
 
@@ -106,13 +110,5 @@ extension EventProcessor: EventProvider {
                   events: $0)))
             })
       }
-   }
-
-   public func sessionExportCapability() -> ExportCapability<SessionFormatting> {
-      sessionExport
-   }
-
-   public func eventExportCapabilities() -> [ExportCapability<EventFormatting>] {
-      eventExport
    }
 }

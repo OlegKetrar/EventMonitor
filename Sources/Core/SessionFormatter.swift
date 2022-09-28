@@ -6,19 +6,19 @@
 //  Copyright © 2021 Oleg Ketrar. All rights reserved.
 //
 
-import Foundation
+public struct SessionFormatter {
+   public typealias AnyEventFormatter = (AnyEvent) -> String
 
-public struct SessionFormatter: SessionFormatting {
    let header: (EventSession) -> String?
    let separator: String
    let terminator: String
-   let eventFormatter: EventFormatting
+   let eventFormatter: AnyEventFormatter
 
    public init(
       header: @escaping (EventSession) -> String? = { _ in nil },
       separator: String = "",
       terminator: String = "\n\n",
-      eventFormatter: EventFormatting
+      eventFormatter: @escaping AnyEventFormatter
    ) {
       self.header = header
       self.separator = separator
@@ -26,11 +26,11 @@ public struct SessionFormatter: SessionFormatting {
       self.eventFormatter = eventFormatter
    }
 
-   public func format(_ session: EventSession) -> String {
+   public func formatSession(_ session: EventSession) -> String {
       let headerStr = header(session).flatMap { "\($0)\(terminator)" } ?? ""
 
       return headerStr + session.events
-         .map { "\(separator)\(eventFormatter.format($0))" }
+         .map { "\(separator)\(eventFormatter($0))" }
          .joined(separator: terminator)
    }
 }

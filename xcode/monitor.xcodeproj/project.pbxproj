@@ -13,36 +13,13 @@
 		5520875A23413FA60049EDBA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5520875823413FA60049EDBA /* Main.storyboard */; };
 		5520875C23413FA70049EDBA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5520875B23413FA70049EDBA /* Assets.xcassets */; };
 		5520875F23413FA70049EDBA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5520875D23413FA70049EDBA /* LaunchScreen.storyboard */; };
-		553AC0D0278EFFA600F31E51 /* EventMonitorFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 555E9590278E61050088E744 /* EventMonitorFramework.framework */; platformFilter = ios; };
-		553AC0D1278EFFA600F31E51 /* EventMonitorFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 555E9590278E61050088E744 /* EventMonitorFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		55CF7DA328AE179E000BE320 /* EventMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 55CF7DA228AE179E000BE320 /* EventMonitor */; };
+		552104E828DA735B001E4494 /* EventMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 552104E728DA735B001E4494 /* EventMonitor */; };
+		559F964E28DA74040094524C /* EventMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 559F964D28DA74040094524C /* EventMonitor */; };
+		55C886FE28E4EA3E005A1340 /* ExampleNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C886FD28E4EA3E005A1340 /* ExampleNetworkService.swift */; };
+		55C8870028E4EB28005A1340 /* ExampleNetworkEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C886FF28E4EB28005A1340 /* ExampleNetworkEvent.swift */; };
 		55D1BF2F278F2115004B2F24 /* Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D1BF2D278F2115004B2F24 /* Wrapper.swift */; };
 		55D1BF30278F2115004B2F24 /* EventMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 55D1BF2E278F2115004B2F24 /* EventMonitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		553AC0D2278EFFA600F31E51 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = OBJ_1 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 555E958F278E61050088E744;
-			remoteInfo = EventMonitor;
-		};
-/* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		553AC0D4278EFFA600F31E51 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				553AC0D1278EFFA600F31E51 /* EventMonitorFramework.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		5520875223413FA60049EDBA /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 3; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; tabWidth = 3; };
@@ -53,6 +30,8 @@
 		5520875E23413FA70049EDBA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5520876023413FA70049EDBA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		555E9590278E61050088E744 /* EventMonitorFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EventMonitorFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		55C886FD28E4EA3E005A1340 /* ExampleNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleNetworkService.swift; sourceTree = "<group>"; };
+		55C886FF28E4EB28005A1340 /* ExampleNetworkEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleNetworkEvent.swift; sourceTree = "<group>"; };
 		55CF7DA028AE177F000BE320 /* EventMonitor */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = EventMonitor; path = ..; sourceTree = "<group>"; };
 		55D1BF2D278F2115004B2F24 /* Wrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wrapper.swift; sourceTree = "<group>"; };
 		55D1BF2E278F2115004B2F24 /* EventMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventMonitor.h; sourceTree = "<group>"; };
@@ -64,7 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				553AC0D0278EFFA600F31E51 /* EventMonitorFramework.framework in Frameworks */,
+				559F964E28DA74040094524C /* EventMonitor in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,7 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55CF7DA328AE179E000BE320 /* EventMonitor in Frameworks */,
+				552104E828DA735B001E4494 /* EventMonitor in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +64,8 @@
 				5520875223413FA60049EDBA /* AppDelegate.swift */,
 				5520875423413FA60049EDBA /* SceneDelegate.swift */,
 				5520875623413FA60049EDBA /* ViewController.swift */,
+				55C886FD28E4EA3E005A1340 /* ExampleNetworkService.swift */,
+				55C886FF28E4EB28005A1340 /* ExampleNetworkEvent.swift */,
 				5520875823413FA60049EDBA /* Main.storyboard */,
 				5520875B23413FA70049EDBA /* Assets.xcassets */,
 				5520875D23413FA70049EDBA /* LaunchScreen.storyboard */,
@@ -142,15 +123,14 @@
 				5520874C23413FA60049EDBA /* Sources */,
 				5520874D23413FA60049EDBA /* Frameworks */,
 				5520874E23413FA60049EDBA /* Resources */,
-				553AC0D4278EFFA600F31E51 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				553AC0D3278EFFA600F31E51 /* PBXTargetDependency */,
 			);
 			name = "Example-iOS";
 			packageProductDependencies = (
+				559F964D28DA74040094524C /* EventMonitor */,
 			);
 			productName = "Example-iOS";
 			productReference = 55EB2BA9272613B100F8D922 /* Example-iOS.app */;
@@ -171,7 +151,7 @@
 			);
 			name = EventMonitorFramework;
 			packageProductDependencies = (
-				55CF7DA228AE179E000BE320 /* EventMonitor */,
+				552104E728DA735B001E4494 /* EventMonitor */,
 			);
 			productName = NetworkMonitor;
 			productReference = 555E9590278E61050088E744 /* EventMonitorFramework.framework */;
@@ -247,6 +227,8 @@
 			files = (
 				5520875723413FA60049EDBA /* ViewController.swift in Sources */,
 				5520875323413FA60049EDBA /* AppDelegate.swift in Sources */,
+				55C8870028E4EB28005A1340 /* ExampleNetworkEvent.swift in Sources */,
+				55C886FE28E4EA3E005A1340 /* ExampleNetworkService.swift in Sources */,
 				5520875523413FA60049EDBA /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -260,15 +242,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		553AC0D3278EFFA600F31E51 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			platformFilter = ios;
-			target = 555E958F278E61050088E744 /* EventMonitorFramework */;
-			targetProxy = 553AC0D2278EFFA600F31E51 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		5520875823413FA60049EDBA /* Main.storyboard */ = {
@@ -293,7 +266,6 @@
 		5520876123413FA70049EDBA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -341,7 +313,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Example-iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -359,7 +331,6 @@
 		5520876223413FA70049EDBA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -403,7 +374,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Example-iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -450,7 +421,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Oleg Ketrar. All rights reserved.";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -502,7 +473,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Oleg Ketrar. All rights reserved.";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -566,7 +537,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -DXcode";
@@ -620,7 +591,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_SWIFT_FLAGS = "$(inherited) -DXcode";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -668,7 +639,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		55CF7DA228AE179E000BE320 /* EventMonitor */ = {
+		552104E728DA735B001E4494 /* EventMonitor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = EventMonitor;
+		};
+		559F964D28DA74040094524C /* EventMonitor */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = EventMonitor;
 		};
