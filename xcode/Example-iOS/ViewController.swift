@@ -10,12 +10,48 @@ import UIKit
 import EventMonitor
 
 final class ViewController: UIViewController {
+   private var viewEventLogger: (String) -> Void = { _ in }
+   private var requestLogger: (ExampleNetworkEvent) -> Void = { _ in }
+   private var analyticLogger: (String) -> Void = { _ in }
 
    override func viewDidLoad() {
       super.viewDidLoad()
       configureUI()
 
-      MonitorComposer.shared.presenter.enableShakeToShow(rootViewController: self)
+      let networkService = ExampleNetworkService()
+      configureEventMonitor(networkService)
+
+      MonitorComposer.shared
+         .presenter
+         .enableShakeToShow(rootViewController: self)
+
+      self.viewEventLogger = {
+         MonitorComposer.shared
+            .makeLogger(subsystem: "ViewController")
+            .log($0)
+      }
+
+      self.requestLogger = MonitorComposer.shared
+         .makeLogger(subsystem: "network")
+         .log(_:)
+
+      self.analyticLogger = {
+         MonitorComposer.shared
+            .makeLogger(subsystem: "analytics")
+            .log($0)
+      }
+   }
+
+   override func viewDidAppear(_ animated: Bool) {
+      super.viewDidAppear(animated)
+      viewEventLogger("didAppear")
+      analyticLogger("shown")
+   }
+
+   override func viewDidDisappear(_ animated: Bool) {
+      super.viewDidDisappear(animated)
+      viewEventLogger("didDisappear")
+      analyticLogger("hidden")
    }
 }
 
@@ -65,13 +101,21 @@ private extension ViewController {
    }
 
    @objc func actionAddSystemEvent() {
-      MonitorComposer.shared
-         .makeLogger(subsystem: "system")
-         .log(NetworkEvent.makeMock())
+      requestLogger(ExampleNetworkEvent(
+         networkData: .makeMock(),
+         cUrlRepresentation: "curl request.url --header \"header:1\"",
+         request: ExampleAppRequest(
+            url: "request",
+            method: "GET",
+            headers: [:])))
    }
 
    @objc func actionAddCustomEvent() {
-      MonitorComposer.shared.log(MessageEvent("FFFFF"))
+//      MonitorComposer.shared.log("Some default event")
+
+      MonitorComposer.shared
+         .makeLogger(subsystem: "system_network")
+         .log(NetworkEvent.makeMock())
    }
 
    @objc func actionShowMonitor() {

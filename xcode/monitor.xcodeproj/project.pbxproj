@@ -15,6 +15,8 @@
 		5520875F23413FA70049EDBA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5520875D23413FA70049EDBA /* LaunchScreen.storyboard */; };
 		552104E828DA735B001E4494 /* EventMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 552104E728DA735B001E4494 /* EventMonitor */; };
 		559F964E28DA74040094524C /* EventMonitor in Frameworks */ = {isa = PBXBuildFile; productRef = 559F964D28DA74040094524C /* EventMonitor */; };
+		55C886FE28E4EA3E005A1340 /* ExampleNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C886FD28E4EA3E005A1340 /* ExampleNetworkService.swift */; };
+		55C8870028E4EB28005A1340 /* ExampleNetworkEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C886FF28E4EB28005A1340 /* ExampleNetworkEvent.swift */; };
 		55D1BF2F278F2115004B2F24 /* Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D1BF2D278F2115004B2F24 /* Wrapper.swift */; };
 		55D1BF30278F2115004B2F24 /* EventMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 55D1BF2E278F2115004B2F24 /* EventMonitor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
@@ -28,6 +30,8 @@
 		5520875E23413FA70049EDBA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5520876023413FA70049EDBA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		555E9590278E61050088E744 /* EventMonitorFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EventMonitorFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		55C886FD28E4EA3E005A1340 /* ExampleNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleNetworkService.swift; sourceTree = "<group>"; };
+		55C886FF28E4EB28005A1340 /* ExampleNetworkEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleNetworkEvent.swift; sourceTree = "<group>"; };
 		55CF7DA028AE177F000BE320 /* EventMonitor */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = EventMonitor; path = ..; sourceTree = "<group>"; };
 		55D1BF2D278F2115004B2F24 /* Wrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wrapper.swift; sourceTree = "<group>"; };
 		55D1BF2E278F2115004B2F24 /* EventMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventMonitor.h; sourceTree = "<group>"; };
@@ -60,6 +64,8 @@
 				5520875223413FA60049EDBA /* AppDelegate.swift */,
 				5520875423413FA60049EDBA /* SceneDelegate.swift */,
 				5520875623413FA60049EDBA /* ViewController.swift */,
+				55C886FD28E4EA3E005A1340 /* ExampleNetworkService.swift */,
+				55C886FF28E4EB28005A1340 /* ExampleNetworkEvent.swift */,
 				5520875823413FA60049EDBA /* Main.storyboard */,
 				5520875B23413FA70049EDBA /* Assets.xcassets */,
 				5520875D23413FA70049EDBA /* LaunchScreen.storyboard */,
@@ -221,6 +227,8 @@
 			files = (
 				5520875723413FA60049EDBA /* ViewController.swift in Sources */,
 				5520875323413FA60049EDBA /* AppDelegate.swift in Sources */,
+				55C8870028E4EB28005A1340 /* ExampleNetworkEvent.swift in Sources */,
+				55C886FE28E4EA3E005A1340 /* ExampleNetworkService.swift in Sources */,
 				5520875523413FA60049EDBA /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
