@@ -16,10 +16,6 @@ public protocol EventMenuItem {
    func perform(_ ctx: UINavigationController?) async throws
 }
 
-public protocol EventMenuItemsProvider {
-   var items: [any EventMenuItem] { get }
-}
-
 public protocol EventViewConfiguration<Event> {
    associatedtype Event
    associatedtype EventCell: UITableViewCell

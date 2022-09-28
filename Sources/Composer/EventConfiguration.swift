@@ -16,18 +16,8 @@ import class UIKit.UINavigationController
 public protocol EventConfiguration<Event>: EventViewConfiguration {
    associatedtype EventAction: EventContextAction<Event>
    var actions: [EventAction] { get }
-   func format(event: Event) -> String
 }
 
 extension EventConfiguration {
-   public var actions: [EmptyEventContextAction<Event>] { [] }
-}
-
-public struct EmptyEventContextAction<Event>: EventContextAction {
-   public let title = String()
-   public let image = UIImage()
-
-   public func perform(
-      _ event: Event,
-      navigation: UINavigationController?) async throws {}
+   public var actions: [AnyEventContextAction<Event>] { [] }
 }

@@ -11,7 +11,7 @@ import Foundation
 public final class FileExporter<Formatter> {
    private let formatter: Formatter
 
-   init(formatter: Formatter) {
+   public init(formatter: Formatter) {
       self.formatter = formatter
    }
 

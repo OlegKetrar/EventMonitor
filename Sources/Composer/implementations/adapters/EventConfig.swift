@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  EventConfig.swift
+//  EventMonitor
 //
 //  Created by Oleg Ketrar on 24.09.2022.
 //
@@ -10,34 +10,43 @@ import UIKit
 import MonitorCore
 import MonitorUI
 
-public struct EventConfig {
-   var factories: [AnyEventViewFactory] = []
+struct EventConfig {
+   private var configs: [AnyEventConfiguration] = []
 
-   public init() {}
-
-   public mutating func add<ConcreteEvent: Event>(
-      _ factory: any EventConfiguration<ConcreteEvent>
+   mutating func add<ConcreteEvent>(
+      _ config: some EventConfiguration<ConcreteEvent>
    ) {
 
-      factories.append(AnyEventViewFactory(factory))
+      configs.append(AnyEventConfiguration(
+         config: config,
+         sharing: Optional<NullConfiguration<ConcreteEvent>>.none))
+   }
+
+   mutating func add<ConcreteEvent>(
+      _ config: some EventConfiguration<ConcreteEvent> & SharingConfiguration<ConcreteEvent>
+   ) {
+
+      configs.append(AnyEventConfiguration(config: config, sharing: config))
    }
 }
 
+// MARK: - EventViewConfig
+
 extension EventConfig: EventViewConfig {
 
-   public func configure(tableView: UITableView) {
-      factories.forEach {
+   func configure(tableView: UITableView) {
+      configs.forEach {
          $0.configureTableView(tableView)
       }
    }
 
-   public func makeCell(
+   func makeCell(
       tableView: UITableView,
       indexPath: IndexPath,
       event: AnyEvent
    ) -> UITableViewCell? {
 
-      factories
+      configs
          .lazy
          .compactMap {
             $0.makeCell(tableView, indexPath, event)
@@ -45,25 +54,25 @@ extension EventConfig: EventViewConfig {
          .first
    }
 
-   public func makeDetailViewController(
+   func makeDetailViewController(
       event: AnyEvent,
       navigation: UINavigationController?
    ) -> UIViewController? {
 
-      factories
+      configs
          .lazy
          .compactMap { $0.makeDetailViewController(event, navigation) }
          .first
    }
 
-   public func formatSession(_ session: EventSession) -> String {
+   func formatSession(_ session: EventSession) -> String {
 
       let formatter = SessionFormatter(
          header: { _ in nil },
          separator: "",
          terminator: "\n\n",
          eventFormatter: { anyEvent in
-            factories
+            configs
                .lazy
                .compactMap { $0.formatEvent(anyEvent) }
                .first
@@ -74,63 +83,94 @@ extension EventConfig: EventViewConfig {
    }
 }
 
-struct AnyEventViewFactory {
+// MARK: - Type erasure
+
+struct AnyEventConfiguration {
    let configureTableView: (UITableView) -> Void
    let makeCell: (UITableView, IndexPath, AnyEvent) -> UITableViewCell?
    let makeDetailViewController: (AnyEvent, UINavigationController?) -> UIViewController?
    let formatEvent: (AnyEvent) -> String?
 
-   init<Factory>(_ factory: Factory)
+   init<Configuration, Sharing>(config: Configuration, sharing: Sharing?)
    where
-      Factory: EventConfiguration,
-      Factory.EventCell: UITableViewCell
+      Configuration: EventConfiguration,
+      Configuration.EventCell: UITableViewCell,
+      Sharing: SharingConfiguration,
+      Configuration.Event == Sharing.Event
    {
 
       self.configureTableView = { tableView in
          tableView.register(
-            Factory.EventCell.self,
-            forCellReuseIdentifier: Factory.EventCell.reuseID)
+            Configuration.EventCell.self,
+            forCellReuseIdentifier: Configuration.EventCell.reuseID)
       }
 
       self.makeCell = { tableView, indexPath, anyEvent in
 
          let anyCell = tableView.dequeueReusableCell(
-            withIdentifier: Factory.EventCell.reuseID,
+            withIdentifier: Configuration.EventCell.reuseID,
             for: indexPath)
 
          guard
-            let cell = anyCell as? Factory.EventCell,
-            let event = anyEvent.payload as? Factory.Event
+            let cell = anyCell as? Configuration.EventCell,
+            let event = anyEvent.payload as? Configuration.Event
          else { return nil }
 
-         return factory.configure(cell: cell, event: event)
+         return config.configure(cell: cell, event: event)
       }
 
       self.makeDetailViewController = { anyEvent, navigation in
-         guard let event = anyEvent.payload as? Factory.Event else {
+         guard let event = anyEvent.payload as? Configuration.Event else {
             return nil
          }
 
-         let menuActions = factory.actions.map {
-            AnyEventContextAction(event: event, action: $0)
+         let menuActions = config.actions.map {
+            AnyEventMenuItem(event: event, action: $0)
          }
 
-         return factory.buildDetailView(
+         return config.buildDetailView(
             event: event,
             menuItems: menuActions,
             navigation: navigation)
       }
 
       self.formatEvent = { anyEvent in
-         guard let event = anyEvent.payload as? Factory.Event else {
-            return nil
-         }
+         guard
+            let event = anyEvent.payload as? Sharing.Event,
+            let sharing = sharing
+         else { return nil }
 
-         return factory.format(event: event)
+         return sharing.format(event: event)
       }
    }
 }
 
-extension UITableViewCell {
+struct AnyEventMenuItem: EventMenuItem {
+   let title: String
+   let image: UIImage
+   private let performFunction: (UINavigationController?) async throws -> Void
+
+   init<Event>(event: Event, action: any EventContextAction<Event>) {
+      self.title = action.title
+      self.image = action.image
+
+      self.performFunction = {
+         try await action.perform(event, navigation: $0)
+      }
+   }
+
+   func perform(_ ctx: UINavigationController?) async throws {
+      try await performFunction(ctx)
+   }
+}
+
+private struct NullConfiguration<Event>: SharingConfiguration {
+   func format(event: Event) -> String { "" }
+   func makeFileName(event: Event) -> String { "" }
+}
+
+// MARK: reuseID
+
+private extension UITableViewCell {
    static var reuseID: String { String(describing: self) }
 }

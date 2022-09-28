@@ -18,3 +18,23 @@ public protocol EventContextAction<Event> {
 
    func perform(_ event: Event, navigation: UINavigationController?) async throws
 }
+
+public struct AnyEventContextAction<Event>: EventContextAction {
+   let action: any EventContextAction<Event>
+
+   public init(_ action: some EventContextAction<Event>) {
+      self.action = action
+   }
+
+   public var title: String {
+      action.title
+   }
+
+   public var image: UIImage {
+      action.image
+   }
+
+   public func perform(_ event: Event, navigation: UINavigationController?) async throws {
+      try await action.perform(event, navigation: navigation)
+   }
+}

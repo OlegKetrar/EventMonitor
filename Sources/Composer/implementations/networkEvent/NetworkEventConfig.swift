@@ -7,15 +7,10 @@
 //
 
 import Foundation
-import UIKit
 import MonitorUI
 import MonitorCore
-
-extension NetworkEvent: Event {}
-
-public protocol CustomNetworkEvent: Event {
-   var networkData: NetworkEvent { get }
-}
+import class UIKit.UIViewController
+import class UIKit.UINavigationController
 
 extension NetworkEvent: CustomNetworkEvent {
    public var networkData: NetworkEvent { self }
@@ -49,71 +44,24 @@ public struct NetworkEventConfig<CustomEvent: CustomNetworkEvent>: EventConfigur
          menuConfiguration: menuConfig)
    }
 
-   public var actions = NetworkEventAction<CustomEvent>.allCases
+   public var actions: [AnyEventContextAction<CustomEvent>] {
+      [
+         AnyEventContextAction(HelloWorldAction()),
+         AnyEventContextAction(ShareAction(configuration: self))
+      ]
+   }
+}
+
+extension NetworkEventConfig: SharingConfiguration {
 
    public func format(event: CustomEvent) -> String {
       PlainTextFormatter().format(event: event.networkData)
    }
-}
 
-public enum NetworkEventAction<CustomEvent: CustomNetworkEvent>: String, CaseIterable, EventContextAction {
+   public func makeFileName(event: CustomEvent) -> String {
+      let request = event.networkData.request
 
-   case shareLog = "Copy log"
-   case cUrl = "Copy cURL"
-   case tasteIt = "Test it"
-
-   public var title: String {
-      rawValue
-   }
-
-   public var image: UIImage {
-      let img: UIImage? = {
-         switch self {
-         case .shareLog: return UIImage(systemName: "square.and.arrow.up")
-         case .cUrl: return UIImage(systemName: "doc.circle.fill")
-         case .tasteIt: return UIImage(systemName: "play.circle")
-         }
-      }()
-
-      return img ?? UIImage()
-   }
-
-   public func perform(
-      _ event: CustomEvent,
-      navigation: UINavigationController?
-   ) async throws {
-
-      switch self {
-      case .shareLog:
-         let exporter = FileExporter(formatter: PlainTextFormatter())
-
-         let file = await exporter.prepareFile(
-            named: event.networkData.makeFileName(),
-            content: { $0.format(event: event.networkData) })
-
-         await MainActor.run {
-            FileSharingPresenter(filePath: file?.path)
-               .share(over: navigation, completion: {
-                  // let arc to remove file from disk
-                  _ = file
-               })
-         }
-
-      case .cUrl:
-         try await Task.sleep(nanoseconds: 1_000_000_000)
-
-      case .tasteIt:
-         try await Task.sleep(nanoseconds: 1_000_000_000)
-      }
-
-      debugPrint("-- done: \(self.title)")
-   }
-}
-
-private extension NetworkEvent {
-
-   func makeFileName() -> String {
-      "\(request.verb)\(request.method).log"
+      return "\(request.verb)\(request.method).log"
          .replacingOccurrences(of: "/", with: "_")
          .lowercased()
    }

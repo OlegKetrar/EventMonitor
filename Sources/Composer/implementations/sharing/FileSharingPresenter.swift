@@ -8,10 +8,14 @@
 
 import UIKit
 
-struct FileSharingPresenter {
+public struct FileSharingPresenter {
    let filePath: String?
 
-   func share(
+   public init(filePath: String?) {
+      self.filePath = filePath
+   }
+
+   public func share(
       over vc: UIViewController?,
       completion: @escaping () -> Void
    ) {

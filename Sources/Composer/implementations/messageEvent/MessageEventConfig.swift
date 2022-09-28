@@ -31,8 +31,4 @@ struct MessageEventConfig: EventConfiguration {
    ) -> UIViewController? {
       return nil
    }
-
-   func format(event: MessageEvent) -> String {
-      event.message
-   }
 }
