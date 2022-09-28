@@ -16,8 +16,22 @@ extension NetworkEvent: CustomNetworkEvent {
    public var networkData: NetworkEvent { self }
 }
 
-public struct NetworkEventConfig<CustomEvent: CustomNetworkEvent>: EventConfiguration {
-   public typealias Event = CustomEvent
+public struct NetworkEventConfig<CustomEvent: CustomNetworkEvent> {
+   private var customActions: [AnyEventContextAction<CustomEvent>]
+
+   public init() {
+      customActions = []
+   }
+
+   public func addAction(_ action: some EventContextAction<CustomEvent>) -> Self {
+      var copy = self
+      copy.customActions.append(AnyEventContextAction(action))
+
+      return copy
+   }
+}
+
+extension NetworkEventConfig: EventConfiguration {
 
    public func configure(cell: NetworkEventCell, event: CustomEvent) -> NetworkEventCell {
       let event = event.networkData
@@ -45,10 +59,7 @@ public struct NetworkEventConfig<CustomEvent: CustomNetworkEvent>: EventConfigur
    }
 
    public var actions: [AnyEventContextAction<CustomEvent>] {
-      [
-         AnyEventContextAction(HelloWorldAction()),
-         AnyEventContextAction(ShareAction(configuration: self))
-      ]
+      [AnyEventContextAction(ShareAction(configuration: self))] + customActions
    }
 }
 
@@ -59,9 +70,14 @@ extension NetworkEventConfig: SharingConfiguration {
    }
 
    public func makeFileName(event: CustomEvent) -> String {
-      let request = event.networkData.request
+      event.networkData.makeFileName()
+   }
+}
 
-      return "\(request.verb)\(request.method).log"
+extension NetworkEvent {
+
+   public func makeFileName() -> String {
+      "\(request.verb)\(request.method).log"
          .replacingOccurrences(of: "/", with: "_")
          .lowercased()
    }

@@ -13,12 +13,6 @@ import class UIKit.UIViewController
 
 public typealias Event = MonitorCore.Event
 
-struct ConcreteNetworkEvent: CustomNetworkEvent {
-   var networkData: NetworkEvent
-   var cUrlRepresentation: String
-//   var realRequest: URLRequest
-}
-
 public class MonitorComposer {
    public static let shared = MonitorComposer()
 

@@ -53,7 +53,11 @@ public struct MenuBuilder {
                   setLoadingVisible(true)
 
                   Task {
-                     try await item.perform(navigation)
+                     do {
+                        try await item.perform(navigation)
+                     } catch {
+                        // FIXME: present error ??
+                     }
 
                      await MainActor.run {
                         setLoadingVisible(false)
