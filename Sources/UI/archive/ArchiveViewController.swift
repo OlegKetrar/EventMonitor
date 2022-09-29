@@ -31,7 +31,6 @@ final class ArchiveViewController: UIViewController {
       $0.separatorInset.left = 15
       $0.separatorInset.right = 10
       $0.backgroundColor = .clear
-      $0.translatesAutoresizingMaskIntoConstraints = false
       $0.tableFooterView = UIView()
       $0.dataSource = self
       $0.delegate = self
@@ -120,7 +119,10 @@ private extension ArchiveViewController {
    func configureUI() {
       title = "Sessions"
       view.backgroundColor = .grayBackground
+      disableBackButtonContextMenu()
+
       view.addSubview(tableView)
+      tableView.translatesAutoresizingMaskIntoConstraints = false
 
       NSLayoutConstraint.activate([
          tableView.leftAnchor.constraint(equalTo: view.leftAnchor),

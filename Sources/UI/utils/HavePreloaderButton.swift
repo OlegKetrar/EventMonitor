@@ -10,24 +10,17 @@ import Foundation
 import UIKit
 
 /// Provides ActivityIndicator as UIBarButtonItem.
-@objc protocol HavePreloaderButton: AnyObject {}
+@objc public protocol HavePreloaderButton: AnyObject {}
 
 extension HavePreloaderButton {
 
-   func configuredPreloaderBarButton(tint color: UIColor = .gray) -> UIBarButtonItem {
+   public func makePreloaderBarButton(tint color: UIColor = .gray) -> UIBarButtonItem {
 
-      return UIBarButtonItem(customView: {
-         let preloader: UIActivityIndicatorView
+      let preloader: UIActivityIndicatorView
+      preloader = UIActivityIndicatorView(style: .medium)
+      preloader.color = color
+      preloader.startAnimating()
 
-         if #available(iOS 13.0, *) {
-            preloader = UIActivityIndicatorView(style: .medium)
-         } else {
-            preloader = UIActivityIndicatorView(style: .gray)
-         }
-
-         preloader.color = color
-         preloader.startAnimating()
-         return preloader
-      }())
+      return UIBarButtonItem(customView: preloader)
    }
 }

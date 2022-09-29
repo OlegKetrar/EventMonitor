@@ -64,7 +64,7 @@ public class SessionViewController: UIViewController, HavePreloaderButton, HaveS
    // MARK: - Actions
 
    @objc func actionShare() {
-      navigationItem.rightBarButtonItem = configuredPreloaderBarButton()
+      navigationItem.rightBarButtonItem = makePreloaderBarButton()
 
       Task { [self] in
          await config.shareLog(navigation: navigationController)
@@ -106,7 +106,6 @@ extension SessionViewController: UITableViewDelegate {
 
 // MARK: - UIContextMenuInteractionDelegate
 
-@available(iOS 13.0, *)
 extension SessionViewController: UIContextMenuInteractionDelegate {
 
    public func contextMenuInteraction(
@@ -126,9 +125,9 @@ extension SessionViewController: UIContextMenuInteractionDelegate {
 // MARK: - Private
 
 private extension SessionViewController {
-
+   
    func updateTitle() {
-      if #available(iOS 13.0, *), viewState.hasFilters {
+      if viewState.hasFilters {
          navigationItem.titleView = makeTitleView(title: viewState.title)
       } else {
          navigationItem.title = viewState.title
@@ -139,6 +138,7 @@ private extension SessionViewController {
       navigationItem.rightBarButtonItem = configuredShareButton()
       view.backgroundColor = .grayBackground
       view.addSubview(tableView)
+      disableBackButtonContextMenu()
 
       NSLayoutConstraint.activate([
          tableView.leftAnchor.constraint(equalTo: view.leftAnchor),

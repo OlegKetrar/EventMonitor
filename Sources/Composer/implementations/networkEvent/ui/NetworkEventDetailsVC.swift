@@ -8,8 +8,9 @@
 
 import Foundation
 import UIKit
+import MonitorUI
 
-public class NetworkEventDetailsVC: UIViewController {
+public class NetworkEventDetailsVC: UIViewController, HavePreloaderButton {
    private let viewModel: NetworkEventViewModel
    private let menuConfiguration: MenuConfiguration?
 
@@ -43,7 +44,7 @@ public class NetworkEventDetailsVC: UIViewController {
       switch menuConfiguration {
 
       case let .singleAction(_, action):
-         navigationItem.rightBarButtonItem = configuredPreloaderBarButton()
+         navigationItem.rightBarButtonItem = makePreloaderBarButton()
 
          Task { [weak self] in
             try await action()
@@ -68,7 +69,7 @@ private extension NetworkEventDetailsVC {
 
    func setRightBarButtonLoading(_ loading: Bool) {
       if loading {
-         navigationItem.rightBarButtonItem = configuredPreloaderBarButton()
+         navigationItem.rightBarButtonItem = makePreloaderBarButton()
       } else {
          updateRightBarButton()
       }
@@ -126,28 +127,20 @@ private extension NetworkEventDetailsVC {
          action: #selector(actionMenu))
    }
 
-   func configuredPreloaderBarButton(tint color: UIColor = .gray) -> UIBarButtonItem {
-
-      let preloader: UIActivityIndicatorView
-      preloader = UIActivityIndicatorView(style: .medium)
-      preloader.color = color
-      preloader.startAnimating()
-
-      return UIBarButtonItem(customView: preloader)
-   }
-
    func configureUI() {
       view.backgroundColor = .grayBackground
+      disableBackButtonContextMenu()
 
-      let scrollView = UIScrollView(frame: .zero)
+      let scrollView = UIScrollView()
       scrollView.alwaysBounceVertical = true
-      scrollView.translatesAutoresizingMaskIntoConstraints = false
 
       let stackView = makeConfiguredStackView()
-      stackView.translatesAutoresizingMaskIntoConstraints = false
 
       scrollView.addSubview(stackView)
       view.addSubview(scrollView)
+
+      stackView.translatesAutoresizingMaskIntoConstraints = false
+      scrollView.translatesAutoresizingMaskIntoConstraints = false
 
       NSLayoutConstraint.activate([
          scrollView.leftAnchor.constraint(equalTo: view.leftAnchor),
@@ -190,20 +183,21 @@ private extension NetworkEventDetailsVC {
 
    func makeInfoSection() -> UIView {
 
-      let sectionView = UIView(frame: .zero)
-      sectionView.translatesAutoresizingMaskIntoConstraints = false
+      let sectionView = UIView()
 
       let titleView = makeTitleView()
 
-      let statusLabel = UILabel(frame: .zero)
+      let statusLabel = UILabel()
       statusLabel.textColor = .grayPrimaryText
       statusLabel.font = .systemFont(ofSize: 18, weight: .semibold)
       statusLabel.text = viewModel.statusString
       statusLabel.numberOfLines = 0
-      statusLabel.translatesAutoresizingMaskIntoConstraints = false
 
       sectionView.addSubview(titleView)
       sectionView.addSubview(statusLabel)
+
+      titleView.translatesAutoresizingMaskIntoConstraints = false
+      statusLabel.translatesAutoresizingMaskIntoConstraints = false
 
       NSLayoutConstraint.activate([
          titleView.leftAnchor.constraint(equalTo: sectionView.leftAnchor, constant: 10),
@@ -221,21 +215,18 @@ private extension NetworkEventDetailsVC {
 
    func makeTitleView() -> UIView {
 
-      let containerView = UIView(frame: .zero)
-      containerView.translatesAutoresizingMaskIntoConstraints = false
+      let containerView = UIView()
 
       let verbLabel = UILabel(frame: .zero)
       verbLabel.text = viewModel.requestVerb
       verbLabel.textColor = .white
       verbLabel.font = .systemFont(ofSize: 16, weight: .bold)
-      verbLabel.translatesAutoresizingMaskIntoConstraints = false
       verbLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
 
       let verbContainer = UIView(frame: .zero)
       verbContainer.backgroundColor = viewModel.isFailed ? #colorLiteral(red: 0.9773717523, green: 0.2437902689, blue: 0.2448684871, alpha: 1) : #colorLiteral(red: 0.2871317863, green: 0.8010149598, blue: 0.5653145909, alpha: 1)
       verbContainer.layer.cornerRadius = 3
       verbContainer.layer.masksToBounds = true
-      verbContainer.translatesAutoresizingMaskIntoConstraints = false
 
       let titleLabel = UILabel(frame: .zero)
       titleLabel.text = viewModel.titleString
@@ -243,11 +234,14 @@ private extension NetworkEventDetailsVC {
       titleLabel.font = .systemFont(ofSize: 18, weight: .semibold)
       titleLabel.lineBreakMode = .byWordWrapping
       titleLabel.numberOfLines = 0
-      titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
       verbContainer.addSubview(verbLabel)
       containerView.addSubview(verbContainer)
       containerView.addSubview(titleLabel)
+
+      verbLabel.translatesAutoresizingMaskIntoConstraints = false
+      verbContainer.translatesAutoresizingMaskIntoConstraints = false
+      titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
       NSLayoutConstraint.activate([
          verbLabel.leftAnchor.constraint(equalTo: verbContainer.leftAnchor, constant: 10),
@@ -269,24 +263,24 @@ private extension NetworkEventDetailsVC {
    }
 
    func makeSection(title: String, content: String, highlight: Bool = false) -> UIView {
-      let sectionView = UIView(frame: .zero)
+      let sectionView = UIView()
 
-      let headerLabel = UILabel(frame: .zero)
+      let headerLabel = UILabel()
       headerLabel.textColor = .grayPrimaryText
       headerLabel.font = .systemFont(ofSize: 18, weight: .semibold)
       headerLabel.text = title
       headerLabel.numberOfLines = 0
-      headerLabel.translatesAutoresizingMaskIntoConstraints = false
 
-      let contentView = JsonCodeView(frame: .zero)
+      let contentView = JsonCodeView()
       contentView.setText(content, highlight: highlight)
       contentView.layer.cornerRadius = 5
       contentView.layer.masksToBounds = true
 
-      contentView.translatesAutoresizingMaskIntoConstraints = false
-
       sectionView.addSubview(headerLabel)
       sectionView.addSubview(contentView)
+
+      headerLabel.translatesAutoresizingMaskIntoConstraints = false
+      contentView.translatesAutoresizingMaskIntoConstraints = false
 
       NSLayoutConstraint.activate([
          headerLabel.leftAnchor.constraint(equalTo: sectionView.leftAnchor, constant: 30),

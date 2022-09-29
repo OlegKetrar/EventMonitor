@@ -19,18 +19,18 @@ public class NetworkEventCell: UITableViewCell {
       static let failureSecondaryColor = #colorLiteral(red: 0.9961538911, green: 0.9251114726, blue: 0.928586185, alpha: 1)
    }
 
-   private let verbLabel = UILabel(frame: .zero).with {
+   private let verbLabel = UILabel().with {
       $0.textColor = .white
       $0.font = .systemFont(ofSize: 16, weight: .bold)
    }
 
-   private let verbContainer = UIView(frame: .zero).with {
+   private let verbContainer = UIView().with {
       $0.layer.cornerRadius = 3
       $0.layer.masksToBounds = true
    }
 
-   private let titleLabel = UILabel(frame: .zero).with {
-      $0.textColor = UIColor.grayPrimaryText
+   private let titleLabel = UILabel().with {
+      $0.textColor = .grayPrimaryText
       $0.font = .systemFont(ofSize: 16, weight: .semibold)
       $0.lineBreakMode = .byWordWrapping
       $0.numberOfLines = 0
@@ -104,15 +104,3 @@ private extension NetworkEventCell {
       ])
    }
 }
-
-protocol HasWith: AnyObject {}
-
-extension HasWith {
-
-   func with(_ closure: (Self) throws -> Void) rethrows -> Self {
-      try closure(self)
-      return self
-   }
-}
-
-extension UIView: HasWith {}
