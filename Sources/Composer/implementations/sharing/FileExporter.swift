@@ -24,7 +24,7 @@ public final class FileExporter<Formatter> {
 
       let exportDir = NSTemporaryDirectory()
          .ns
-         .appendingPathComponent("network-monitor.exporting-logs")
+         .appendingPathComponent("event-monitor.exporting-logs")
 
       let filepath = exportDir.ns.appendingPathComponent(filename)
 

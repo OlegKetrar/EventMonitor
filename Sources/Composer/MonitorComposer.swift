@@ -20,7 +20,7 @@ public class MonitorComposer {
 
    private let processor: EventProcessor = {
       let tmpDir = NSTemporaryDirectory() as NSString
-      let path = tmpDir.appendingPathComponent("network-monitor.session-logs")
+      let path = tmpDir.appendingPathComponent("event-monitor.session-logs")
       let store = FileEventStorage(directoryPath: path)
       let processor = EventProcessor(storage: store)
 
