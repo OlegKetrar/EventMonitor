@@ -18,44 +18,11 @@ public final class EventProcessor {
       self.storage = storage
       self.storage.startSession(identifier: activeSessionID)
 
-/*
-      let defaultFormatter = PlainTextFormatter()
-
-      let sessionFormatter = SessionFormatter(
-         header: { "Created at: \($0.identifier.timestamp)" },
-         separator: "--> ",
-         terminator: "\n\n",
-         eventFormatter: defaultFormatter)
-
-      self.sessionExport = ExportCapability(
-         name: "plain text",
-         exporter: FileExporter(formatter: sessionFormatter))
-
-      self.eventExport = [
-         ExportCapability(
-            name: "plain text",
-            exporter: FileExporter(formatter: defaultFormatter))
-      ]
-*/
-
       self.activeSession = Observable(EventSession(
          identifier: activeSessionID,
          isActive: true,
          events: []))
    }
-
-/*
-   public func setExportOptions(_ options: [ExportOption]) {
-      self.eventExport.append(contentsOf: options.map {
-         switch $0 {
-         case let .eventOption(name, formatter):
-            return ExportCapability(
-               name: name,
-               exporter: FileExporter(formatter: formatter))
-         }
-      })
-   }
-*/
 
    public func log<T: Event>(event: T, subsystem: String) {
       let newEvent = AnyEvent(event, subsystem: subsystem)

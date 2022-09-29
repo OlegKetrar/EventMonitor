@@ -68,8 +68,8 @@ extension EventConfig: EventViewConfig {
    func formatSession(_ session: EventSession) -> String {
 
       let formatter = SessionFormatter(
-         header: { _ in nil },
-         separator: "",
+         header: { "Created at: \($0.identifier.timestamp)" },
+         separator: "--> ",
          terminator: "\n\n",
          eventFormatter: { anyEvent in
             configs
