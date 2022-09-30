@@ -33,11 +33,7 @@ public struct ShareAction<Event>: EventContextAction {
          content: { $0(event) })
 
       await MainActor.run {
-         FileSharingPresenter(filePath: file?.path)
-            .share(over: navigation, completion: {
-                // let arc to remove file from disk
-               _ = file
-            })
+         SharingPresenter(file: file).share(over: navigation)
       }
    }
 }

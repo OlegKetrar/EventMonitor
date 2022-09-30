@@ -46,7 +46,7 @@ public final class FileExporter<Formatter> {
 public final class LocalFileRef {
    public let path: String
 
-   init(path: String) {
+   public init(path: String) {
       self.path = path
    }
 

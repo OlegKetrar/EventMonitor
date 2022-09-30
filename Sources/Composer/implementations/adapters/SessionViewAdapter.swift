@@ -73,11 +73,7 @@ struct SessionViewAdapter: SessionViewConfiguration {
          content: { $0.formatSession(formatter: config) })
 
       await MainActor.run {
-         FileSharingPresenter(filePath: file?.path)
-            .share(over: navigation, completion: {
-               // let arc to remove file from disk
-               _ = file
-            })
+         SharingPresenter(file: file).share(over: navigation)
       }
    }
 }
