@@ -22,15 +22,14 @@ public struct SessionViewState {
 
 public final class SessionViewModel {
    private let session: Observable<EventSession>
-   private var appliedFilters: [String]
-   private let onApplyFiltersCallback: ([String]) -> Void
+   private var filtering: FilterModel<String>
+   private var appliedFilters: [String] { filtering.applied }
 
    public let state: Observable<SessionViewState>
 
    public init(
       session: Observable<EventSession>,
-      appliedFilters: [String],
-      onApplyFilters: @escaping ([String]) -> Void
+      filtering: FilterModel<String>
    ) {
 
       let formatter = DateFormatter()
@@ -46,21 +45,20 @@ public final class SessionViewModel {
       }
 
       self.session = session
-      self.appliedFilters = appliedFilters
-      self.onApplyFiltersCallback = onApplyFilters
+      self.filtering = filtering
 
       self.state = Observable(SessionViewState(
          title: formatTitle(session.value),
          exportFileName: formatter.string(from: session.value.identifier.createdAt),
-         filters: findFilters(in: session.value, applied: appliedFilters),
-         events: filterEvents(in: session.value, filters: appliedFilters)
+         filters: filtering.findFilters(in: session.value),
+         events: filtering.filter(items: session.value.events, by: \.subsystem)
       ))
 
       session.notify(observer: self, on: .main, callback: { vm, newSession in
          vm.state.mutate {
             $0.title = formatTitle(newSession)
-            $0.filters = findFilters(in: newSession, applied: vm.appliedFilters)
-            $0.events = filterEvents(in: newSession, filters: vm.appliedFilters)
+            $0.filters = vm.filtering.findFilters(in: newSession)
+            $0.events = vm.filtering.filter(items: newSession.events, by: \.subsystem)
          }
       })
    }
@@ -68,17 +66,15 @@ public final class SessionViewModel {
    public func toggleFilter(_ filter: SubsystemFilter) {
 
       if filter.isAll {
-         appliedFilters = []
+         filtering.clearAll()
       } else {
-         appliedFilters = [filter.title]
+         filtering.toggle(filter.title)
       }
 
       state.mutate {
-         $0.filters = findFilters(in: session.value, applied: appliedFilters)
-         $0.events = filterEvents(in: session.value, filters: appliedFilters)
+         $0.filters = filtering.findFilters(in: session.value)
+         $0.events = filtering.filter(items: session.value.events, by: \.subsystem)
       }
-
-      onApplyFiltersCallback(appliedFilters)
    }
 
    public func formatSession(formatter: SessionFormatting) -> String {
@@ -86,43 +82,33 @@ public final class SessionViewModel {
    }
 }
 
-private func findFilters(
-   in session: EventSession,
-   applied appliedFilters: [String]
-) -> [SubsystemFilter] {
+extension FilterModel where Parameter == String {
 
-   let subsystems = Array(Set(session.events.map(\.subsystem)))
-      .sorted(by: {
-         $0.localizedCaseInsensitiveCompare($1) == .orderedAscending
-      })
-
-   var filters = subsystems.map {
-      SubsystemFilter(
-         subsystem: $0,
-         isApplied: appliedFilters.contains($0))
+   func findFilters(in session: EventSession) -> [SubsystemFilter] {
+      findOptions(
+         in: session.events,
+         by: \.subsystem,
+         sortedBy: {
+            $0.localizedCaseInsensitiveCompare($1) == .orderedAscending
+         })
+      .map {
+         $0.makeSubsystemFilter()
+      }
    }
-
-   guard filters.count > 1 else {
-      return []
-   }
-
-   if appliedFilters.isEmpty == false {
-      filters.append(.clear)
-   }
-
-   return filters
 }
 
-private func filterEvents(
-   in session: EventSession,
-   filters: [String]
-) -> [AnyEvent] {
+extension FilterOption<String> {
 
-   session.events.filter {
-      if filters.isEmpty {
-         return true
-      } else {
-         return filters.contains($0.subsystem)
+   func makeSubsystemFilter() -> SubsystemFilter {
+      switch self {
+      case let .filter(parameter, isApplied):
+         return SubsystemFilter(
+            title: parameter,
+            isAll: false,
+            isApplied: isApplied)
+
+      case .clearAll:
+         return .clear
       }
    }
 }
