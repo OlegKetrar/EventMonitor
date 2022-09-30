@@ -64,6 +64,18 @@ public class MonitorComposer {
       viewConfig.add(configuration)
    }
 
+   public func registerCustomNetwork<ConcreteEvent: CustomNetworkEvent>(
+      event: ConcreteEvent.Type,
+      configuration builder: (NetworkEventConfig<ConcreteEvent>) -> NetworkEventConfig<ConcreteEvent>
+   ) {
+
+      let networkConfig = NetworkEventConfig<ConcreteEvent>()
+
+      register(
+         event: event,
+         configuration: builder(networkConfig))
+   }
+
    public func log<SomeEvent: Event>(_ event: SomeEvent) {
       processor.log(event: event, subsystem: "default")
    }

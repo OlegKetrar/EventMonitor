@@ -19,7 +19,7 @@ extension NetworkEvent: CustomNetworkEvent {
 public struct NetworkEventConfig<CustomEvent: CustomNetworkEvent> {
    private var customActions: [AnyEventContextAction<CustomEvent>]
 
-   public init() {
+   init() {
       customActions = []
    }
 
