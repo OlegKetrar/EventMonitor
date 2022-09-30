@@ -65,7 +65,7 @@ public final class SessionViewModel {
       })
    }
 
-   public func applyFilter(_ filter: SubsystemFilter) {
+   public func toggleFilter(_ filter: SubsystemFilter) {
 
       if filter.isAll {
          appliedFilters = []
