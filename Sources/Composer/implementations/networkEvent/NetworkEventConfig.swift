@@ -59,7 +59,12 @@ extension NetworkEventConfig: EventConfiguration {
    }
 
    public var actions: [AnyEventContextAction<CustomEvent>] {
-      [AnyEventContextAction(ShareFileAction(configuration: self))] + customActions
+
+      let share = ShareFileAction<CustomEvent>(
+         title: "Share .log",
+         configuration: self)
+
+      return [AnyEventContextAction(share)] + customActions
    }
 }
 
