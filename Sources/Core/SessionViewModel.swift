@@ -23,7 +23,6 @@ public struct SessionViewState {
 public final class SessionViewModel {
    private let session: Observable<EventSession>
    private var filtering: FilterModel<String>
-   private var appliedFilters: [String] { filtering.applied }
 
    public let state: Observable<SessionViewState>
 
