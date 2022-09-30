@@ -59,7 +59,7 @@ extension NetworkEventConfig: EventConfiguration {
    }
 
    public var actions: [AnyEventContextAction<CustomEvent>] {
-      [AnyEventContextAction(ShareAction(configuration: self))] + customActions
+      [AnyEventContextAction(ShareFileAction(configuration: self))] + customActions
    }
 }
 

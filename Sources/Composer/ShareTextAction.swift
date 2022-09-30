@@ -1,5 +1,5 @@
 //
-//  ShareAction.swift
+//  ShareTextAction.swift
 //  EventMonitor
 //
 //  Created by Oleg Ketrar on 28.09.2022.
@@ -10,7 +10,7 @@ import MonitorCore
 import class UIKit.UINavigationController
 import class UIKit.UIImage
 
-public struct ShareAction<Event>: EventContextAction {
+public struct ShareTextAction<Event>: EventContextAction {
    let config: any SharingConfiguration<Event>
 
    public init<Config: SharingConfiguration>(configuration: Config) where Config.Event == Event {
@@ -26,14 +26,10 @@ public struct ShareAction<Event>: EventContextAction {
    }
 
    public func perform(_ event: Event, navigation: UINavigationController?) async throws {
-      let exporter = FileExporter(formatter: config.format(event:))
-
-      let file = await exporter.prepareFile(
-         named: config.makeFileName(event: event),
-         content: { $0(event) })
+      let text = config.format(event: event)
 
       await MainActor.run {
-         SharingPresenter(file: file).share(over: navigation)
+         SharingPresenter(plainText: text).share(over: navigation)
       }
    }
 }
