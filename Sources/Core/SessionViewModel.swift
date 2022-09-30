@@ -26,7 +26,10 @@ public final class SessionViewModel {
 
    public let state: Observable<SessionViewState>
 
-   public init(session: Observable<EventSession>) {
+   public init(
+      session: Observable<EventSession>,
+      appliedFilters: [String]
+   ) {
 
       let formatter = DateFormatter()
       formatter.timeStyle = .medium
@@ -41,25 +44,25 @@ public final class SessionViewModel {
       }
 
       self.session = session
-      self.appliedFilters = []
+      self.appliedFilters = appliedFilters
 
       self.state = Observable(SessionViewState(
          title: formatTitle(session.value),
          exportFileName: formatter.string(from: session.value.identifier.createdAt),
-         filters: findFilters(in: session.value, applied: []),
-         events: formatEvents(in: session.value, filters: [])
+         filters: findFilters(in: session.value, applied: appliedFilters),
+         events: filterEvents(in: session.value, filters: appliedFilters)
       ))
 
       session.notify(observer: self, on: .main, callback: { vm, newSession in
          vm.state.mutate {
             $0.title = formatTitle(newSession)
             $0.filters = findFilters(in: newSession, applied: vm.appliedFilters)
-            $0.events = formatEvents(in: newSession, filters: vm.appliedFilters)
+            $0.events = filterEvents(in: newSession, filters: vm.appliedFilters)
          }
       })
    }
 
-   public func filterEvents(by filter: SubsystemFilter) {
+   public func applyFilter(_ filter: SubsystemFilter) {
 
       if filter.isAll {
          self.appliedFilters = []
@@ -69,7 +72,7 @@ public final class SessionViewModel {
 
       state.mutate {
          $0.filters = findFilters(in: session.value, applied: appliedFilters)
-         $0.events = formatEvents(in: session.value, filters: appliedFilters)
+         $0.events = filterEvents(in: session.value, filters: appliedFilters)
       }
    }
 
@@ -105,7 +108,7 @@ private func findFilters(
    return filters
 }
 
-private func formatEvents(
+private func filterEvents(
    in session: EventSession,
    filters: [String]
 ) -> [AnyEvent] {
