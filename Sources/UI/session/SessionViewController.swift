@@ -184,7 +184,7 @@ private extension SessionViewController {
                attributes: filter.isAll ? [.destructive] : [],
                state: filter.isApplied ? .on : .off,
                handler: { [weak self] _ in
-                  self?.config.viewModel.filterEvents(by: filter)
+                  self?.config.viewModel.toggleFilter(filter)
                })
          })
    }

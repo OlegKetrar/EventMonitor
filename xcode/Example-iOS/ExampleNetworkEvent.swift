@@ -86,4 +86,7 @@ func configureEventMonitor(_ service: ExampleNetworkService) {
             .addAction(ShareCurlContextAction())
             .addAction(RetryEventContextAction(service: service))
       })
+
+   MonitorComposer.shared
+      .setInitialSubsystems(["network"])
 }

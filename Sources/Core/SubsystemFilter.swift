@@ -6,7 +6,7 @@
 //  Copyright © 2021 Oleg Ketrar. All rights reserved.
 //
 
-public struct SubsystemFilter {
+public struct SubsystemFilter: Equatable {
    public var title: String
    public var isAll: Bool
    public var isApplied: Bool
@@ -20,7 +20,7 @@ extension SubsystemFilter {
 
    public static var clear: SubsystemFilter {
       SubsystemFilter(
-         title: "Clear filter",
+         title: "Clear filters",
          isAll: true,
          isApplied: false)
    }

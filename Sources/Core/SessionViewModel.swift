@@ -22,11 +22,14 @@ public struct SessionViewState {
 
 public final class SessionViewModel {
    private let session: Observable<EventSession>
-   private var appliedFilters: [String]
+   private var filtering: FilterModel<String>
 
    public let state: Observable<SessionViewState>
 
-   public init(session: Observable<EventSession>) {
+   public init(
+      session: Observable<EventSession>,
+      filtering: FilterModel<String>
+   ) {
 
       let formatter = DateFormatter()
       formatter.timeStyle = .medium
@@ -41,80 +44,77 @@ public final class SessionViewModel {
       }
 
       self.session = session
-      self.appliedFilters = []
+      self.filtering = filtering
 
       self.state = Observable(SessionViewState(
          title: formatTitle(session.value),
          exportFileName: formatter.string(from: session.value.identifier.createdAt),
-         filters: findFilters(in: session.value, applied: []),
-         events: formatEvents(in: session.value, filters: [])
+         filters: filtering.findFilters(in: session.value),
+         events: filtering.filter(items: session.value.events, by: \.subsystem)
       ))
 
       session.notify(observer: self, on: .main, callback: { vm, newSession in
          vm.state.mutate {
             $0.title = formatTitle(newSession)
-            $0.filters = findFilters(in: newSession, applied: vm.appliedFilters)
-            $0.events = formatEvents(in: newSession, filters: vm.appliedFilters)
+            $0.filters = vm.filtering.findFilters(in: newSession)
+            $0.events = vm.filtering.filter(items: newSession.events, by: \.subsystem)
          }
       })
    }
 
-   public func filterEvents(by filter: SubsystemFilter) {
+   public func toggleFilter(_ filter: SubsystemFilter) {
 
       if filter.isAll {
-         self.appliedFilters = []
+         filtering.clearAll()
       } else {
-         self.appliedFilters = [filter.title]
+         filtering.toggle(filter.title)
       }
 
       state.mutate {
-         $0.filters = findFilters(in: session.value, applied: appliedFilters)
-         $0.events = formatEvents(in: session.value, filters: appliedFilters)
+         $0.filters = filtering.findFilters(in: session.value)
+         $0.events = filtering.filter(items: session.value.events, by: \.subsystem)
       }
    }
 
    public func formatSession(formatter: SessionFormatting) -> String {
-      formatter.formatSession(session.value)
+      var sessionToFormat = session.value
+
+      // format only filtered events
+      sessionToFormat.events = filtering.filter(
+         items: session.value.events,
+         by: \.subsystem)
+
+      return formatter.formatSession(sessionToFormat)
    }
 }
 
-private func findFilters(
-   in session: EventSession,
-   applied appliedFilters: [String]
-) -> [SubsystemFilter] {
+extension FilterModel where Parameter == String {
 
-   let subsystems = Array(Set(session.events.map(\.subsystem)))
-      .sorted(by: {
-         $0.localizedCaseInsensitiveCompare($1) == .orderedAscending
-      })
-
-   var filters = subsystems.map {
-      SubsystemFilter(
-         subsystem: $0,
-         isApplied: appliedFilters.contains($0))
+   func findFilters(in session: EventSession) -> [SubsystemFilter] {
+      findOptions(
+         in: session.events,
+         by: \.subsystem,
+         sortedBy: {
+            $0.localizedCaseInsensitiveCompare($1) == .orderedAscending
+         })
+      .map {
+         $0.makeSubsystemFilter()
+      }
    }
-
-   guard filters.count > 1 else {
-      return []
-   }
-
-   if appliedFilters.isEmpty == false {
-      filters.append(.clear)
-   }
-
-   return filters
 }
 
-private func formatEvents(
-   in session: EventSession,
-   filters: [String]
-) -> [AnyEvent] {
+extension FilterOption<String> {
 
-   session.events.filter {
-      if filters.isEmpty {
-         return true
-      } else {
-         return filters.contains($0.subsystem)
+   func makeSubsystemFilter() -> SubsystemFilter {
+      switch self {
+      case let .filter(parameter, isApplied):
+         return SubsystemFilter(
+            title: parameter,
+            isAll: false,
+            isApplied: isApplied)
+
+      case .clearAll:
+         return .clear
       }
    }
 }

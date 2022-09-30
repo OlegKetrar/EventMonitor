@@ -17,6 +17,10 @@ public class MonitorComposer {
    public static let shared = MonitorComposer()
 
    private var viewConfig = EventConfig()
+   private var initialSubsystemFilters: [String] = []
+
+   private lazy var lastUsedFiltering = FilterModel<String>(
+      applied: initialSubsystemFilters)
 
    private let processor: EventProcessor = {
       let tmpDir = NSTemporaryDirectory() as NSString
@@ -31,8 +35,13 @@ public class MonitorComposer {
       UIKitMonitorView(
          provider: self.processor,
          config: { session, navigation in
-            SessionViewAdapter(
-               viewModel: SessionViewModel(session: session),
+
+            let viewModel = SessionViewModel(
+               session: session,
+               filtering: self.lastUsedFiltering)
+
+            return SessionViewAdapter(
+               viewModel: viewModel,
                config: self.viewConfig,
                navigation: navigation)
          })
@@ -74,6 +83,10 @@ public class MonitorComposer {
       register(
          event: event,
          configuration: builder(networkConfig))
+   }
+
+   public func setInitialSubsystems(_ subsystems: [String]) {
+      initialSubsystemFilters = subsystems
    }
 
    public func log<SomeEvent: Event>(_ event: SomeEvent) {
