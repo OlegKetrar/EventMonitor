@@ -23,12 +23,14 @@ public struct SessionViewState {
 public final class SessionViewModel {
    private let session: Observable<EventSession>
    private var appliedFilters: [String]
+   private let onApplyFiltersCallback: ([String]) -> Void
 
    public let state: Observable<SessionViewState>
 
    public init(
       session: Observable<EventSession>,
-      appliedFilters: [String]
+      appliedFilters: [String],
+      onApplyFilters: @escaping ([String]) -> Void
    ) {
 
       let formatter = DateFormatter()
@@ -45,6 +47,7 @@ public final class SessionViewModel {
 
       self.session = session
       self.appliedFilters = appliedFilters
+      self.onApplyFiltersCallback = onApplyFilters
 
       self.state = Observable(SessionViewState(
          title: formatTitle(session.value),
@@ -65,15 +68,17 @@ public final class SessionViewModel {
    public func applyFilter(_ filter: SubsystemFilter) {
 
       if filter.isAll {
-         self.appliedFilters = []
+         appliedFilters = []
       } else {
-         self.appliedFilters = [filter.title]
+         appliedFilters = [filter.title]
       }
 
       state.mutate {
          $0.filters = findFilters(in: session.value, applied: appliedFilters)
          $0.events = filterEvents(in: session.value, filters: appliedFilters)
       }
+
+      onApplyFiltersCallback(appliedFilters)
    }
 
    public func formatSession(formatter: SessionFormatting) -> String {

@@ -35,7 +35,10 @@ public class MonitorComposer {
 
             let viewModel = SessionViewModel(
                session: session,
-               appliedFilters: self.lastUsedSubsystemFilters)
+               appliedFilters: self.lastUsedSubsystemFilters,
+               onApplyFilters: {
+                  self.lastUsedSubsystemFilters = $0
+               })
 
             return SessionViewAdapter(
                viewModel: viewModel,
