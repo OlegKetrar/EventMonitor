@@ -78,7 +78,14 @@ public final class SessionViewModel {
    }
 
    public func formatSession(formatter: SessionFormatting) -> String {
-      formatter.formatSession(session.value)
+      var sessionToFormat = session.value
+
+      // format only filtered events
+      sessionToFormat.events = filtering.filter(
+         items: session.value.events,
+         by: \.subsystem)
+
+      return formatter.formatSession(sessionToFormat)
    }
 }
 

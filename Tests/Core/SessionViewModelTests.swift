@@ -60,6 +60,20 @@ final class SessionViewModelTests: XCTestCase {
          SubsystemFilter(subsystem: "2", isApplied: false))
    }
 
+   // MARK: -
+
+   func test_formatSession_filtersEvents() throws {
+      let spy = SessionFormattingSpy()
+      let sut = makeSUT(applied: ["1", "3"], events: ["1", "2", "1", "3", "4"])
+
+      _ = sut.formatSession(formatter: spy)
+
+      let formatted = try XCTUnwrap(spy.session)
+      XCTAssertEqual(formatted.events.map(\.subsystem), ["1", "1", "3"])
+   }
+
+   // MARK: -
+
    private func makeSUT(applied: [String], events: [String]) -> SessionViewModel {
 
       let session = EventSession(
@@ -97,3 +111,12 @@ private extension SessionViewModel {
 }
 
 private struct TestEvent: Codable, Event {}
+
+private class SessionFormattingSpy: SessionFormatting {
+   var session: EventSession?
+
+   func formatSession(_ session: EventSession) -> String {
+      self.session = session
+      return ""
+   }
+}
