@@ -53,7 +53,7 @@ struct ShareCurlContextAction: EventContextAction {
    }
 
    func perform(_ event: ExampleNetworkEvent, navigation: UINavigationController?) async throws {
-      try await ShareAction
+      try await ShareFileAction
          .init(configuration: ShareActionConfig())
          .perform(event, navigation: navigation)
    }
@@ -78,13 +78,12 @@ struct RetryEventContextAction: EventContextAction {
 }
 
 func configureEventMonitor(_ service: ExampleNetworkService) {
-
-   let networkConfig = NetworkEventConfig()
-      .addAction(CopyCurlContextAction())
-      .addAction(ShareCurlContextAction())
-      .addAction(RetryEventContextAction(service: service))
-
-   MonitorComposer.shared.register(
+   MonitorComposer.shared.registerCustomNetwork(
       event: ExampleNetworkEvent.self,
-      configuration: networkConfig)
+      configuration: { config in
+         config
+            .addAction(CopyCurlContextAction())
+            .addAction(ShareCurlContextAction())
+            .addAction(RetryEventContextAction(service: service))
+      })
 }
