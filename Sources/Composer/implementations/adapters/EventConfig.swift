@@ -16,23 +16,22 @@ struct EventConfig {
    mutating func add<ConcreteEvent>(
       _ config: some EventConfiguration<ConcreteEvent>
    ) {
-
-      configs.append(AnyEventConfiguration(
-         config: config,
-         sharing: Optional<NullConfiguration<ConcreteEvent>>.none))
-   }
-
-   mutating func add<ConcreteEvent>(
-      _ config: some EventConfiguration<ConcreteEvent> & SharingConfiguration<ConcreteEvent>
-   ) {
-
-      configs.append(AnyEventConfiguration(config: config, sharing: config))
+      configs.append(AnyEventConfiguration(config))
    }
 }
 
 // MARK: - EventViewConfig
 
 extension EventConfig: EventViewConfig {
+
+   private static let df: DateFormatter = {
+      let formatter = DateFormatter()
+      formatter.locale = Locale(identifier: "en_US_POSIX")
+      formatter.dateStyle = .medium
+      formatter.timeStyle = .long
+
+      return formatter
+   }()
 
    func configure(tableView: UITableView) {
       configs.forEach {
@@ -68,7 +67,12 @@ extension EventConfig: EventViewConfig {
    func formatSession(_ session: EventSession) -> String {
 
       let formatter = SessionFormatter(
-         header: { "Created at: \($0.identifier.timestamp)" },
+         header: {
+            """
+            Created at: \($0.identifier.timestamp)
+                        \(Self.df.string(from: $0.identifier.createdAt))
+            """
+         },
          separator: "--> ",
          terminator: "\n\n",
          eventFormatter: { anyEvent in
@@ -76,7 +80,6 @@ extension EventConfig: EventViewConfig {
                .lazy
                .compactMap { $0.formatEvent(anyEvent) }
                .first
-               ?? ""
          })
 
       return formatter.formatSession(session)
@@ -91,13 +94,7 @@ struct AnyEventConfiguration {
    let makeDetailViewController: (AnyEvent, UINavigationController?) -> UIViewController?
    let formatEvent: (AnyEvent) -> String?
 
-   init<Configuration, Sharing>(config: Configuration, sharing: Sharing?)
-   where
-      Configuration: EventConfiguration,
-      Configuration.EventCell: UITableViewCell,
-      Sharing: SharingConfiguration,
-      Configuration.Event == Sharing.Event
-   {
+   init<Configuration: EventConfiguration>(_ config: Configuration) {
 
       self.configureTableView = { tableView in
          tableView.register(
@@ -136,11 +133,10 @@ struct AnyEventConfiguration {
 
       self.formatEvent = { anyEvent in
          guard
-            let event = anyEvent.payload as? Sharing.Event,
-            let sharing = sharing
+            let event = anyEvent.payload as? Configuration.Event
          else { return nil }
 
-         return sharing.format(event: event)
+         return config.formatForSessionExport(event: event)
       }
    }
 }
@@ -162,11 +158,6 @@ struct AnyEventMenuItem: EventMenuItem {
    func perform(_ ctx: UINavigationController?) async throws {
       try await performFunction(ctx)
    }
-}
-
-private struct NullConfiguration<Event>: SharingConfiguration {
-   func format(event: Event) -> String { "" }
-   func makeFileName(event: Event) -> String { "" }
 }
 
 // MARK: reuseID

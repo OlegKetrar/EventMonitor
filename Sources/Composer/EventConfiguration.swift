@@ -16,8 +16,11 @@ import class UIKit.UINavigationController
 public protocol EventConfiguration<Event>: EventViewConfiguration {
    associatedtype EventAction: EventContextAction<Event>
    var actions: [EventAction] { get }
+
+   func formatForSessionExport(event: Event) -> String?
 }
 
 extension EventConfiguration {
    public var actions: [AnyEventContextAction<Event>] { [] }
+   public func formatForSessionExport(event: Event) -> String? { nil }
 }

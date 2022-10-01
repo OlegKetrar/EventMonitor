@@ -7,7 +7,7 @@
 //
 
 public struct SessionFormatter {
-   public typealias AnyEventFormatter = (AnyEvent) -> String
+   public typealias AnyEventFormatter = (AnyEvent) -> String?
 
    let header: (EventSession) -> String?
    let separator: String
@@ -30,7 +30,8 @@ public struct SessionFormatter {
       let headerStr = header(session).flatMap { "\($0)\(terminator)" } ?? ""
 
       return headerStr + session.events
-         .map { "\(separator)\(eventFormatter($0))" }
+         .compactMap { eventFormatter($0) }
+         .map { "\(separator)\($0)" }
          .joined(separator: terminator)
    }
 }
