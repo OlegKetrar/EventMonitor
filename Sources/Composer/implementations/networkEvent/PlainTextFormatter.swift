@@ -11,7 +11,7 @@ import Foundation
 public struct PlainTextFormatter {
    public init() {}
 
-   func format(event e: NetworkEvent) -> String {
+   public func format(event e: NetworkEvent) -> String {
 
       let statusStr = e.response.failureReason == nil ? "success" : "failure"
       let statusCodeStr = e.response.statusCode.map { "\($0)" } ?? "no-status-code"
