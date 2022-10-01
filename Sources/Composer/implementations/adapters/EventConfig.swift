@@ -76,7 +76,6 @@ extension EventConfig: EventViewConfig {
                .lazy
                .compactMap { $0.formatEvent(anyEvent) }
                .first
-               ?? ""
          })
 
       return formatter.formatSession(session)
