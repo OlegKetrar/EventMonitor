@@ -119,7 +119,7 @@ private extension ArchiveViewController {
    func configureUI() {
       title = "Sessions"
       view.backgroundColor = .grayBackground
-      disableBackButtonContextMenu()
+      disableBackButtonContextMenu(self)
 
       view.addSubview(tableView)
       tableView.translatesAutoresizingMaskIntoConstraints = false

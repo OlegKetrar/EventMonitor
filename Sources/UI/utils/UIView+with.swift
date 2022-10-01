@@ -9,11 +9,11 @@
 import Foundation
 import UIKit
 
-public protocol HasWith: AnyObject {}
+protocol HasWith: AnyObject {}
 
 extension HasWith {
 
-   public func with(_ closure: (Self) throws -> Void) rethrows -> Self {
+   func with(_ closure: (Self) throws -> Void) rethrows -> Self {
       try closure(self)
       return self
    }
@@ -21,14 +21,11 @@ extension HasWith {
 
 extension UIView: HasWith {}
 
-extension UIViewController {
-
-   public func disableBackButtonContextMenu() {
-      if #available(iOS 14.0, *) {
-         navigationItem.backBarButtonItem = BackBarButtonItem.make()
-      } else {
-         navigationItem.backButtonTitle = ""
-      }
+public func disableBackButtonContextMenu(_ vc: UIViewController) {
+   if #available(iOS 14.0, *) {
+      vc.navigationItem.backBarButtonItem = BackBarButtonItem.make()
+   } else {
+      vc.navigationItem.backButtonTitle = ""
    }
 }
 

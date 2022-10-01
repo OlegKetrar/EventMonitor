@@ -129,7 +129,7 @@ private extension NetworkEventDetailsVC {
 
    func configureUI() {
       view.backgroundColor = .grayBackground
-      disableBackButtonContextMenu()
+      disableBackButtonContextMenu(self)
 
       let scrollView = UIScrollView()
       scrollView.alwaysBounceVertical = true

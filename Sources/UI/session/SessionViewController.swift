@@ -138,7 +138,7 @@ private extension SessionViewController {
       navigationItem.rightBarButtonItem = configuredShareButton()
       view.backgroundColor = .grayBackground
       view.addSubview(tableView)
-      disableBackButtonContextMenu()
+      disableBackButtonContextMenu(self)
 
       NSLayoutConstraint.activate([
          tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
