@@ -93,3 +93,14 @@ private extension Dictionary where Key == String, Value == String {
       return isEmpty ? "" : "?\(paramStr)"
    }
 }
+
+private func convertPrettyPrintedJsonStringToAscii(_ json: String) -> String {
+   guard
+      let data = json.data(using: .nonLossyASCII),
+      let ascii = String(data: data, encoding: .utf8)
+   else {
+      return json
+   }
+
+   return ascii
+}
