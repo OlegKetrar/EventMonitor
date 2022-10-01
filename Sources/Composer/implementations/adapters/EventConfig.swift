@@ -16,17 +16,7 @@ struct EventConfig {
    mutating func add<ConcreteEvent>(
       _ config: some EventConfiguration<ConcreteEvent>
    ) {
-
-      configs.append(AnyEventConfiguration(
-         config: config,
-         sharing: Optional<NullConfiguration<ConcreteEvent>>.none))
-   }
-
-   mutating func add<ConcreteEvent>(
-      _ config: some EventConfiguration<ConcreteEvent> & SharingConfiguration<ConcreteEvent>
-   ) {
-
-      configs.append(AnyEventConfiguration(config: config, sharing: config))
+      configs.append(AnyEventConfiguration(config))
    }
 }
 
@@ -90,13 +80,7 @@ struct AnyEventConfiguration {
    let makeDetailViewController: (AnyEvent, UINavigationController?) -> UIViewController?
    let formatEvent: (AnyEvent) -> String?
 
-   init<Configuration, Sharing>(config: Configuration, sharing: Sharing?)
-   where
-      Configuration: EventConfiguration,
-      Configuration.EventCell: UITableViewCell,
-      Sharing: SharingConfiguration,
-      Configuration.Event == Sharing.Event
-   {
+   init<Configuration: EventConfiguration>(_ config: Configuration) {
 
       self.configureTableView = { tableView in
          tableView.register(
@@ -135,11 +119,10 @@ struct AnyEventConfiguration {
 
       self.formatEvent = { anyEvent in
          guard
-            let event = anyEvent.payload as? Sharing.Event,
-            let sharing = sharing
+            let event = anyEvent.payload as? Configuration.Event
          else { return nil }
 
-         return sharing.format(event: event)
+         return config.formatForSessionExport(event: event)
       }
    }
 }
@@ -161,11 +144,6 @@ struct AnyEventMenuItem: EventMenuItem {
    func perform(_ ctx: UINavigationController?) async throws {
       try await performFunction(ctx)
    }
-}
-
-private struct NullConfiguration<Event>: SharingConfiguration {
-   func format(event: Event) -> String { "" }
-   func makeFileName(event: Event) -> String { "" }
 }
 
 // MARK: reuseID

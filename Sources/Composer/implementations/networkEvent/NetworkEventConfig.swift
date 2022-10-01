@@ -62,20 +62,13 @@ extension NetworkEventConfig: EventConfiguration {
 
       let share = ShareFileAction<CustomEvent>(
          title: "Share .log",
-         configuration: self)
+         configuration: NetworkEventSharingConfig())
 
       return [AnyEventContextAction(share)] + customActions
    }
-}
 
-extension NetworkEventConfig: SharingConfiguration {
-
-   public func format(event: CustomEvent) -> String {
+   public func formatForSessionExport(event: CustomEvent) -> String? {
       PlainTextFormatter().format(event: event.networkData)
-   }
-
-   public func makeFileName(event: CustomEvent) -> String {
-      event.networkData.makeFileName()
    }
 }
 
@@ -85,5 +78,16 @@ extension NetworkEvent {
       "\(request.verb)\(request.method).log"
          .replacingOccurrences(of: "/", with: "_")
          .lowercased()
+   }
+}
+
+private struct NetworkEventSharingConfig<CustomEvent: CustomNetworkEvent>: SharingConfiguration {
+
+   func format(event: CustomEvent) -> String {
+      PlainTextFormatter().format(event: event.networkData)
+   }
+
+   func makeFileName(event: CustomEvent) -> String {
+      event.networkData.makeFileName()
    }
 }
