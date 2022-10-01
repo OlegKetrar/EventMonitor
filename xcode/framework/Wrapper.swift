@@ -7,14 +7,11 @@
 //
 
 import Foundation
-import EventMonitor
+@_exported import EventMonitor
 
-public typealias Event = EventMonitor.Event
-public typealias NetworkEvent = EventMonitor.NetworkEvent
-public typealias GroupedEvent = EventMonitor.GroupedEvent
-public typealias ExportOption = EventMonitor.ExportOption
-public typealias EventFormatting = EventMonitor.EventFormatting
-
-public typealias PresenterConfig = EventMonitor.PresenterConfig
-public typealias Monitor = EventMonitor.Monitor
-public typealias Logger = EventMonitor.Logger
+//public typealias Event = EventMonitor.Event
+//public typealias NetworkEvent = EventMonitor.NetworkEvent
+//
+//public typealias PresenterConfig = EventMonitor.PresenterConfig
+//public typealias MonitorComposer = EventMonitor.MonitorComposer
+//public typealias EventLogger = EventMonitor.EventLogger
