@@ -32,8 +32,8 @@ public final class SessionViewModel {
    ) {
 
       let formatter = DateFormatter()
-      formatter.timeStyle = .medium
       formatter.dateStyle = .medium
+      formatter.timeStyle = .short
 
       func formatTitle(_ session: EventSession) -> String {
          if session.isActive {

@@ -24,6 +24,15 @@ struct EventConfig {
 
 extension EventConfig: EventViewConfig {
 
+   private static let df: DateFormatter = {
+      let formatter = DateFormatter()
+      formatter.locale = Locale(identifier: "en_US_POSIX")
+      formatter.dateStyle = .medium
+      formatter.timeStyle = .long
+
+      return formatter
+   }()
+
    func configure(tableView: UITableView) {
       configs.forEach {
          $0.configureTableView(tableView)
@@ -58,7 +67,12 @@ extension EventConfig: EventViewConfig {
    func formatSession(_ session: EventSession) -> String {
 
       let formatter = SessionFormatter(
-         header: { "Created at: \($0.identifier.timestamp)" },
+         header: {
+            """
+            Created at: \($0.identifier.timestamp)
+                        \(Self.df.string(from: $0.identifier.createdAt))
+            """
+         },
          separator: "--> ",
          terminator: "\n\n",
          eventFormatter: { anyEvent in
