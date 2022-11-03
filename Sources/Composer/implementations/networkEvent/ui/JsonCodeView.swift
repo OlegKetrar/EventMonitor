@@ -12,7 +12,6 @@ import JsonSyntax
 
 final class JsonCodeView: UIView {
    private let theme = JsonCodeViewTheme.postman
-   private let syntax = JsonSyntax()
 
    private let contentLabel = UITextView(frame: .zero).with {
       $0.backgroundColor = .clear
@@ -32,20 +31,20 @@ final class JsonCodeView: UIView {
       configureUI()
    }
 
-   func setText(_ text: String, highlight: Bool = false) {
+   func setText(_ text: String, parseTree: ParseTree?) {
 
       let attrStr = NSMutableAttributedString(string: text, attributes: [
          .font : theme.font,
          .foregroundColor : theme.textColor
       ])
 
-      guard highlight else {
+      guard let jsonParseTree = parseTree else {
          contentLabel.attributedText = attrStr
          return
       }
 
       let mutAttrStr = NSMutableAttributedString(attributedString: attrStr)
-      let highlights = getHighlights(from: text)
+      let highlights = getHighlights(from: jsonParseTree)
 
       for item in highlights {
          mutAttrStr.addAttribute(.foregroundColor, value: item.color, range: item.range)
@@ -60,10 +59,8 @@ final class JsonCodeView: UIView {
 private extension JsonCodeView {
    typealias Highlight = (range: NSRange, color: UIColor)
 
-   func getHighlights(from str: String) -> [Highlight] {
-      guard let tree = try? syntax.parse(str) else { return [] }
-
-      return tree.getHighlightTokens().map { token in
+   func getHighlights(from tree: ParseTree) -> [Highlight] {
+       tree.getHighlightTokens().map { token in
          switch token.kind {
 
          case .syntax(.openBracket),

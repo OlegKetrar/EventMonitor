@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import MonitorUI
+import JsonSyntax
 
 public class NetworkEventDetailsVC: UIViewController, HavePreloaderButton {
    private let viewModel: NetworkEventViewModel
@@ -176,7 +177,7 @@ private extension NetworkEventDetailsVC {
       stackView.addArrangedSubview(makeSection(
          title: "Response".uppercased(),
          content: viewModel.response,
-         highlight: true))
+         parseTree: viewModel.responseParseTree))
 
       return stackView
    }
@@ -262,7 +263,7 @@ private extension NetworkEventDetailsVC {
       return containerView
    }
 
-   func makeSection(title: String, content: String, highlight: Bool = false) -> UIView {
+   func makeSection(title: String, content: String, parseTree: ParseTree? = nil) -> UIView {
       let sectionView = UIView()
 
       let headerLabel = UILabel()
@@ -272,7 +273,7 @@ private extension NetworkEventDetailsVC {
       headerLabel.numberOfLines = 0
 
       let contentView = JsonCodeView()
-      contentView.setText(content, highlight: highlight)
+      contentView.setText(content, parseTree: parseTree)
       contentView.layer.cornerRadius = 5
       contentView.layer.masksToBounds = true
 

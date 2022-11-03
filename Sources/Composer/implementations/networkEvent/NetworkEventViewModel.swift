@@ -8,6 +8,7 @@
 
 import Foundation
 import MonitorCore
+import JsonSyntax
 
 public struct NetworkEventViewModel {
    public var titleString: String
@@ -18,6 +19,7 @@ public struct NetworkEventViewModel {
    public var postParameters: String?
    public var headers: String
    public var response: String
+   public var responseParseTree: ParseTree?
 }
 
 extension NetworkEventViewModel {
@@ -30,7 +32,10 @@ extension NetworkEventViewModel {
          isFailed: event.response.failureReason != nil,
          postParameters: event.request.getFormattedPostParameters(),
          headers: event.request.getFormattedHeaders() ?? "",
-         response: event.response.jsonString ?? "no-response")
+         response: event.response.jsonString ?? "no-response",
+         responseParseTree: event.response.data.flatMap {
+            try? JsonSyntax().parse($0)
+         })
    }
 }
 
