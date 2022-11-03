@@ -6,6 +6,8 @@
 //  Copyright © 2019 Oleg Ketrar. All rights reserved.
 //
 
+import Foundation
+
 public struct NetworkEvent: Codable {
 
    public struct Request: Codable {
@@ -51,7 +53,7 @@ public struct NetworkEvent: Codable {
 
    public struct Response: Codable {
       public var statusCode: Int?
-      public var jsonString: String?
+      public var data: Data?
       public var failureReason: String?
 
       /// - Parameters:
@@ -60,13 +62,9 @@ public struct NetworkEvent: Codable {
       ///   - failureReason: String representation of event failure.
       ///   It is valid to pass here error of response validation.
       ///   Pass `nil`for succeeded events.
-      public init(
-         statusCode: Int?,
-         jsonString: String?,
-         failureReason: String?) {
-
+      public init(statusCode: Int?, data: Data?, failureReason: String?) {
          self.statusCode = statusCode
-         self.jsonString = jsonString
+         self.data = data
          self.failureReason = failureReason
       }
    }
@@ -78,6 +76,12 @@ public struct NetworkEvent: Codable {
       self.request = request
       self.response = response
    }
+}
+
+extension NetworkEvent.Response {
+
+    @available(*, deprecated, message: "Use `data`")
+    public var jsonString: String? { nil }
 }
 
 // MARK: - Convenience

@@ -11,9 +11,7 @@ let package = Package(
          name: "EventMonitor",
          targets: ["EventMonitor"]),
    ],
-   dependencies: [
-      .package(url: "https://github.com/OlegKetrar/JsonSyntax", exact: "0.2.1"),
-   ],
+   dependencies: [],
    targets: [
       .target(
          name: "MonitorCore",
@@ -29,7 +27,6 @@ let package = Package(
       .target(
          name: "MonitorUI",
          dependencies: [
-            .product(name: "JsonSyntax-Static", package: "JsonSyntax"),
             .target(name: "MonitorCore"),
          ],
          path: "Sources/UI",
@@ -42,6 +39,7 @@ let package = Package(
          dependencies: [
             .target(name: "MonitorCore"),
             .target(name: "MonitorUI"),
+            .target(name: "JsonSyntax"),
          ],
          path: "Sources/Composer",
          linkerSettings: [
@@ -54,6 +52,10 @@ let package = Package(
             .target(name: "EventMonitor"),
          ],
          path: "Tests/Composer"),
+
+      .target(
+        name: "JsonSyntax",
+        path: "Sources/JsonSyntax"),
    ],
    swiftLanguageVersions: [.v5]
 )

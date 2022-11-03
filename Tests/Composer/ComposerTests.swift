@@ -25,7 +25,7 @@ final class ComposerTests: XCTestCase {
                headers: [:]),
             response: NetworkEvent.Response(
                statusCode: 200,
-               jsonString: nil,
+               data: nil,
                failureReason: "failure"))
 
          let messageEvent = MessageEvent("message")

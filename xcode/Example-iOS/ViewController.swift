@@ -111,8 +111,6 @@ private extension ViewController {
    }
 
    @objc func actionAddCustomEvent() {
-//      MonitorComposer.shared.log("Some default event")
-
       MonitorComposer.shared
          .makeLogger(subsystem: "system_network")
          .log(NetworkEvent.makeMock())
@@ -134,6 +132,9 @@ private extension ViewController {
 private extension NetworkEvent {
 
    static func makeMock() -> NetworkEvent {
+
+
+
       return NetworkEvent(
          request: NetworkEvent.Request(
             verb: "get",
@@ -152,24 +153,26 @@ private extension NetworkEvent {
             ]),
          response: NetworkEvent.Response(
             statusCode: 200,
-            jsonString: #"""
-            {
-              "products" : [
-                {
-                  "name" : "MacBook Air",
-                  "year" : 2017,
-                  "price" : "1500.00",
-                  "available" : true
-                },
-                {
-                  "name" : "MacBook Pro",
-                  "year" : 2015,
-                  "price" : "2050.99",
-                  "available" : true
-                }
-              ]
-            }
-            """#,
+            data: json.data(using: .utf8),
             failureReason: nil))
    }
 }
+
+private let json: String = #"""
+{
+  "products" : [
+    {
+      "name" : "MacBook Air",
+      "year" : 2017,
+      "price" : "1500.00",
+      "available" : true
+    },
+    {
+      "name" : "MacBook Pro",
+      "year" : 2015,
+      "price" : "2050.99",
+      "available" : true
+    }
+  ]
+}
+"""#
