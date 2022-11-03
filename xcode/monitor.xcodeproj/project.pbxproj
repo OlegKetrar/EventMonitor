@@ -74,13 +74,6 @@
 			path = "Example-iOS";
 			sourceTree = "<group>";
 		};
-		55CF7DA128AE179E000BE320 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		55D1BF2C278F2115004B2F24 /* framework */ = {
 			isa = PBXGroup;
 			children = (
@@ -98,7 +91,6 @@
 				5520875123413FA60049EDBA /* Example-iOS */,
 				55EB2BA9272613B100F8D922 /* Example-iOS.app */,
 				555E9590278E61050088E744 /* EventMonitorFramework.framework */,
-				55CF7DA128AE179E000BE320 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
