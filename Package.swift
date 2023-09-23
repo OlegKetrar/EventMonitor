@@ -54,8 +54,15 @@ let package = Package(
          path: "Tests/Composer"),
 
       .target(
-        name: "JsonSyntax",
-        path: "Sources/JsonSyntax"),
+         name: "JsonSyntax",
+         path: "Sources/JsonSyntax"),
+
+      .testTarget(
+         name: "JsonSyntaxTests",
+         dependencies: [
+            .target(name: "JsonSyntax"),
+         ],
+         path: "Tests/JsonSyntax")
    ],
    swiftLanguageVersions: [.v5]
 )

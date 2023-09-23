@@ -16,8 +16,6 @@ public struct JsonSyntax {
          with: data,
          options: .fragmentsAllowed)
 
-      let tokens = try JsonObjectLexer().lex(obj)
-
-      return try Parser().parse(tokens)
+      return try JsonObjectParser().parse(obj)
    }
 }

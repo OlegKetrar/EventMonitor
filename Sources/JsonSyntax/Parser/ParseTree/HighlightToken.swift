@@ -33,4 +33,12 @@ public enum Literal: String, Equatable {
    case null
    case `false`
    case `true`
+
+   public init(_ value: Bool) {
+      if value {
+         self = .true
+      } else {
+         self = .false
+      }
+   }
 }

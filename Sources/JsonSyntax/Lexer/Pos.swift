@@ -11,9 +11,11 @@ public struct Pos: Equatable {
 
    /// start location in whole string.
    public var location: Int
+
+   /// String length in `UTF-16`.
    public var length: Int
 
-   private init(line: Int = 0, location: Int, length: Int) {
+   public init(line: Int = 0, location: Int, length: Int) {
       self.line = line
       self.location = location
       self.length = length
@@ -41,5 +43,12 @@ public struct Pos: Equatable {
 
    static func one(_ location: Int) -> Pos {
       return .from(location, 1)
+   }
+}
+
+extension Pos {
+
+   static func from(_ start: Int, literal: String) -> Pos {
+      .from(start, literal.utf16.count + 2)
    }
 }
