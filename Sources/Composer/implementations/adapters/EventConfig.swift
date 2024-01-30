@@ -73,7 +73,7 @@ extension EventConfig: EventViewConfig {
                         \(Self.df.string(from: $0.identifier.createdAt))
             """
          },
-         separator: "--> ",
+         separator: "-- ",
          terminator: "\n\n",
          eventFormatter: { anyEvent in
             configs
@@ -133,10 +133,11 @@ struct AnyEventConfiguration {
 
       self.formatEvent = { anyEvent in
          guard
-            let event = anyEvent.payload as? Configuration.Event
+            let event = anyEvent.payload as? Configuration.Event,
+            let formatted = config.formatForSessionExport(event: event)
          else { return nil }
 
-         return config.formatForSessionExport(event: event)
+         return "[\(anyEvent.subsystem)] - \(formatted)"
       }
    }
 }
