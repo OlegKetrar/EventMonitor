@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import MonitorUI
 
-final class MessageEventCell: UITableViewCell {
+public final class MessageEventCell: UITableViewCell {
 
    private let titleLabel = UILabel().with {
       $0.font = .systemFont(ofSize: 14, weight: .regular)
