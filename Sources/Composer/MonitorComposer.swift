@@ -12,6 +12,7 @@ import MonitorUI
 import class UIKit.UIViewController
 
 public typealias Event = MonitorCore.Event
+public typealias EventMenuItem = MonitorUI.EventMenuItem
 
 public class MonitorComposer {
    public static let shared = MonitorComposer()

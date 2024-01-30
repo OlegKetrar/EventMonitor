@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import MonitorUI
 import MonitorCore
 
 extension MessageEvent: Event {}
@@ -26,7 +25,7 @@ struct MessageEventConfig: EventConfiguration {
 
    func buildDetailView(
       event: MessageEvent,
-      menuItems: [any MonitorUI.EventMenuItem],
+      menuItems: [any EventMenuItem],
       navigation: UINavigationController?
    ) -> UIViewController? {
       return nil
