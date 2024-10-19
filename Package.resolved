@@ -1,16 +1,14 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "JsonSyntax",
-        "repositoryURL": "https://github.com/OlegKetrar/JsonSyntax",
-        "state": {
-          "branch": null,
-          "revision": "dd13caa10d2c8795a96e8e9efc27c82c859f1bf9",
-          "version": "0.2.1"
-        }
+  "pins" : [
+    {
+      "identity" : "jsonsyntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/OlegKetrar/JsonSyntax",
+      "state" : {
+        "branch" : "master",
+        "revision" : "1434441f7005aec8624e367578d9db76eb27dbdf"
       }
-    ]
-  },
-  "version": 1
+    }
+  ],
+  "version" : 2
 }

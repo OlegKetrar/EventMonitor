@@ -12,7 +12,7 @@ let package = Package(
          targets: ["EventMonitor"]),
    ],
    dependencies: [
-      .package(url: "https://github.com/OlegKetrar/JsonSyntax", exact: "0.2.1"),
+      .package(url: "https://github.com/OlegKetrar/JsonSyntax", branch: "master"),
    ],
    targets: [
       .target(

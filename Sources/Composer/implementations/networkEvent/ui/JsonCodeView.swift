@@ -61,7 +61,7 @@ private extension JsonCodeView {
    typealias Highlight = (range: NSRange, color: UIColor)
 
    func getHighlights(from str: String) -> [Highlight] {
-      guard let tree = try? syntax.parse(str) else { return [] }
+      guard let tree = try? syntax.parse(prettyPrinted: str) else { return [] }
 
       return tree.getHighlightTokens().map { token in
          switch token.kind {
