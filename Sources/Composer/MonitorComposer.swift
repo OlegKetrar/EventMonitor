@@ -58,13 +58,13 @@ public class MonitorComposer {
          configuration: MessageEventConfig())
    }
 
-   public func register<ConcreteEvent, Configuration>(
-      event: ConcreteEvent.Type,
+   public func register<SomeEvent, Configuration>(
+      event: SomeEvent.Type,
       configuration: Configuration
    ) where
-      ConcreteEvent: Event,
+      SomeEvent: Event,
       Configuration: EventConfiguration,
-      Configuration.Event == ConcreteEvent
+      Configuration.Event == SomeEvent
    {
 
       TypeRegistry.register(
@@ -74,12 +74,12 @@ public class MonitorComposer {
       viewConfig.add(configuration)
    }
 
-   public func registerCustomNetwork<ConcreteEvent: CustomNetworkEvent>(
-      event: ConcreteEvent.Type,
-      configuration builder: (NetworkEventConfig<ConcreteEvent>) -> NetworkEventConfig<ConcreteEvent>
+   public func registerCustomNetwork<SomeEvent: CustomNetworkEvent>(
+      event: SomeEvent.Type,
+      configuration builder: (NetworkEventConfig<SomeEvent>) -> NetworkEventConfig<SomeEvent>
    ) {
 
-      let networkConfig = NetworkEventConfig<ConcreteEvent>()
+      let networkConfig = NetworkEventConfig<SomeEvent>()
 
       register(
          event: event,

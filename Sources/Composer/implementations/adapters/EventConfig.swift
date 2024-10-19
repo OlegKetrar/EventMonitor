@@ -13,8 +13,8 @@ import MonitorUI
 struct EventConfig {
    private var configs: [AnyEventConfiguration] = []
 
-   mutating func add<ConcreteEvent>(
-      _ config: some EventConfiguration<ConcreteEvent>
+   mutating func add<SomeEvent>(
+      _ config: some EventConfiguration<SomeEvent>
    ) {
       configs.append(AnyEventConfiguration(config))
    }
