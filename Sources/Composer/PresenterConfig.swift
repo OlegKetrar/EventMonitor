@@ -12,9 +12,6 @@ import MonitorUI
 public final class PresenterConfig {
    private let viewFactory: () -> MonitorView
 
-   /// We create another UIWindow to have a callback on shakeEvent.
-   private var motionWindow: MotionWindow?
-
    init(viewFactory: @escaping () -> MonitorView) {
       self.viewFactory = viewFactory
    }
@@ -31,39 +28,34 @@ public final class PresenterConfig {
    /// - parameter rootViewController: root view controller of your app.
    /// Monitor will be presented onto this vc.
    public func enableShakeToShow(rootViewController: UIViewController) {
-      guard motionWindow == nil else { return }
-
-      motionWindow = MotionWindow(frame: .zero)
-      motionWindow?.backgroundColor = .clear
-      motionWindow?.windowLevel = .normal
-
-      motionWindow?.motionCallback = { [weak rootViewController, weak self] motion in
+      motionCallback = { [weak rootViewController, weak self] in
          guard
             let strongSelf = self,
-            let rootVC = rootViewController,
-            motion == .motionShake
+            let rootVC = rootViewController
          else { return }
 
          strongSelf.viewFactory().presentActiveSession(over: rootVC)
       }
-
-      motionWindow?.makeKeyAndVisible()
    }
 
    public func disableShakeToShow() {
-      motionWindow?.motionCallback = { _ in }
-      motionWindow = nil
+      motionCallback = nil
    }
 }
 
-private class MotionWindow: UIWindow {
-   var motionCallback: (UIEvent.EventSubtype) -> Void = { _ in }
+private var motionCallback: (() -> Void)?
 
-   override func motionBegan(
+extension UIWindow {
+
+   override open func motionBegan(
       _ motion: UIEvent.EventSubtype,
       with event: UIEvent?
    ) {
+
       super.motionBegan(motion, with: event)
-      motionCallback(motion)
+
+      if event?.type == .motion {
+         motionCallback?()
+      }
    }
 }
