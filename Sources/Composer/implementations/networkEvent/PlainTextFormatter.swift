@@ -8,6 +8,15 @@
 
 import Foundation
 
+private extension NetworkEvent.Request {
+
+   var getParams: String {
+      hasBody == false && parameters.isEmpty == false
+          ? parameters.queryString
+          : ""
+   }
+}
+
 public struct PlainTextFormatter {
    public init() {}
 
@@ -22,8 +31,8 @@ public struct PlainTextFormatter {
       \nheaders: \(e.request.headers.prettyPrintedString)
       """
 
-      if !e.request.postParams.isEmpty {
-         descriptionStr += "\n\nparameters: \(e.request.postParams.prettyPrintedString)"
+      if e.request.hasBody && e.request.parameters.isEmpty == false {
+         descriptionStr += "\n\nparameters: \(e.request.parameters.prettyPrintedString)"
       }
 
       descriptionStr += "\n\nresponse: \(e.response.jsonString ?? "no-response")"

@@ -1,5 +1,5 @@
 //
-//  JsonCodeViewTheme.swift
+//  JsonCodeTheme.swift
 //  EventMonitor
 //
 //  Created by Oleg Ketrar on 30.09.2019.
@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct JsonCodeViewTheme {
+struct JsonCodeTheme {
    var backgroundColor: UIColor
    var font: UIFont
    var textColor: UIColor
@@ -29,7 +29,8 @@ struct JsonCodeViewTheme {
       numberColor: UIColor? = nil,
       literalColor: UIColor? = nil,
       bracesColor: UIColor? = nil,
-      delimiterColor: UIColor? = nil) {
+      delimiterColor: UIColor? = nil
+   ) {
 
       self.backgroundColor = backgroundColor
       self.font = font
@@ -43,10 +44,10 @@ struct JsonCodeViewTheme {
    }
 }
 
-extension JsonCodeViewTheme {
+extension JsonCodeTheme {
 
-   static var postman: JsonCodeViewTheme {
-      JsonCodeViewTheme(
+   static var postman: JsonCodeTheme {
+      JsonCodeTheme(
          backgroundColor: #colorLiteral(red: 0.1568444967, green: 0.1568739712, blue: 0.156840831, alpha: 1),
          font: UIFont(name: "Menlo-Regular", size: 14)!,
          textColor: .white,

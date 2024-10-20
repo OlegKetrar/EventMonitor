@@ -12,8 +12,8 @@ public struct NetworkEvent: Codable {
       public var verb: String
       public var method: String
       public var basepoint: String
-      public var getParams: String
-      public var postParams: [String : String]
+      public var hasBody: Bool
+      public var parameters: [String : String]
       public var headers: [String : String]
 
       /// - Parameters:
@@ -33,16 +33,8 @@ public struct NetworkEvent: Codable {
          self.method = method
          self.basepoint = basepoint
 
-         let formattedParams = parameters.mapValues { "\($0)" }
-
-         if hasBody {
-            self.getParams = ""
-            self.postParams = formattedParams
-
-         } else {
-            self.getParams = formattedParams.queryString
-            self.postParams = [:]
-         }
+         self.hasBody = hasBody
+            self.parameters = parameters.mapValues { "\($0)" }
 
          self.headers = Dictionary(uniqueKeysWithValues: headers
             .map { ("\($0)", "\($1)") })
@@ -82,7 +74,7 @@ public struct NetworkEvent: Codable {
 
 // MARK: - Convenience
 
-private extension Dictionary where Key == String, Value == String {
+extension Dictionary where Key == String, Value == String {
 
    var queryString: String {
 
