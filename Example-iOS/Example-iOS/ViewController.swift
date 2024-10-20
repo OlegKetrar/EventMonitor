@@ -102,7 +102,7 @@ private extension ViewController {
 
    @objc func actionAddSystemEvent() {
       requestLogger(ExampleNetworkEvent(
-         networkData: .makeMock(),
+         networkData: .makeMock1(),
          cUrlRepresentation: "curl request.url --header \"header:1\"",
          request: ExampleAppRequest(
             url: "request",
@@ -115,7 +115,11 @@ private extension ViewController {
 
       MonitorComposer.shared
          .makeLogger(subsystem: "system_network")
-         .log(NetworkEvent.makeMock())
+         .log(NetworkEvent.makeMock1())
+
+      MonitorComposer.shared
+         .makeLogger(subsystem: "system_network")
+         .log(NetworkEvent.makeMock2())
    }
 
    @objc func actionShowMonitor() {
@@ -133,7 +137,7 @@ private extension ViewController {
 
 private extension NetworkEvent {
 
-   static func makeMock() -> NetworkEvent {
+   static func makeMock1() -> NetworkEvent {
       return NetworkEvent(
          request: NetworkEvent.Request(
             verb: "get",
@@ -154,6 +158,14 @@ private extension NetworkEvent {
             statusCode: 200,
             jsonString: #"""
             {
+              "shop" : {
+                "address" : {
+                  "street" : "Some street",
+                  "house" : 23
+                },
+
+                "" : "value"
+              },
               "products" : [
                 {
                   "name" : "MacBook Air",
@@ -171,5 +183,53 @@ private extension NetworkEvent {
             }
             """#,
             failureReason: nil))
+   }
+
+   static func makeMock2() -> NetworkEvent {
+      return NetworkEvent(
+         request: NetworkEvent.Request(
+            verb: "post",
+            method: "/v6/customer/orders/2123/invoices/details",
+            basepoint: "https://apim.autodoc.de",
+            hasBody: true,
+            parameters: [
+               "intParam" : 10,
+               "strParam" : "stringValue",
+               "arrayParam" : ["one", "two"],
+               "boolParam" : false
+            ],
+            headers: [
+               "header-one" : "value1",
+               "header-two" : "value2"
+            ]),
+         response: NetworkEvent.Response(
+            statusCode: 200,
+            jsonString: #"""
+            {
+              "shop" : {
+                "address" : {
+                  "street" : "Some street",
+                  "house" : 23
+                },
+
+                "" : "value"
+              },
+              "products" : [
+                {
+                  "name" : "MacBook Air",
+                  "year" : 2017,
+                  "price" : "1500.00",
+                  "available" : true
+                },
+                {
+                  "name" : "MacBook Pro",
+                  "year" : 2015,
+                  "price" : "2050.99",
+                  "available" : true
+                }
+              ]
+            }
+            """#,
+            failureReason: "Parsing error: `products` expected to be `Array<ShortArticle>`, but received `Bool`"))
    }
 }
